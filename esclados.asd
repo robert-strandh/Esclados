@@ -4,7 +4,7 @@
 ;;; Copyright (c) 2006, Troels Henriksen (athas@sigkill.dk)
 
 (defsystem "esclados"
-  :depends-on ("clim-core" "alexandria")
+  :depends-on ("clim-core")
   :serial t
   :components
   ((:file "packages")

@@ -8,12 +8,7 @@
                           #:standard-generic-function
                           #:standard-method
                           #:standard-class)
-  (:import-from #:alexandria
-		#:once-only
-		#:with-gensyms)
-  (:export #:with-gensyms
-	   #:once-only
-           #:unlisted
+  (:export #:unlisted
            #:fully-unlisted
            #:listed
            #:list-aref
