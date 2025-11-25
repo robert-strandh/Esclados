@@ -370,7 +370,7 @@ should cause the `data' argument to be NIL."))
 (defclass subscriptable-name-mixin (name-mixin)
   ((%subscript :accessor subscript
                :documentation "The subscript of the named object.")
-   (%subscript-generator :accessor subscript-generator
+   (%subscript-generator :reader subscript-generator
                          :initarg :subscript-generator
                          :initform (constantly 1)
                          :documentation "A function used for
