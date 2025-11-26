@@ -17,8 +17,6 @@
            #:no-upper-p
            #:case-relevant-test
            #:with-keywords-removed
-           #:invoke-with-dynamic-bindings-1
-           #:invoke-with-dynamic-bindings
            #:maptree
            #:subtype-compatible-p
            #:capitalize
@@ -31,7 +29,10 @@
            #:add-observer #:remove-observer
            #:observer-notified #:notify-observers
            #:name-mixin #:name
-           #:subscriptable-name-mixin #:subscripted-name #:subscript #:subscript-generator
+           #:subscriptable-name-mixin
+           #:subscripted-name
+           #:subscript
+           #:subscript-generator
            #:mode #:modual-class
            #:available-modes
            #:mode-directly-applicable-p #:mode-applicable-p

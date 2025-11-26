@@ -16,30 +16,6 @@
              (rest subscripts))
       list))
 
-(defun invoke-with-dynamic-bindings-1 (bindings continuation)
-  (let ((old-values (mapcar #'(lambda (elt)
-                                (symbol-value (first elt)))
-                            bindings)))
-    (unwind-protect (progn
-                      (mapcar #'(lambda (elt)
-                                  (setf (symbol-value (first elt))
-                                        (funcall (second elt))))
-                              bindings)
-                      (funcall continuation))
-      (mapcar #'(lambda (elt value)
-                  (setf (symbol-value (first elt))
-                        value))
-              bindings old-values))))
-
-(defmacro invoke-with-dynamic-bindings ((&rest bindings) &body body)
-  `(invoke-with-dynamic-bindings-1
-    ,(loop for (symbol expression) in bindings
-        collect (list `',symbol
-                      `#'(lambda ()
-                           ,expression)))
-    #'(lambda ()
-        ,@body)))
-
 (defun display-string (string)
   (with-output-to-string (result)
     (loop for char across string
