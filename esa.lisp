@@ -107,7 +107,10 @@ current message was set."))
 
 (defun display-minibuffer (frame pane)
   (declare (ignore frame))
-  (dispatch-repaint pane +everywhere+))
+  ;; We are probably no longer allowed to call dispatch-repaint in the
+  ;; main thread of the application.
+  ;; (dispatch-repaint pane +everywhere+))
+  (finish-output pane))
 
 (defmethod stream-accept :around ((pane minibuffer-pane) type &rest args)
   (declare (ignore type args))
@@ -137,9 +140,13 @@ current message was set."))
   (declare (ignore width height))
   (with-sheet-medium (medium pane)
     (let* ((sr (call-next-method))
-           (height (max (text-style-height (medium-merged-text-style medium)
-                                           medium)
-                        (bounding-rectangle-height (stream-output-history pane)))))
+           ;; We are no longer allowed to call text-style-height at
+           ;; this point, because the medium is a BASIC-MEDIUM when we
+           ;; start the application. 
+           ;; (height (max (text-style-height (medium-merged-text-style medium)
+           ;;                                 medium)
+           ;;              (bounding-rectangle-height (stream-output-history pane)))))
+           (height 100))
       (make-space-requirement
        :height height :min-height height :max-height height
        :width (space-requirement-width sr)
