@@ -35,18 +35,6 @@
       (and (characterp y) (char= x y))
       (eql x y)))
 
-(defun no-upper-p (string)
-  "Does STRING contain no uppercase characters"
-  (notany #'upper-case-p string))
-
-(defun case-relevant-test (string)
-  "Returns a test function based on the search-string STRING.
-If STRING contains no uppercase characters the test is case-insensitive,
-otherwise it is case-sensitive."
-  (if (no-upper-p string)
-      #'object-equal
-      #'object=))
-
 (defun remove-keywords (arg-list keywords)
   (let ((clean-tail arg-list))
     ;; First, determine a tail in which there are no keywords to be removed.

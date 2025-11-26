@@ -14,8 +14,6 @@
            #:display-string
            #:object-equal
            #:object=
-           #:no-upper-p
-           #:case-relevant-test
            #:with-keywords-removed
            #:maptree
            #:subtype-compatible-p
