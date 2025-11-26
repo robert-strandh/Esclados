@@ -92,7 +92,9 @@ current message was set."))
   (when (and (message pane)
              (> (get-universal-time)
                 (+ *minimum-message-time* (message-time pane))))
-    (window-clear pane)
+    ;; We are no longer allowed to call WINDOW-CLEAR from the
+    ;; application thread.
+    ;; (window-clear pane)
     (setf (message pane) nil))
   (call-next-method))
 
