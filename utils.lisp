@@ -5,11 +5,6 @@
       (funcall fn obj)
       obj))
 
-(defun fully-unlisted (obj &optional (fn #'first))
-  (if (listp obj)
-      (fully-unlisted (funcall fn obj))
-      obj))
-
 (defun listed (obj)
   (if (listp obj)
       obj
