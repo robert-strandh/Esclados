@@ -11,17 +11,6 @@
   (:export #:unlisted
            #:listed
            #:list-aref
-           #:display-string
-           #:object-equal
-           #:object=
-           #:with-keywords-removed
-           #:maptree
-           #:subtype-compatible-p
-           #:capitalize
-           #:ensure-array-size
-           #:values-max-min
-           #:retaining-value
-           #:format-sym
            #:build-menu #:define-menu-table
            #:observable-mixin
            #:add-observer #:remove-observer
