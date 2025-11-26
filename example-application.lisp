@@ -3,7 +3,6 @@
 (defclass example-info-pane (info-pane)
   ()
   (:default-initargs
-   :height 20 :max-height 20 :min-height 20
    :display-function 'display-info
    :incremental-redisplay t))
 
@@ -12,9 +11,7 @@
   (format pane "Pane name: ~s" (pane-name (master-pane pane))))
 
 (defclass example-minibuffer-pane (minibuffer-pane)
-  ()
-  (:default-initargs
-   :height 20 :max-height 20 :min-height 20))
+  ())
 
 (defclass example-pane (esclados-pane-mixin application-pane)
   ((contents :initform "hello" :accessor contents)))
@@ -30,17 +27,17 @@
                                       :command-table 'global-example-table))
                   (my-info-pane (make-pane 'example-info-pane
                                            :master-pane my-pane
-                                           :width 900)))
+                                           :width 900))
+                  (minibuffer (make-pane 'example-minibuffer-pane
+                                         :width 900)))
              (setf (windows *application-frame*) (list my-pane))
              (vertically ()
                (scrolling ()
                  my-pane)
-               my-info-pane)))
-   (minibuffer (make-pane 'example-minibuffer-pane :width 900)))
+               (20 my-info-pane)
+               (20 minibuffer)))))
   (:layouts
-   (default (vertically ()
-              window
-              minibuffer)))
+   (default window))
   (:top-level (esclados-top-level)))
 
 (defun display-my-pane (frame pane)
