@@ -11,7 +11,6 @@
   (:export #:unlisted
            #:listed
            #:list-aref
-           #:letf
            #:display-string
            #:object-equal
            #:object=
