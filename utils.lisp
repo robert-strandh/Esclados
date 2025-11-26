@@ -367,16 +367,23 @@ should cause the `data' argument to be NIL."))
           :documentation "The name of the named object."))
   (:documentation "A class used for defining named objects."))
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *subscript-generator-documentation*
+    (format nil "This slot contains a function used for finding the~@
+                 subscript of a `name-mixin' whenever the name is set~@
+                 (including during object initialization).~@
+                 ~@
+                 This function will be called with the name as the~@
+                 single argument.")))
+
 (defclass subscriptable-name-mixin (name-mixin)
   ((%subscript :accessor subscript
                :documentation "The subscript of the named object.")
-   (%subscript-generator :reader subscript-generator
-                         :initarg :subscript-generator
-                         :initform (constantly 1)
-                         :documentation "A function used for
-finding the subscript of a `name-mixin' whenever the name is
-set (including during object initialization). This function will
-be called with the name as the single argument."))
+   (%subscript-generator
+    :reader subscript-generator
+    :initarg :subscript-generator
+    :initform (constantly 1)
+    :documentation #.*subscript-generator-documentation*))
   (:documentation "A class used for defining named objects. A
 facility is provided for assigning a named object a \"subscript\"
 uniquely identifying the object if there are other objects of the
