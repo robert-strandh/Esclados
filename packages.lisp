@@ -9,7 +9,6 @@
                           #:standard-method
                           #:standard-class)
   (:export #:unlisted
-           #:fully-unlisted
            #:listed
            #:list-aref
            #:letf
