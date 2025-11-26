@@ -26,6 +26,7 @@
    (window (let* ((my-pane (make-pane 'example-pane
                                       :width 900 :height 400
                                       :display-function 'display-my-pane
+                                      :name "Example"
                                       :command-table 'global-example-table))
                   (my-info-pane (make-pane 'example-info-pane
                                            :master-pane my-pane
