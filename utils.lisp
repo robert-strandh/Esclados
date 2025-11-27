@@ -86,64 +86,6 @@ command table, the old definition will be destroyed."
     :inherit-menu t
     :errorp nil))
 
-(defclass observable-mixin ()
-  ((%observers :accessor observers
-               :initform '()))
-  (:documentation "A mixin class that adds the capability for a
-subclass to have a list of \"event subscribers\" (observers) that
-can be informed via callback (the function `observer-notified')
-whenever the state of the object changes. The order in which
-observers will be notified is undefined."))
-
-(defgeneric add-observer (observable observer)
-  (:documentation "Add an observer to an observable object. If
-the observer is already observing `observable', it will not be
-added again."))
-
-(defmethod add-observer ((observable observable-mixin) observer)
-  ;; Linear in complexity, perhaps a transparent switch to a hash
-  ;; table would be a good idea for large amounts of observers.
-  (pushnew observer (observers observable)))
-
-(defgeneric remove-observer (observable observer)
-  (:documentation "Remove an observer from an observable
-object. If observer is not in the list of observers of
-`observable', nothing will happen."))
-
-(defmethod remove-observer ((observable observable-mixin) observer)
-  (setf (observers observable)
-        (delete observer (observers observable))))
-
-(defgeneric observer-notified (observer observable data)
-  (:documentation "This function is called by `observable' when
-its state changes on each observer that is observing
-it. `Observer' is the observing object, `observable' is the
-observed object. `Data' is arbitrary data that might be of
-interest to `observer', it is recommended that subclasses of
-`observable-mixin' specify exactly which form this data will
-take, the observer protocol does not guarantee anything. It is
-non-&optional so that methods may be specialised on it, if
-applicable. The default method on this function is a no-op, so it
-is never an error to not define a method on this generic function
-for an observer.")
-  (:method (observer (observable observable-mixin) data)
-    (declare (ignore observer data))
-    ;; Never a no-applicable-method error.
-    nil))
-
-(defgeneric notify-observers (observable &optional data-fn)
-  (:documentation "Notify each observer of `observable' by
-calling `observer-notified' on them. `Data-fn' will be called,
-with the observer as the single argument, to obtain the `data'
-argument to `observer-notified'. The default value of `data-fn'
-should cause the `data' argument to be NIL."))
-
-(defmethod notify-observers ((observable observable-mixin)
-                             &optional (data-fn (constantly nil)))
-  (dolist (observer (observers observable))
-    (observer-notified observer observable
-                       (funcall data-fn observer))))
-
 (defclass name-mixin ()
   ((%name :accessor name
           :initarg :name

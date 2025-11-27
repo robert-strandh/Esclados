@@ -12,9 +12,6 @@
            #:listed
            #:list-aref
            #:build-menu #:define-menu-table
-           #:observable-mixin
-           #:add-observer #:remove-observer
-           #:observer-notified #:notify-observers
            #:name-mixin #:name
            #:subscriptable-name-mixin
            #:subscripted-name
