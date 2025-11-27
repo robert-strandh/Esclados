@@ -20,15 +20,7 @@
            #:subscripted-name
            #:subscript
            #:subscript-generator
-           #:mode #:modual-class
-           #:available-modes
-           #:mode-directly-applicable-p #:mode-applicable-p
-           #:mode-enabled-p
-           #:enabled-modes
-           #:nonapplicable-mode
-           #:change-class-for-enabled-mode
-           #:change-class-for-disabled-mode
-           #:enable-mode #:disable-mode))
+           #:mode))
 
 (defpackage :esclados
   (:use :clim-lisp :clim :esclados-utils :clim-extensions)
