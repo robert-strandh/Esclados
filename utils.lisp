@@ -396,32 +396,3 @@ of name `mode-name'."
 (defmethod disable-mode ((modual t) mode-name)
   (when (mode-directly-applicable-p modual mode-name)
     (change-class-for-disabled-mode modual mode-name)))
-
-(defmacro add-default-modes (modual-class &body modes)
-  "Add `modes' to the list of default modes for
-`modual-class'. Will not replace any already existing modes. The
-elements in `modes' can either be a single symbol, the name of a
-mode, or a cons of the name of a mode and a list of initargs for
-the mode. In the former case, no initargs will be given. Please
-do not use default modes as a programming tool, they should be
-reserved for user-oriented functionality."
-  (dolist (mode modes)
-    (let ((mode-name (unlisted mode)))
-      (check-type mode-name symbol)
-      ;; Take care not to add the same mode twice, this is risky enough
-      ;; as it is.
-      (setf (default-modes modual-class)
-            (cons (listed mode)
-                  (delete mode-name (default-modes modual-class) :key #'first))))))
-
-(defmacro remove-default-modes (modual-class &body modes)
-  "Remove `modes' from the list of default modes for
-`modual-class'. `Modes' must be a list of names of modes in the
-form of symbols. If a provided mode is not set as a default mode,
-nothing will be done."
-  (dolist (mode modes)
-    (check-type mode symbol)
-    ;; Take care not to add the same mode twice, this is risky enough
-    ;; as it is.
-    (setf (default-modes modual-class)
-          (delete mode (default-modes modual-class) :key #'first))))

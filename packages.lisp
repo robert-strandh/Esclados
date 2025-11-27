@@ -28,8 +28,7 @@
            #:nonapplicable-mode
            #:change-class-for-enabled-mode
            #:change-class-for-disabled-mode
-           #:enable-mode #:disable-mode
-           #:add-default-modes #:remove-default-modes))
+           #:enable-mode #:disable-mode))
 
 (defpackage :esclados
   (:use :clim-lisp :clim :esclados-utils :clim-extensions)
