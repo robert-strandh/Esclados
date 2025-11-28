@@ -92,7 +92,3 @@ command table, the old definition will be destroyed."
           :type string
           :documentation "The name of the named object."))
   (:documentation "A class used for defining named objects."))
-
-(defclass mode ()
-  ()
-  (:documentation "A superclass for all modes."))

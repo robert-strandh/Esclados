@@ -12,8 +12,7 @@
            #:listed
            #:list-aref
            #:build-menu #:define-menu-table
-           #:name-mixin #:name
-           #:mode))
+           #:name-mixin #:name))
 
 (defpackage :esclados
   (:use :clim-lisp :clim :esclados-utils :clim-extensions)
