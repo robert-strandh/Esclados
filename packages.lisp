@@ -13,10 +13,6 @@
            #:list-aref
            #:build-menu #:define-menu-table
            #:name-mixin #:name
-           #:subscriptable-name-mixin
-           #:subscripted-name
-           #:subscript
-           #:subscript-generator
            #:mode))
 
 (defpackage :esclados
