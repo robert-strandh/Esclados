@@ -9,6 +9,7 @@
   :components
   ((:file "packages")
    (:file "utils")
+   (:file "query")
    (:file "esa")
    (:file "buffer")
    (:file "io")

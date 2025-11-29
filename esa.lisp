@@ -2,56 +2,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Querying ESAs.
-
-(defvar *esclados-instance* nil
-  "This symbol should be bound to an ESCLADOS instance, though any
-object will do, provided the proper methods are defined. It will
-be used as the argument to the various \"query\" functions
-defined by ESCLADOS. For the vast majority of ESCLADOSs, `*esclados-instance*'
-will probably have the same value as `*application-frame*'.")
-
-(defgeneric buffers (esclados)
-  (:documentation "Return a list of all the buffers of the application."))
-
-(defgeneric esclados-current-buffer (esclados)
-  (:documentation "Return the current buffer of the ESCLADOS instance ESCLADOS."))
-
-(defgeneric (setf esclados-current-buffer) (new-buffer esclados)
-  (:documentation
-   #.(format nil "Replace the current buffer of the ESCLADOS instance~@
-                  ESCLADOS with NEW-BUFFER.")))
-
-(defun current-buffer ()
-  "Return the currently active buffer of the running ESCLADOS."
-  (esclados-current-buffer *esclados-instance*))
-
-(defun (setf current-buffer) (new-buffer)
-  #.(format nil "Replace the current buffer of the current running~@
-                 ESCLADOS instance with NEW-BUFFER.")
-  (setf (esclados-current-buffer *esclados-instance*) new-buffer))
-
-(defgeneric windows (esclados)
-  (:documentation "Return a list of all the windows of the ESCLADOS.")
-  (:method ((esclados application-frame))
-    '()))
-
-(defgeneric esclados-current-window (esclados)
-  (:documentation "Return the currently active window of ESCLADOS."))
-
-(defun current-window ()
-  "Return the currently active window of the running ESCLADOS instance."
-  (esclados-current-window *esclados-instance*))
-
-(defgeneric esclados-command-table (esclados)
-  (:documentation "Return command table of ESCLADOS."))
-
-(defvar *previous-command* nil
-  #.(format nil "When a command is being executed, the command~@
-                 previously executed by the application."))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
 ;;; Info pane, a pane that displays some information about another pane
 
 (defclass info-pane (application-pane)
