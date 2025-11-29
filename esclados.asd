@@ -11,6 +11,7 @@
    (:file "utils")
    (:file "query")
    (:file "info-pane")
+   (:file "minibuffer-pane")
    (:file "esa")
    (:file "buffer")
    (:file "io")
