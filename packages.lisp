@@ -18,7 +18,7 @@
   (:use :clim-lisp :clim :esclados-utils :clim-extensions)
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
-           #:windows #:esclados-current-window #:current-window
+           #:windows #:present-window #:current-window
            #:*previous-command*
            #:*minibuffer* #:minibuffer #:minibuffer-pane #:display-message
            #:with-minibuffer-stream

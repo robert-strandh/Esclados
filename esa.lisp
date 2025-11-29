@@ -729,7 +729,7 @@ corresponding commands in `command-table' and invoke them using
 (defmethod present-buffer ((esclados esclados-frame-mixin))
   (first (buffers esclados)))
 
-(defmethod esclados-current-window ((esclados esclados-frame-mixin))
+(defmethod present-window ((esclados esclados-frame-mixin))
   (first (windows esclados)))
 
 (defmethod esclados-command-table ((frame esclados-frame-mixin))
@@ -761,7 +761,7 @@ corresponding commands in `command-table' and invoke them using
   ;; FIXME: I'm not sure that we want to do this for commands sent
   ;; from other threads; we almost certainly don't want to do it twice
   ;; in such cases...
-  (setf (previous-command (esclados-current-window frame)) command))
+  (setf (previous-command (present-window frame)) command))
 
 (defmethod execute-frame-command :around ((frame esclados-frame-mixin) command)
   (declare (ignore command))

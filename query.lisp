@@ -36,12 +36,12 @@
   (:method ((esclados application-frame))
     '()))
 
-(defgeneric esclados-current-window (esclados)
+(defgeneric present-window (esclados)
   (:documentation "Return the currently active window of ESCLADOS."))
 
 (defun current-window ()
   "Return the currently active window of the running ESCLADOS instance."
-  (esclados-current-window *esclados-instance*))
+  (present-window *esclados-instance*))
 
 (defgeneric esclados-command-table (esclados)
   (:documentation "Return command table of ESCLADOS."))
