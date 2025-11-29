@@ -726,7 +726,7 @@ corresponding commands in `command-table' and invoke them using
 (defclass esclados-frame-mixin (command-processor)
   ((windows :accessor windows)))
 
-(defmethod esclados-current-buffer ((esclados esclados-frame-mixin))
+(defmethod present-buffer ((esclados esclados-frame-mixin))
   (first (buffers esclados)))
 
 (defmethod esclados-current-window ((esclados esclados-frame-mixin))

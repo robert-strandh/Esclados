@@ -14,22 +14,22 @@
 (defgeneric buffers (esclados)
   (:documentation "Return a list of all the buffers of the application."))
 
-(defgeneric esclados-current-buffer (esclados)
+(defgeneric present-buffer (esclados)
   (:documentation "Return the current buffer of the ESCLADOS instance ESCLADOS."))
 
-(defgeneric (setf esclados-current-buffer) (new-buffer esclados)
+(defgeneric (setf present-buffer) (new-buffer esclados)
   (:documentation
    #.(format nil "Replace the current buffer of the ESCLADOS instance~@
                   ESCLADOS with NEW-BUFFER.")))
 
 (defun current-buffer ()
   "Return the currently active buffer of the running ESCLADOS."
-  (esclados-current-buffer *esclados-instance*))
+  (present-buffer *esclados-instance*))
 
 (defun (setf current-buffer) (new-buffer)
   #.(format nil "Replace the current buffer of the current running~@
                  ESCLADOS instance with NEW-BUFFER.")
-  (setf (esclados-current-buffer *esclados-instance*) new-buffer))
+  (setf (present-buffer *esclados-instance*) new-buffer))
 
 (defgeneric windows (esclados)
   (:documentation "Return a list of all the windows of the ESCLADOS.")
