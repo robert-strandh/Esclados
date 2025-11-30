@@ -6,17 +6,22 @@
 
 (defclass esclados-pane-mixin ()
   (;; allows a certain number of commands to have some minimal memory
-   (previous-command :initform nil :accessor previous-command)
-   (command-table :initarg :command-table :accessor esclados-command-table)))
+   (%previous-command
+    :initform nil
+    :accessor previous-command)
+   (%command-table
+    :initarg :command-table
+    :accessor esclados-command-table)))
 
-(defmethod previous-command ((pane pane))
+(defmethod previous-command ((pane clim:pane))
   nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Command processing
 
-(defparameter *esclados-abort-gestures* `((:keyboard #\g ,(make-modifier-state :control))))
+(defparameter *esclados-abort-gestures*
+  `((:keyboard #\g ,(clim:make-modifier-state :control))))
 
 (defparameter *current-gesture* nil)
 
@@ -25,29 +30,31 @@
 bound to the current command processor.")
 
 (defun find-gestures (gestures start-table)
-  (loop with table = (find-command-table start-table)
+  (loop with table = (clim:find-command-table start-table)
         for (gesture . rest) on gestures
-        for item = (find-keystroke-item  gesture table :errorp nil)
+        for item = (clim:find-keystroke-item  gesture table :errorp nil)
         while item
-        do (if (eq (command-menu-item-type item) :command)
+        do (if (eq (clim:command-menu-item-type item) :command)
                (return (if (null rest) item nil))
-               (setf table (command-menu-item-value item)))
+               (setf table (clim:command-menu-item-value item)))
         finally (return item)))
 
 (defun find-gestures-with-inheritance (gestures start-table)
   (or (find-gestures gestures start-table)
       (some (lambda (table)
               (find-gestures-with-inheritance gestures table))
-            (command-table-inherit-from
-             (find-command-table start-table)))))
+            (clim:command-table-inherit-from
+             (clim:find-command-table start-table)))))
 
 
 (defun gesture-matches-gesture-name-p (gesture gesture-name)
-  (event-matches-gesture-name-p gesture gesture-name))
+  (clim:event-matches-gesture-name-p gesture gesture-name))
 
 (defvar *meta-digit-table*
   (loop for i from 0 to 9
-        collect (list :keyboard (digit-char i) (make-modifier-state :meta))))
+        collect (list :keyboard
+                      (digit-char i)
+                      (clim:make-modifier-state :meta))))
 
 (defun meta-digit (gesture)
   (position gesture *meta-digit-table*
@@ -58,9 +65,9 @@ bound to the current command processor.")
 otherwise. A proper gesture is loosely defined as any gesture
 that is not just the sole pressing of a modifier key."
   (or (characterp gesture)
-      (and (typep gesture 'keyboard-event)
-           (or (keyboard-event-character gesture)
-               (not (member (keyboard-event-key-name gesture)
+      (and (typep gesture 'clim:keyboard-event)
+           (or (clim:keyboard-event-character gesture)
+               (not (member (clim:keyboard-event-key-name gesture)
                             '(:control-left :control-right
                               :shift-left :shift-right
                               :meta-left :meta-right
@@ -94,7 +101,7 @@ preferring to a command."))
                         :accessor overriding-handler
                         :documentation "When non-NIL, any action on
 the command processor will be forwarded to this object.")
-   (%command-executor :initform 'execute-frame-command
+   (%command-executor :initform 'clim:execute-frame-command
                       :accessor command-executor
                       :initarg :command-executor
                       :documentation "The object used to execute
@@ -153,12 +160,13 @@ for a command processor that expects to receive gestures through
 asynchronous event handling, and not through
 `esclados-read-gesture'."))
 
-(defmethod process-gesture :before ((command-processor asynchronous-command-processor) gesture)
-  (when (and (find gesture *abort-gestures*
+(defmethod process-gesture :before
+    ((command-processor asynchronous-command-processor) gesture)
+  (when (and (find gesture clim:*abort-gestures*
                    :test #'gesture-matches-gesture-name-p)
              (directly-processing-p command-processor))
     (setf (accumulated-gestures command-processor) nil)
-    (signal 'abort-gesture :event gesture)))
+    (signal 'clim:abort-gesture :event gesture)))
 
 (defclass dead-key-merging-command-processor (command-processor)
   ((%dead-key-state :accessor dead-key-state
@@ -201,11 +209,12 @@ the command processor encounters an abort gesture.")
 processor that the `command-loop-command-processor' object
 handles gestures for."))
   (:default-initargs
-   :command-executor #'(lambda (processor command)
-                         (funcall
-                          (command-executor (super-command-processor processor))
-                          (super-command-processor processor)
-                          command)))
+   :command-executor
+   #'(lambda (processor command)
+       (funcall
+        (command-executor (super-command-processor processor))
+        (super-command-processor processor)
+        command)))
   (:documentation "This class is used to run sub-command-loops
 within the primary command loop of an application (for example,
 to do stuff such as incremental search)."))
@@ -221,14 +230,15 @@ to do stuff such as incremental search)."))
     (end-command-loop (overriding-handler command-processor)))
   (setf (overriding-handler (super-command-processor command-processor)) nil))
 
-(defmethod process-gesture :around ((command-processor command-loop-command-processor) gesture)
-  (cond ((find gesture *abort-gestures*
+(defmethod process-gesture :around
+    ((command-processor command-loop-command-processor) gesture)
+  (cond ((find gesture clim:*abort-gestures*
                :test #'gesture-matches-gesture-name-p)
          ;; It is to be expected that the abort function might signal
          ;; `abort-gesture'. If that happens, we must end the command
          ;; loop, but ONLY if this is signalled.
          (handler-case (funcall (abort-function command-processor))
-           (abort-gesture (c)
+           (clim:abort-gesture (c)
              (end-command-loop command-processor)
              (signal c))))
         (t
@@ -319,29 +329,29 @@ never refer to a command."))
       (cond ((null gestures)
              t)
             (t
-             (let* ((command-table (esclados-command-table command-processor))
-                    (item (or (find-gestures-with-inheritance gestures command-table)
+             (let* ((clim:command-table (esclados-command-table command-processor))
+                    (item (or (find-gestures-with-inheritance gestures clim:command-table)
                               (command-for-unbound-gestures command-processor gestures))))
                (cond
                  ((not item)
                   (setf (accumulated-gestures command-processor) nil)
                   (error 'unbound-gesture-sequence :gestures gestures))
                  ((or (commandp item) ; c-f-u-g does not return a menu-item.
-                      (eq (command-menu-item-type item) :command))
-                  (let ((command (if (commandp item) item
-                                     (command-menu-item-value item)))
+                      (eq (clim:command-menu-item-type item) :command))
+                  (let ((clim:command (if (commandp item) item
+                                     (clim:command-menu-item-value item)))
                         (*current-gesture* (first (last gestures)))
                         (*standard-input* (or *minibuffer* *standard-input*)))
-                    (unless (consp command)
-                      (setf command (list command)))
+                    (unless (consp clim:command)
+                      (setf clim:command (list clim:command)))
                     ;; Call `*partial-command-parser*' to handle numeric
                     ;; argument.
                     (unwind-protect
-                         (setq command
-                               (funcall *partial-command-parser*
+                         (setq clim:command
+                               (funcall clim:*partial-command-parser*
                                         (esclados-command-table command-processor)
                                         *standard-input*
-                                        command 0 (when prefix-p prefix-arg)))
+                                        clim:command 0 (when prefix-p prefix-arg)))
                       ;; If we are macrorecording, store whatever the user
                       ;; did to invoke this command.
                       (when (recordingp command-processor)
@@ -349,7 +359,7 @@ never refer to a command."))
                               (append (accumulated-gestures command-processor)
                                       (recorded-keys command-processor))))
                       (setf (accumulated-gestures command-processor) nil))
-                    (funcall (command-executor command-processor) command-processor command)
+                    (funcall (command-executor command-processor) command-processor clim:command)
                     nil))
                  (t t))))))))
 
@@ -371,7 +381,7 @@ never refer to a command."))
   (unless (null (remaining-keys command-processor))
     (return-from esclados-read-gesture
       (pop (remaining-keys command-processor))))
-  (loop for gesture = (read-gesture :stream stream)
+  (loop for gesture = (clim:read-gesture :stream stream)
         until (proper-gesture-p gesture)
         finally (return gesture)))
 
@@ -382,15 +392,15 @@ never refer to a command."))
                 (pop (recorded-keys command-processor)))
                ((equal (first (accumulated-gestures command-processor)) gesture)
                 (pop (accumulated-gestures command-processor))))
-         (unread-gesture gesture :stream stream))
+         (clim:unread-gesture gesture :stream stream))
         ((executingp command-processor)
          (push gesture (remaining-keys command-processor)))
         (t
-         (unread-gesture gesture :stream stream))))
+         (clim:unread-gesture gesture :stream stream))))
 
-(define-gesture-name universal-argument :keyboard (#\u :control))
+(clim:define-gesture-name universal-argument :keyboard (#\u :control))
 
-(define-gesture-name meta-minus :keyboard (#\- :meta))
+(clim:define-gesture-name meta-minus :keyboard (#\- :meta))
 
 (defgeneric process-gestures-or-command (command-processor)
   (:documentation "Process gestures for
@@ -398,12 +408,12 @@ never refer to a command."))
 corresponding commands in `command-table' and invoke them using
 `command-executor'."))
 
-(defmethod process-gestures-or-command :around ((command-processor application-frame))
-  (with-input-context
-      (`(command :command-table ,(esclados-command-table command-processor)))
+(defmethod process-gestures-or-command :around ((command-processor clim:application-frame))
+  (clim:with-input-context
+      (`(clim:command :command-table ,(esclados-command-table command-processor)))
       (object)
       (call-next-method)
-    (command
+    (clim:command
      (funcall (command-executor command-processor)
               command-processor
               (climi::ensure-complete-command
@@ -413,7 +423,7 @@ corresponding commands in `command-table' and invoke them using
 
 (defmethod process-gestures-or-command :around ((command-processor command-processor))
   (handler-case (call-next-method)
-    (abort-gesture (c)
+    (clim:abort-gesture (c)
       ;; If the user aborts, we want to forget whatever previous
       ;; gestures he entered since the last command execution.
       (setf (accumulated-gestures command-processor) nil)
@@ -447,38 +457,38 @@ corresponding commands in `command-table' and invoke them using
   (find-applicable-command-table frame))
 
 ;; Defaults for non-ESCLADOS-frames.
-(defmethod recordingp ((frame application-frame))
+(defmethod recordingp ((frame clim:application-frame))
   nil)
 
-(defmethod executingp ((frame application-frame))
+(defmethod executingp ((frame clim:application-frame))
   nil)
 
-(defmethod recorded-keys ((frame application-frame))
+(defmethod recorded-keys ((frame clim:application-frame))
   nil)
 
-(defmethod remaining-keys ((frame application-frame))
+(defmethod remaining-keys ((frame clim:application-frame))
   nil)
 
-(defmethod minibuffer ((application-frame esclados-frame-mixin))
-  (frame-standard-input application-frame))
+(defmethod minibuffer ((clim:application-frame esclados-frame-mixin))
+  (clim:frame-standard-input clim:application-frame))
 
-(defmethod redisplay-frame-panes :around ((frame esclados-frame-mixin) &key force-p)
+(defmethod clim:redisplay-frame-panes :around ((frame esclados-frame-mixin) &key force-p)
   (declare (ignore force-p))
   (when (null (remaining-keys frame))
     (setf (executingp frame) nil)
     (call-next-method)))
 
-(defmethod execute-frame-command :after ((frame esclados-frame-mixin) command)
+(defmethod clim:execute-frame-command :after ((frame esclados-frame-mixin) clim:command)
   ;; FIXME: I'm not sure that we want to do this for commands sent
   ;; from other threads; we almost certainly don't want to do it twice
   ;; in such cases...
-  (setf (previous-command (present-window frame)) command))
+  (setf (previous-command (present-window frame)) clim:command))
 
-(defmethod execute-frame-command :around ((frame esclados-frame-mixin) command)
-  (declare (ignore command))
+(defmethod clim:execute-frame-command :around ((frame esclados-frame-mixin) clim:command)
+  (declare (ignore clim:command))
   (call-next-method)
-  (when (eq frame *application-frame*)
-    (redisplay-frame-panes frame)))
+  (when (eq frame clim:*application-frame*)
+    (clim:redisplay-frame-panes frame)))
 
 (defgeneric find-applicable-command-table (frame)
   (:documentation "Return the command table object that commands
@@ -513,48 +523,48 @@ used.")
                                       ;; FIXME: maybe customize this?  Under what
                                       ;; circumstances would it be used?  Maybe try
                                       ;; turning the clim listener into an ESCLADOS?
-                                      (,command-unparser  'command-line-command-unparser)
+                                      (,command-unparser  'clim:command-line-command-unparser)
                                       (,partial-command-parser 'esclados-partial-command-parser)
                                       (,prompt "Extended Command: "))
      ,(let ((frame (unlisted frame)))
         `(with-slots (windows) ,frame
            (let ((*standard-output* (car windows))
-                 (*standard-input* (frame-standard-input ,frame))
+                 (*standard-input* (clim:frame-standard-input ,frame))
                  (*minibuffer* (minibuffer ,frame))
                  (*print-pretty* nil)
-                 (*abort-gestures* *esclados-abort-gestures*)
-                 (*command-parser* ,command-parser)
-                 (*command-unparser* ,command-unparser)
-                 (*partial-command-parser* ,partial-command-parser)
+                 (clim:*abort-gestures* *esclados-abort-gestures*)
+                 (clim:*command-parser* ,command-parser)
+                 (clim:*command-unparser* ,command-unparser)
+                 (clim:*partial-command-parser* ,partial-command-parser)
                  (*extended-command-prompt* ,prompt)
-                 (*pointer-documentation-output*
-                   (frame-pointer-documentation-output ,frame))
+                 (clim:*pointer-documentation-output*
+                   (clim:frame-pointer-documentation-output ,frame))
                  (*esclados-instance* ,frame))
-             (unless (eq (frame-state ,frame) :enabled)
-               (enable-frame ,frame))
-             (redisplay-frame-panes ,frame :force-p t)
+             (unless (eq (clim:frame-state ,frame) :enabled)
+               (clim:enable-frame ,frame))
+             (clim:redisplay-frame-panes ,frame :force-p t)
              (loop
                do (restart-case
                       (handler-case
                           (let* ((*command-processor* ,frame)
-                                 (command-table (find-applicable-command-table ,frame))
+                                 (clim:command-table (find-applicable-command-table ,frame))
                                  ,@bindings)
                             ;; for presentation-to-command-translators,
                             ;; which are searched for in
                             ;; (frame-command-table *application-frame*)
-                            (redisplay-frame-pane ,frame (frame-standard-input ,frame))
-                            (setf (frame-command-table ,frame) command-table)
+                            (clim:redisplay-frame-pane ,frame (clim:frame-standard-input ,frame))
+                            (setf (clim:frame-command-table ,frame) clim:command-table)
                             (process-gestures-or-command ,frame))
                         (unbound-gesture-sequence (c)
                           (display-message "~A is not bound" (gesture-name (gestures c)))
-                          (redisplay-frame-panes ,frame))
-                        (abort-gesture (c)
+                          (clim:redisplay-frame-panes ,frame))
+                        (clim:abort-gesture (c)
                           (if (overriding-handler ,frame)
                               (let ((*command-processor* (overriding-handler ,frame)))
                                 (process-gesture (overriding-handler ,frame)
-                                                 (climi::abort-gesture-event c)))
+                                                 (clim:abort-gesture-event c)))
                               (display-message "Quit"))
-                          (redisplay-frame-panes ,frame)))
+                          (clim:redisplay-frame-panes ,frame)))
                     (return-to-esclados ()
                       (setf (overriding-handler ,frame) nil)
                       (setf (remaining-keys ,frame) nil)))))))))
@@ -564,11 +574,11 @@ used.")
                              partial-command-parser
                              prompt))
 
-(defmacro simple-command-loop (command-table loop-condition
-                               &optional end-clauses (abort-clauses '((signal 'abort-gesture :event *current-gesture*))))
+(defmacro simple-command-loop (clim:command-table loop-condition
+                               &optional end-clauses (abort-clauses '((signal 'clim:abort-gesture :event *current-gesture*))))
   `(progn (setf (overriding-handler *command-processor*)
                 (make-instance 'command-loop-command-processor
-                               :command-table ,command-table
+                               :command-table ,clim:command-table
                                :end-condition #'(lambda ()
                                                   (not ,loop-condition))
                                :super-command-processor *command-processor*
@@ -581,11 +591,11 @@ used.")
 ;;;
 ;;; Event handling.
 
-(defgeneric convert-to-gesture (event)
+(defgeneric convert-to-gesture (clim:event)
   (:documentation "Convert `event' (which must be an input event)
   to a CLIM gesture, or NIL, if this is not possible."))
 
-(defmethod convert-to-gesture ((ev event))
+(defmethod convert-to-gesture ((ev clim:event))
   nil)
 
 (defmethod convert-to-gesture ((ev character))
@@ -595,16 +605,16 @@ used.")
   ev)
 
 ;;; This is dubious. -- jd 2022-12-22
-(defmethod convert-to-gesture ((event key-press-event))
-  (let ((modifiers (event-modifier-state event)))
+(defmethod convert-to-gesture ((clim:event clim:key-press-event))
+  (let ((modifiers (clim:event-modifier-state clim:event)))
     (when (or (zerop modifiers)
-              (eql modifiers +shift-key+))
-      (let ((char (keyboard-event-character event)))
+              (eql modifiers clim:+shift-key+))
+      (let ((char (clim:keyboard-event-character clim:event)))
         (if (eql char #\return)
             #\newline
-            (or char event))))))
+            (or char clim:event))))))
 
-(defmethod convert-to-gesture ((ev pointer-button-press-event))
+(defmethod convert-to-gesture ((ev clim:pointer-button-press-event))
   ev)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -616,11 +626,11 @@ used.")
 
 (defun compare-gestures (g1 g2)
   (and (eql (car g1) (car g2))
-       (eql (apply #'make-modifier-state (cdr g1))
-            (apply #'make-modifier-state (cdr g2)))))
+       (eql (apply #'clim:make-modifier-state (cdr g1))
+            (apply #'clim:make-modifier-state (cdr g2)))))
 
 (defun find-gesture-item (table gesture)
-  (map-over-command-table-keystrokes
+  (clim:map-over-command-table-keystrokes
    (lambda (name gest item)
      (declare (ignore name))
      (when (compare-gestures gesture gest)
@@ -630,43 +640,43 @@ used.")
 
 (defun ensure-subtable (table gesture)
   ;; Not having a sheet here is not conforming.
-  (let* ((modifier-state (apply #'make-modifier-state (cdr gesture)))
-         (event (make-instance 'key-press-event
+  (let* ((modifier-state (apply #'clim:make-modifier-state (cdr gesture)))
+         (clim:event (make-instance 'clim:key-press-event
                                :sheet nil
                                :x 0 :y 0
                                :key-name nil
                                :key-character (car gesture)
                                :modifier-state modifier-state))
-         (item (find-keystroke-item event table :errorp nil)))
-    (when (or (null item) (not (eq (command-menu-item-type item) :menu)))
+         (item (clim:find-keystroke-item clim:event table :errorp nil)))
+    (when (or (null item) (not (eq (clim:command-menu-item-type item) :menu)))
       (let ((name (gensym)))
-        (make-command-table name :errorp nil)
-        (add-menu-item-to-command-table table (symbol-name name)
+        (clim:make-command-table name :errorp nil)
+        (clim:add-menu-item-to-command-table table (symbol-name name)
                                         :menu name
                                         :keystroke gesture)))
-    (command-menu-item-value
-     (find-keystroke-item event table :errorp nil))))
+    (clim:command-menu-item-value
+     (clim:find-keystroke-item clim:event table :errorp nil))))
 
-(defun set-key (command table gestures)
-  (unless (consp command)
-    (setf command (list command)))
+(defun set-key (clim:command table gestures)
+  (unless (consp clim:command)
+    (setf clim:command (list clim:command)))
   (let ((gesture (car gestures)))
     (cond ((null (cdr gestures))
-           (add-keystroke-to-command-table
-            table gesture :command command :errorp nil)
+           (clim:add-keystroke-to-command-table
+            table gesture :command clim:command :errorp nil)
            (when (and (listp gesture)
                       (find :meta gesture))
              ;; KLUDGE: this is a workaround for poor McCLIM
              ;; behaviour; really this canonization should happen in
              ;; McCLIM's input layer.
-             (set-key command table
+             (set-key clim:command table
                       (list (list :escape)
                             (let ((esc-list (remove :meta gesture)))
                               (if (and (= (length esc-list) 2)
                                        (find :shift esc-list))
                                   (remove :shift esc-list)
                                   esc-list))))))
-          (t (set-key command
+          (t (set-key clim:command
                       (ensure-subtable table gesture)
                       (cdr gestures))))))
 
@@ -676,29 +686,29 @@ used.")
 
 ;;; global
 
-(define-command-table global-table)
+(clim:define-command-table global-table)
 
-(define-command (com-quit :name t :command-table global-table) ()
+(clim:define-command (com-quit :name t :command-table global-table) ()
   "Exit.
 First ask if modified buffers should be saved. If you decide not to save a modified buffer, you will be asked to confirm your decision to exit."
-  (frame-exit *application-frame*))
+  (clim:frame-exit clim:*application-frame*))
 
 (set-key 'com-quit 'global-table '((#\x :control) (#\c :control)))
 
-(define-command (com-extended-command
+(clim:define-command (com-extended-command
                  :command-table global-table)
     ()
   "Prompt for a command name and arguments, then run it."
   (let ((item (handler-case
-                  (accept
-                   `(command :command-table ,(find-applicable-command-table *application-frame*))
+                  (clim:accept
+                   `(clim:command :command-table ,(find-applicable-command-table clim:*application-frame*))
                    ;; this gets erased immediately anyway
                    :prompt "" :prompt-mode :raw)
-                ((or command-not-accessible command-not-present) ()
-                  (beep)
+                ((or clim:command-not-accessible clim:command-not-present) ()
+                  (clim:beep)
                   (display-message "No such command")
                   (return-from com-extended-command nil)))))
-    (execute-frame-command *application-frame* item)))
+    (clim:execute-frame-command clim:*application-frame* item)))
 
 (set-key 'com-extended-command 'global-table '((#\x :meta)))
 
@@ -716,9 +726,9 @@ First ask if modified buffers should be saved. If you decide not to save a modif
 (defmethod invoke-with-help-stream (frame title continuation)
   (declare (ignore frame))
   (funcall continuation
-           (open-window-stream
+           (clim:open-window-stream
             :label title
-            :input-buffer (climi::frame-event-queue *application-frame*)
+            :input-buffer (climi::frame-event-queue clim:*application-frame*)
             :width 400)))
 
 (defmacro with-help-stream ((stream title) &body body)
@@ -730,27 +740,27 @@ sense for the ESCLADOS."
                             #'(lambda (,stream)
                                 ,@body)))
 
-(defun read-gestures-for-help (command-table)
-  (with-input-focus (t)
+(defun read-gestures-for-help (clim:command-table)
+  (clim:with-input-focus (t)
     (loop for gestures = (list (esclados-read-gesture))
             then (nconc gestures (list (esclados-read-gesture)))
-          for item = (find-gestures-with-inheritance gestures command-table)
+          for item = (find-gestures-with-inheritance gestures clim:command-table)
           unless item
             do (return (values nil gestures))
-          when (eq (command-menu-item-type item) :command)
-            do (return (values (command-menu-item-value item) gestures)))))
+          when (eq (clim:command-menu-item-type item) :command)
+            do (return (values (clim:command-menu-item-value item) gestures)))))
 
 (defun describe-key-briefly (frame)
-  (let ((command-table (find-applicable-command-table frame)))
-    (multiple-value-bind (command gestures)
-        (read-gestures-for-help command-table)
-      (when (consp command)
-        (setf command (car command)))
+  (let ((clim:command-table (find-applicable-command-table frame)))
+    (multiple-value-bind (clim:command gestures)
+        (read-gestures-for-help clim:command-table)
+      (when (consp clim:command)
+        (setf clim:command (car clim:command)))
       (display-message "~{~A ~}~:[is not bound~;runs the command ~:*~A~]"
                        (mapcar #'gesture-name gestures)
-                       (or (command-line-name-for-command
-                            command command-table :errorp nil)
-                           command)))))
+                       (or (clim:command-line-name-for-command
+                            clim:command clim:command-table :errorp nil)
+                           clim:command)))))
 
 (defgeneric gesture-name (gesture))
 
@@ -765,10 +775,10 @@ sense for the ESCLADOS."
   (with-output-to-string (s)
     (loop for (modifier name) on (list
                                         ;(+alt-key+ "A-")
-                                  +hyper-key+ "H-"
-                                  +super-key+ "s-"
-                                  +meta-key+ "M-"
-                                  +control-key+ "C-")
+                                  clim:+hyper-key+ "H-"
+                                  clim:+super-key+ "s-"
+                                  clim:+meta-key+ "M-"
+                                  clim:+control-key+ "C-")
           by #'cddr
           when (plusp (logand modifier modifiers))
             do (princ name s))
@@ -776,9 +786,9 @@ sense for the ESCLADOS."
                (gesture-name key-name)
                key-name) s)))
 
-(defmethod gesture-name ((ev keyboard-event))
-  (let ((key-name (keyboard-event-key-name ev))
-        (modifiers (event-modifier-state ev)))
+(defmethod gesture-name ((ev clim:keyboard-event))
+  (let ((key-name (clim:keyboard-event-key-name ev))
+        (modifiers (clim:event-modifier-state ev)))
     (translate-name-and-modifiers key-name modifiers)))
 
 (defmethod gesture-name ((gesture list))
@@ -787,51 +797,51 @@ sense for the ESCLADOS."
         ;; Assume `gesture' is a list of gestures.
         (t (format nil "~{~A~#[~; ~; ~]~}" (mapcar #'gesture-name gesture)))))
 
-(defun find-keystrokes-for-command (command command-table)
+(defun find-keystrokes-for-command (clim:command clim:command-table)
   (let ((keystrokes '()))
-    (labels ((helper (command command-table prefix)
-               (map-over-command-table-keystrokes
+    (labels ((helper (clim:command clim:command-table prefix)
+               (clim:map-over-command-table-keystrokes
                 #'(lambda (menu-name keystroke item)
                     (declare (ignore menu-name))
-                    (cond ((and (eq (command-menu-item-type item) :command)
-                                (or (and (symbolp (command-menu-item-value item))
-                                         (eq (command-menu-item-value item) command))
-                                    (and (listp (command-menu-item-value item))
-                                         (eq (car (command-menu-item-value item)) command))))
+                    (cond ((and (eq (clim:command-menu-item-type item) :command)
+                                (or (and (symbolp (clim:command-menu-item-value item))
+                                         (eq (clim:command-menu-item-value item) clim:command))
+                                    (and (listp (clim:command-menu-item-value item))
+                                         (eq (car (clim:command-menu-item-value item)) clim:command))))
                            (push (cons keystroke prefix) keystrokes))
-                          ((eq (command-menu-item-type item) :menu)
-                           (helper command (command-menu-item-value item) (cons keystroke prefix)))
+                          ((eq (clim:command-menu-item-type item) :menu)
+                           (helper clim:command (clim:command-menu-item-value item) (cons keystroke prefix)))
                           (t nil)))
-                command-table)))
-      (helper command command-table nil)
+                clim:command-table)))
+      (helper clim:command clim:command-table nil)
       keystrokes)))
 
-(defun find-keystrokes-for-command-with-inheritance (command start-table)
+(defun find-keystrokes-for-command-with-inheritance (clim:command start-table)
   (let ((keystrokes '()))
     (labels  ((helper (table)
-                (let ((keys (find-keystrokes-for-command command table)))
+                (let ((keys (find-keystrokes-for-command clim:command table)))
                   (when keys (push keys keystrokes))
-                  (dolist (subtable (command-table-inherit-from
-                                     (find-command-table table)))
+                  (dolist (subtable (clim:command-table-inherit-from
+                                     (clim:find-command-table table)))
                     (helper subtable)))))
       (helper start-table))
     keystrokes))
 
-(defun find-all-keystrokes-and-commands (command-table)
+(defun find-all-keystrokes-and-commands (clim:command-table)
   (let ((results '()))
-    (labels ((helper (command-table prefix)
-               (map-over-command-table-keystrokes
+    (labels ((helper (clim:command-table prefix)
+               (clim:map-over-command-table-keystrokes
                 #'(lambda (menu-name keystroke item)
                     (declare (ignore menu-name))
-                    (cond ((eq (command-menu-item-type item) :command)
+                    (cond ((eq (clim:command-menu-item-type item) :command)
                            (push (cons (cons keystroke prefix)
-                                       (command-menu-item-value item))
+                                       (clim:command-menu-item-value item))
                                  results))
-                          ((eq (command-menu-item-type item) :menu)
-                           (helper (command-menu-item-value item) (cons keystroke prefix)))
+                          ((eq (clim:command-menu-item-type item) :menu)
+                           (helper (clim:command-menu-item-value item) (cons keystroke prefix)))
                           (t nil)))
-                command-table)))
-      (helper command-table nil)
+                clim:command-table)))
+      (helper clim:command-table nil)
       results)))
 
 (defun find-all-keystrokes-and-commands-with-inheritance (start-table)
@@ -839,18 +849,18 @@ sense for the ESCLADOS."
     (labels  ((helper (table)
                 (let ((res (find-all-keystrokes-and-commands table)))
                   (when res  (setf results (nconc res results)))
-                  (dolist (subtable (command-table-inherit-from
-                                     (find-command-table table)))
+                  (dolist (subtable (clim:command-table-inherit-from
+                                     (clim:find-command-table table)))
                     (helper subtable)))))
       (helper start-table))
     results))
 
 (defun find-all-commands-and-keystrokes-with-inheritance (start-table)
   (let ((results '()))
-    (map-over-command-table-commands
-     (lambda (command)
-       (let ((keys (find-keystrokes-for-command-with-inheritance command start-table)))
-         (push (cons command keys) results)))
+    (clim:map-over-command-table-commands
+     (lambda (clim:command)
+       (let ((keys (find-keystrokes-for-command-with-inheritance clim:command start-table)))
+         (push (cons clim:command keys) results)))
      start-table
      :inherited t)
     results))
@@ -874,39 +884,39 @@ sense for the ESCLADOS."
                                  (symbol-name b)))))
         :key (lambda (item) (second (first (first item))))))
 
-(defun describe-bindings (stream command-table
+(defun describe-bindings (stream clim:command-table
                           &optional (sort-function #'sort-by-name))
-  (formatting-table (stream)
-    (loop for (keys . command)
+  (clim:formatting-table (stream)
+    (loop for (keys . clim:command)
             in (funcall sort-function
                         (find-all-keystrokes-and-commands-with-inheritance
-                         command-table))
-          when (consp command) do (setq command (car command))
-            do (formatting-row (stream)
-                 (formatting-cell (stream :align-x :right)
-                   (with-text-style (stream '(:sans-serif nil nil))
-                     (present command
-                              `(command-name :command-table ,command-table)
+                         clim:command-table))
+          when (consp clim:command) do (setq clim:command (car clim:command))
+            do (clim:formatting-row (stream)
+                 (clim:formatting-cell (stream :align-x :right)
+                   (clim:with-text-style (stream '(:sans-serif nil nil))
+                     (clim:present clim:command
+                              `(clim:command-name :command-table ,clim:command-table)
                               :stream stream)))
-                 (formatting-cell (stream)
-                   (with-drawing-options (stream :ink +dark-blue+
+                 (clim:formatting-cell (stream)
+                   (clim:with-drawing-options (stream :ink clim:+dark-blue+
                                                  :text-style '(:fix nil nil))
                      (format stream "~&~{~A~^ ~}"
                              (mapcar #'gesture-name (reverse keys))))))
-          count command into length
-          finally (change-space-requirements stream
-                                             :height (* length (stream-line-height stream)))
-                  (scroll-extent stream 0 0))))
+          count clim:command into length
+          finally (clim:change-space-requirements stream
+                                             :height (* length (clim:stream-line-height stream)))
+                  (clim:scroll-extent stream 0 0))))
 
-(defun print-docstring-for-command (command-name command-table &optional (stream *standard-output*))
+(defun print-docstring-for-command (clim:command-name clim:command-table &optional (stream *standard-output*))
   "Print documentation for `command-name', which should
    be a symbol bound to a function, to `stream'. If no
    documentation can be found, this fact will be printed to the stream."
-  (declare (ignore command-table))
+  (declare (ignore clim:command-table))
   ;; This needs more regex magic. Also, it is only an interim
   ;; solution.
-  (with-text-style (stream '(:sans-serif nil nil))
-    (let* ((command-documentation (or (documentation command-name 'function)
+  (clim:with-text-style (stream '(:sans-serif nil nil))
+    (let* ((command-documentation (or (documentation clim:command-name 'function)
                                       "This command is not documented."))
            (first-newline (position #\Newline command-documentation))
            (first-line (subseq command-documentation 0 first-newline)))
@@ -937,11 +947,11 @@ sense for the ESCLADOS."
                                until (= start index)
                                collecting (string-trim '(#\Space #\Tab #\Newline)
                                                        (subseq para start index)))))
-              (loop with margin = (stream-text-margin stream)
-                    with space-width = (stream-character-width stream #\Space)
+              (loop with margin = (clim:stream-text-margin stream)
+                    with space-width = (clim:stream-character-width stream #\Space)
                     with current-width = 0
                     for word in words
-                    for word-width = (stream-string-width stream word)
+                    for word-width = (clim:stream-string-width stream word)
                     when (> (+ word-width current-width)
                             margin)
                       do (terpri stream)
@@ -951,60 +961,60 @@ sense for the ESCLADOS."
                        (incf current-width (+ word-width space-width))))
             (terpri stream)))))))
 
-(defun describe-command-binding-to-stream (gesture command &key
-                                                             (command-table (find-applicable-command-table *application-frame*))
+(defun describe-command-binding-to-stream (gesture clim:command &key
+                                                             (clim:command-table (find-applicable-command-table clim:*application-frame*))
                                                              (stream *standard-output*))
   "Describe `command' as invoked by `gesture' to `stream'."
-  (let* ((command-name (if (listp command)
-                           (first command)
-                           command))
-         (command-args (if (listp command)
-                           (rest command)))
-         (real-command-table (or (command-accessible-in-command-table-p
-                                  command-name
-                                  command-table)
-                                 command-table)))
-    (with-text-style (stream '(:sans-serif nil nil))
+  (let* ((clim:command-name (if (listp clim:command)
+                           (first clim:command)
+                           clim:command))
+         (command-args (if (listp clim:command)
+                           (rest clim:command)))
+         (real-command-table (or (clim:command-accessible-in-command-table-p
+                                  clim:command-name
+                                  clim:command-table)
+                                 clim:command-table)))
+    (clim:with-text-style (stream '(:sans-serif nil nil))
       (princ "The gesture " stream)
-      (with-drawing-options (stream :ink +dark-blue+
+      (clim:with-drawing-options (stream :ink clim:+dark-blue+
                                     :text-style '(:fix nil nil))
         (princ gesture stream))
       (princ " is bound to the command " stream)
-      (if (command-present-in-command-table-p command-name real-command-table)
-          (with-text-style (stream '(nil :bold nil))
-            (present command-name `(command-name :command-table ,command-table) :stream stream))
-          (present command-name 'symbol :stream stream))
+      (if (clim:command-present-in-command-table-p clim:command-name real-command-table)
+          (clim:with-text-style (stream '(nil :bold nil))
+            (clim:present clim:command-name `(clim:command-name :command-table ,clim:command-table) :stream stream))
+          (clim:present clim:command-name 'symbol :stream stream))
       (princ " in " stream)
-      (present real-command-table 'command-table :stream stream)
+      (clim:present real-command-table 'clim:command-table :stream stream)
       (format stream ".~%")
       (when command-args
         (apply #'format stream
                "This binding invokes the command with these arguments: ~@{~A~^, ~}.~%"
                (mapcar #'(lambda (arg)
-                           (cond ((eq arg *unsupplied-argument-marker*)
+                           (cond ((eq arg clim:*unsupplied-argument-marker*)
                                   "unsupplied-argument")
-                                 ((eq arg *numeric-argument-marker*)
+                                 ((eq arg clim:*numeric-argument-marker*)
                                   "numeric-argument")
                                  (t arg))) command-args)))
       (terpri stream)
-      (print-docstring-for-command command-name command-table stream)
-      (scroll-extent stream 0 0))))
+      (print-docstring-for-command clim:command-name clim:command-table stream)
+      (clim:scroll-extent stream 0 0))))
 
 (defun describe-command-to-stream
-    (command-name &key
-                    (command-table (find-applicable-command-table *application-frame*))
+    (clim:command-name &key
+                    (clim:command-table (find-applicable-command-table clim:*application-frame*))
                     (stream *standard-output*))
   "Describe `command' to `stream'."
-  (let ((keystrokes (find-keystrokes-for-command-with-inheritance command-name command-table)))
-    (with-text-style (stream '(:sans-serif nil nil))
-      (with-text-style (stream '(nil :bold nil))
-        (present command-name `(command-name :command-table ,command-table) :stream stream))
+  (let ((keystrokes (find-keystrokes-for-command-with-inheritance clim:command-name clim:command-table)))
+    (clim:with-text-style (stream '(:sans-serif nil nil))
+      (clim:with-text-style (stream '(nil :bold nil))
+        (clim:present clim:command-name `(clim:command-name :command-table ,clim:command-table) :stream stream))
       (princ " calls the function " stream)
-      (present command-name 'symbol :stream stream)
+      (clim:present clim:command-name 'symbol :stream stream)
       (princ " and is accessible in " stream)
-      (if (command-accessible-in-command-table-p command-name command-table)
-          (present (command-accessible-in-command-table-p command-name command-table)
-                   'command-table
+      (if (clim:command-accessible-in-command-table-p clim:command-name clim:command-table)
+          (clim:present (clim:command-accessible-in-command-table-p clim:command-name clim:command-table)
+                   'clim:command-table
                    :stream stream)
           (princ "an unknown command table" stream))
 
@@ -1012,7 +1022,7 @@ sense for the ESCLADOS."
       (when (plusp (length keystrokes))
         (princ "It is bound to " stream)
         (loop for gestures-list on (first keystrokes)
-              do (with-drawing-options (stream :ink +dark-blue+
+              do (clim:with-drawing-options (stream :ink clim:+dark-blue+
                                                :text-style '(:fix nil nil))
                    (format stream "~{~A~^ ~}"
                            (mapcar #'gesture-name (reverse (first gestures-list)))))
@@ -1020,36 +1030,36 @@ sense for the ESCLADOS."
                 do (princ ", " stream))
         (terpri stream))
       (terpri stream)
-      (print-docstring-for-command command-name command-table stream)
-      (scroll-extent stream 0 0))))
+      (print-docstring-for-command clim:command-name clim:command-table stream)
+      (clim:scroll-extent stream 0 0))))
 
 ;;; help commands
 
-(define-command-table help-table)
+(clim:define-command-table help-table)
 
-(define-command (com-describe-key-briefly :name t :command-table help-table) ()
+(clim:define-command (com-describe-key-briefly :name t :command-table help-table) ()
   "Prompt for a key and show the command it invokes."
   (display-message "Describe key briefly:")
-  (redisplay-frame-panes *application-frame*)
-  (describe-key-briefly *application-frame*))
+  (clim:redisplay-frame-panes clim:*application-frame*)
+  (describe-key-briefly clim:*application-frame*))
 
 (set-key 'com-describe-key-briefly 'help-table '((#\h :control) (#\c)))
 
-(define-command (com-where-is :name t :command-table help-table) ()
+(clim:define-command (com-where-is :name t :command-table help-table) ()
   "Prompt for a command name and show the key that invokes it."
-  (let* ((command-table (find-applicable-command-table *application-frame*))
-         (command
+  (let* ((clim:command-table (find-applicable-command-table clim:*application-frame*))
+         (clim:command
            (handler-case
-               (accept
-                `(command-name :command-table
-                               ,command-table)
+               (clim:accept
+                `(clim:command-name :command-table
+                               ,clim:command-table)
                 :prompt "Where is command")
-             (error () (progn (beep)
+             (error () (progn (clim:beep)
                               (display-message "No such command")
                               (return-from com-where-is nil)))))
-         (keystrokes (find-keystrokes-for-command-with-inheritance command command-table)))
+         (keystrokes (find-keystrokes-for-command-with-inheritance clim:command clim:command-table)))
     (display-message "~A is ~:[not on any key~;~:*on ~{~A~^, ~}~]"
-                     (command-line-name-for-command command command-table)
+                     (clim:command-line-name-for-command clim:command clim:command-table)
                      (mapcar (lambda (keys)
                                (format nil "~{~A~^ ~}"
                                        (mapcar #'gesture-name (reverse keys))))
@@ -1057,36 +1067,36 @@ sense for the ESCLADOS."
 
 (set-key 'com-where-is 'help-table '((#\h :control) (#\w)))
 
-(define-command (com-describe-bindings :name t :command-table help-table)
+(clim:define-command (com-describe-bindings :name t :command-table help-table)
     ((sort-by-keystrokes 'boolean :prompt "Sort by keystrokes?"))
   "Show which keys invoke which commands.
 Without a numeric prefix, sorts the list by command name. With a numeric prefix, sorts by key."
-  (let ((command-table (find-applicable-command-table *application-frame*)))
+  (let ((clim:command-table (find-applicable-command-table clim:*application-frame*)))
     (with-help-stream (stream (format nil "Help: Describe Bindings"))
-      (describe-bindings stream command-table
+      (describe-bindings stream clim:command-table
                          (if sort-by-keystrokes
                              #'sort-by-keystrokes
                              #'sort-by-name)))))
 
-(set-key `(com-describe-bindings ,*numeric-argument-marker*) 'help-table '((#\h :control) (#\b)))
+(set-key `(com-describe-bindings ,clim:*numeric-argument-marker*) 'help-table '((#\h :control) (#\b)))
 
-(define-command (com-describe-key :name t :command-table help-table)
+(clim:define-command (com-describe-key :name t :command-table help-table)
     ()
   "Display documentation for the command invoked by a given gesture sequence.
 When invoked, this command will wait for user input. If the user inputs a gesture
 sequence bound to a command available in the syntax of the current buffer,
 documentation and other details will be displayed in a typeout pane."
-  (let ((command-table (find-applicable-command-table *application-frame*)))
+  (let ((clim:command-table (find-applicable-command-table clim:*application-frame*)))
     (display-message "Describe Key:")
-    (redisplay-frame-panes *application-frame*)
-    (multiple-value-bind (command gestures)
-        (read-gestures-for-help command-table)
+    (clim:redisplay-frame-panes clim:*application-frame*)
+    (multiple-value-bind (clim:command gestures)
+        (read-gestures-for-help clim:command-table)
       (let ((gesture-name (format nil "~{~A~#[~; ~; ~]~}"
                                   (mapcar #'gesture-name gestures))))
-        (if command
+        (if clim:command
             (with-help-stream (out-stream (format nil "~10THelp: Describe Key for ~A" gesture-name))
-              (describe-command-binding-to-stream gesture-name command
-                                                  :command-table command-table
+              (describe-command-binding-to-stream gesture-name clim:command
+                                                  :command-table clim:command-table
                                                   :stream out-stream))
             (display-message "Unbound gesture: ~A" gesture-name))))))
 
@@ -1094,40 +1104,40 @@ documentation and other details will be displayed in a typeout pane."
          'help-table
          '((#\h :control) (#\k)))
 
-(define-command (com-describe-command :name t :command-table help-table)
-    ((command 'command-name :prompt "Describe command"))
+(clim:define-command (com-describe-command :name t :command-table help-table)
+    ((clim:command 'clim:command-name :prompt "Describe command"))
   "Display documentation for the given command."
-  (let ((command-table (find-applicable-command-table *application-frame*)))
+  (let ((clim:command-table (find-applicable-command-table clim:*application-frame*)))
     (with-help-stream (out-stream (format nil "~10THelp: Describe Command for ~A"
-                                          (command-line-name-for-command command
-                                                                         command-table
+                                          (clim:command-line-name-for-command clim:command
+                                                                         clim:command-table
                                                                          :errorp nil)))
-      (describe-command-to-stream command
-                                  :command-table command-table
+      (describe-command-to-stream clim:command
+                                  :command-table clim:command-table
                                   :stream out-stream))))
 
-(set-key `(com-describe-command ,*unsupplied-argument-marker*)
+(set-key `(com-describe-command ,clim:*unsupplied-argument-marker*)
          'help-table
          '((#\h :control) (#\f)))
 
-(define-presentation-to-command-translator describe-command
-    (command-name com-describe-command help-table
+(clim:define-presentation-to-command-translator describe-command
+    (clim:command-name com-describe-command help-table
                   :gesture :select
                   :documentation "Describe command")
     (object)
   (list object))
 
-(define-command (com-apropos-command :name t :command-table help-table)
+(clim:define-command (com-apropos-command :name t :command-table help-table)
     ((words '(sequence string) :prompt "Search word(s)"))
   "Shows commands with documentation matching the search words.
 Words are comma delimited. When more than two words are given, the documentation must match any two."
   ;; 23.8.6 "It is unspecified whether accept returns a list or a vector."
   (setf words (coerce words 'list))
   (when words
-    (let* ((command-table (find-applicable-command-table *application-frame*))
+    (let* ((clim:command-table (find-applicable-command-table clim:*application-frame*))
            (results (loop for (function . keys)
                             in (find-all-commands-and-keystrokes-with-inheritance
-                                command-table)
+                                clim:command-table)
                           when (consp function)
                             do (setq function (car function))
                           when (let ((documentation (or (documentation function 'function) ""))
@@ -1150,29 +1160,29 @@ Words are comma delimited. When more than two words are given, the documentation
       (if (null results)
           (display-message "No results for ~{~A~^, ~}" words)
           (with-help-stream (out-stream (format nil "~10THelp: Apropos ~{~A~^, ~}" words))
-            (loop for (command . keys) in results
-                  for documentation = (or (documentation command 'function)
+            (loop for (clim:command . keys) in results
+                  for documentation = (or (documentation clim:command 'function)
                                           "Not documented.")
-                  do (with-text-style (out-stream '(:sans-serif :bold nil))
-                       (present command
-                                `(command-name :command-table ,command-table)
+                  do (clim:with-text-style (out-stream '(:sans-serif :bold nil))
+                       (clim:present clim:command
+                                `(clim:command-name :command-table ,clim:command-table)
                                 :stream out-stream))
-                     (with-drawing-options (out-stream :ink +dark-blue+
+                     (clim:with-drawing-options (out-stream :ink clim:+dark-blue+
                                                        :text-style '(:fix nil nil))
                        (format out-stream "~30T~:[M-x ... RETURN~;~:*~{~A~^, ~}~]"
                                (mapcar (lambda (keystrokes)
                                          (format nil "~{~A~^ ~}"
                                                  (mapcar #'gesture-name (reverse keystrokes))))
                                        (car keys))))
-                     (with-text-style (out-stream '(:sans-serif nil nil))
+                     (clim:with-text-style (out-stream '(:sans-serif nil nil))
                        (format out-stream "~&~2T~A~%"
                                (subseq documentation 0 (position #\Newline documentation))))
-                  count command into length
-                  finally (change-space-requirements out-stream
-                                                     :height (* length (stream-line-height out-stream)))
-                          (scroll-extent out-stream 0 0)))))))
+                  count clim:command into length
+                  finally (clim:change-space-requirements out-stream
+                                                     :height (* length (clim:stream-line-height out-stream)))
+                          (clim:scroll-extent out-stream 0 0)))))))
 
-(set-key `(com-apropos-command ,*unsupplied-argument-marker*)
+(set-key `(com-apropos-command ,clim:*unsupplied-argument-marker*)
          'help-table
          '((#\h :control) (#\a)))
 
@@ -1181,5 +1191,5 @@ Words are comma delimited. When more than two words are given, the documentation
   '(com-describe-bindings nil)
   '(com-describe-bindings t)
   'com-describe-key
-  `(com-describe-command ,*unsupplied-argument-marker*)
-  `(com-apropos-command ,*unsupplied-argument-marker*))
+  `(com-describe-command ,clim:*unsupplied-argument-marker*)
+  `(com-apropos-command ,clim:*unsupplied-argument-marker*))
