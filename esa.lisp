@@ -329,8 +329,8 @@ never refer to a command."))
       (cond ((null gestures)
              t)
             (t
-             (let* ((clim:command-table (esclados-command-table command-processor))
-                    (item (or (find-gestures-with-inheritance gestures clim:command-table)
+             (let* ((command-table (esclados-command-table command-processor))
+                    (item (or (find-gestures-with-inheritance gestures command-table)
                               (command-for-unbound-gestures command-processor gestures))))
                (cond
                  ((not item)
