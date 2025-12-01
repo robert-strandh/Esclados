@@ -478,14 +478,14 @@ corresponding commands in `command-table' and invoke them using
     (setf (executingp frame) nil)
     (call-next-method)))
 
-(defmethod clim:execute-frame-command :after ((frame esclados-frame-mixin) clim:command)
+(defmethod clim:execute-frame-command :after ((frame esclados-frame-mixin) command)
   ;; FIXME: I'm not sure that we want to do this for commands sent
   ;; from other threads; we almost certainly don't want to do it twice
   ;; in such cases...
-  (setf (previous-command (present-window frame)) clim:command))
+  (setf (previous-command (present-window frame)) command))
 
-(defmethod clim:execute-frame-command :around ((frame esclados-frame-mixin) clim:command)
-  (declare (ignore clim:command))
+(defmethod clim:execute-frame-command :around ((frame esclados-frame-mixin) command)
+  (declare (ignore command))
   (call-next-method)
   (when (eq frame clim:*application-frame*)
     (clim:redisplay-frame-panes frame)))
@@ -547,13 +547,13 @@ used.")
                do (restart-case
                       (handler-case
                           (let* ((*command-processor* ,frame)
-                                 (clim:command-table (find-applicable-command-table ,frame))
+                                 (command-table (find-applicable-command-table ,frame))
                                  ,@bindings)
                             ;; for presentation-to-command-translators,
                             ;; which are searched for in
                             ;; (frame-command-table *application-frame*)
                             (clim:redisplay-frame-pane ,frame (clim:frame-standard-input ,frame))
-                            (setf (clim:frame-command-table ,frame) clim:command-table)
+                            (setf (clim:frame-command-table ,frame) command-table)
                             (process-gestures-or-command ,frame))
                         (unbound-gesture-sequence (c)
                           (display-message "~A is not bound" (gesture-name (gestures c)))
@@ -574,11 +574,11 @@ used.")
                              partial-command-parser
                              prompt))
 
-(defmacro simple-command-loop (clim:command-table loop-condition
+(defmacro simple-command-loop (command-table loop-condition
                                &optional end-clauses (abort-clauses '((signal 'clim:abort-gesture :event *current-gesture*))))
   `(progn (setf (overriding-handler *command-processor*)
                 (make-instance 'command-loop-command-processor
-                               :command-table ,clim:command-table
+                               :command-table ,command-table
                                :end-condition #'(lambda ()
                                                   (not ,loop-condition))
                                :super-command-processor *command-processor*
