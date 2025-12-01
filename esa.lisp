@@ -1134,10 +1134,10 @@ Words are comma delimited. When more than two words are given, the documentation
   ;; 23.8.6 "It is unspecified whether accept returns a list or a vector."
   (setf words (coerce words 'list))
   (when words
-    (let* ((clim:command-table (find-applicable-command-table clim:*application-frame*))
+    (let* ((command-table (find-applicable-command-table clim:*application-frame*))
            (results (loop for (function . keys)
                             in (find-all-commands-and-keystrokes-with-inheritance
-                                clim:command-table)
+                                command-table)
                           when (consp function)
                             do (setq function (car function))
                           when (let ((documentation (or (documentation function 'function) ""))
@@ -1165,7 +1165,7 @@ Words are comma delimited. When more than two words are given, the documentation
                                           "Not documented.")
                   do (clim:with-text-style (out-stream '(:sans-serif :bold nil))
                        (clim:present clim:command
-                                `(clim:command-name :command-table ,clim:command-table)
+                                `(clim:command-name :command-table ,command-table[)
                                 :stream out-stream))
                      (clim:with-drawing-options (out-stream :ink clim:+dark-blue+
                                                        :text-style '(:fix nil nil))
