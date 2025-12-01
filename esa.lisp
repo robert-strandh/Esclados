@@ -338,20 +338,20 @@ never refer to a command."))
                   (error 'unbound-gesture-sequence :gestures gestures))
                  ((or (commandp item) ; c-f-u-g does not return a menu-item.
                       (eq (clim:command-menu-item-type item) :command))
-                  (let ((clim:command (if (commandp item) item
+                  (let ((command (if (commandp item) item
                                      (clim:command-menu-item-value item)))
                         (*current-gesture* (first (last gestures)))
                         (*standard-input* (or *minibuffer* *standard-input*)))
-                    (unless (consp clim:command)
-                      (setf clim:command (list clim:command)))
+                    (unless (consp command)
+                      (setf command (list command)))
                     ;; Call `*partial-command-parser*' to handle numeric
                     ;; argument.
                     (unwind-protect
-                         (setq clim:command
+                         (setq command
                                (funcall clim:*partial-command-parser*
                                         (esclados-command-table command-processor)
                                         *standard-input*
-                                        clim:command 0 (when prefix-p prefix-arg)))
+                                        command 0 (when prefix-p prefix-arg)))
                       ;; If we are macrorecording, store whatever the user
                       ;; did to invoke this command.
                       (when (recordingp command-processor)
@@ -359,7 +359,7 @@ never refer to a command."))
                               (append (accumulated-gestures command-processor)
                                       (recorded-keys command-processor))))
                       (setf (accumulated-gestures command-processor) nil))
-                    (funcall (command-executor command-processor) command-processor clim:command)
+                    (funcall (command-executor command-processor) command-processor command)
                     nil))
                  (t t))))))))
 
