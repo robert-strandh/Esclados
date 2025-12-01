@@ -19,16 +19,17 @@
 (defun build-menu (command-tables &rest commands)
   (labels ((get-command-name (command)
              (or (loop for table in command-tables
-                       for name = (command-line-name-for-command
+                       for name = (clim:command-line-name-for-command
                                    command table :errorp nil)
                        when name return name)
-                 (error 'command-table-error
+                 (error 'clim:command-table-error
                   :format-string "Command ~A not found in any provided command table"
                   :format-arguments (list command))))
            (make-menu-entry (entry)
              (cond ((and (listp entry)
                          (eq (first entry) :menu))
-                    (list (command-table-name (find-command-table (second entry)))
+                    (list (clim:command-table-name
+                           (clim:find-command-table (second entry)))
                      :menu (second entry)))
                    ((and (listp entry)
                          (eq (first entry) :submenu))
@@ -37,9 +38,10 @@
                                   (cddr entry))))
                    ((eq entry :divider)
                     '(nil :divider :line))
-                   (t (list (get-command-name (command-name (listed entry)))
+                   (t (list (get-command-name
+                             (clim:command-name (listed entry)))
                        :command entry)))))
-    (make-command-table nil
+    (clim:make-command-table nil
      :inherit-from command-tables
      :menu (mapcar #'make-menu-entry commands))))
 
@@ -74,7 +76,7 @@
                     command tables."))
 
 (defmacro define-menu-table (name (&rest command-tables) &body commands)
-  `(make-command-table ',name
+  `(clim:make-command-table ',name
     :inherit-from (list (build-menu ',command-tables ,@commands))
     :inherit-menu t
     :errorp nil))
