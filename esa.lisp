@@ -1127,6 +1127,17 @@ documentation and other details will be displayed in a typeout pane."
     (object)
   (list object))
 
+(defun search-multiple-words (words function documentation)
+  (loop with score = 0
+        for word in words
+        until (> score 1)
+        when (or
+              (search word (symbol-name function)
+                      :test #'char-equal)
+              (search word documentation :test #'char-equal))
+          do (incf score)
+        finally (return (> score 1))))
+
 (clim:define-command (com-apropos-command :name t :command-table help-table)
     ((words '(sequence string) :prompt "Search word(s)"))
   "Shows commands with documentation matching the search words.
@@ -1140,18 +1151,10 @@ Words are comma delimited. When more than two words are given, the documentation
                                 command-table)
                           when (consp function)
                             do (setq function (car function))
-                          when (let ((documentation (or (documentation function 'function) ""))
-                                     (score 0))
+                          when (let ((documentation (or (documentation function 'function) "")))
                                  (cond
                                    ((> (length words) 1)
-                                    (loop for word in words
-                                          until (> score 1)
-                                          when (or
-                                                (search word (symbol-name function)
-                                                        :test #'char-equal)
-                                                (search word documentation :test #'char-equal))
-                                            do (incf score)
-                                          finally (return (> score 1))))
+                                    (search-multiple-words words function documentation))
                                    (t (or
                                        (search (first words) (symbol-name function)
                                                :test #'char-equal)
