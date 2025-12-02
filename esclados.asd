@@ -13,6 +13,7 @@
    (:file "info-pane")
    (:file "minibuffer-pane")
    (:file "esa")
+   (:file "help-commands")
    (:file "buffer")
    (:file "io")
    (:file "command-parser")
