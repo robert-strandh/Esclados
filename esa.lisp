@@ -1127,6 +1127,11 @@ documentation and other details will be displayed in a typeout pane."
     (object)
   (list object))
 
+(defun search-single-word (word function documentation)
+  (or (search word (symbol-name function)
+              :test #'char-equal)
+      (search word documentation :test #'char-equal)))
+
 (defun search-multiple-words (words function documentation)
   (loop with score = 0
         for word in words
@@ -1155,10 +1160,7 @@ Words are comma delimited. When more than two words are given, the documentation
                                  (cond
                                    ((> (length words) 1)
                                     (search-multiple-words words function documentation))
-                                   (t (or
-                                       (search (first words) (symbol-name function)
-                                               :test #'char-equal)
-                                       (search (first words) documentation :test #'char-equal)))))
+                                   (t (search-single-word (first words) function documentation))))
                             collect (cons function keys))))
       (if (null results)
           (display-message "No results for ~{~A~^, ~}" words)
