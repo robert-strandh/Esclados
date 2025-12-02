@@ -1143,6 +1143,19 @@ documentation and other details will be displayed in a typeout pane."
           do (incf score)
         finally (return (> score 1))))
 
+(defun find-command-key-pairs (words command-table)
+  (loop for (function . keys)
+          in (find-all-commands-and-keystrokes-with-inheritance
+              command-table)
+        when (consp function)
+          do (setq function (car function))
+        when (let ((documentation (or (documentation function 'function) "")))
+               (cond
+                 ((> (length words) 1)
+                  (search-multiple-words words function documentation))
+                 (t (search-single-word (first words) function documentation))))
+          collect (cons function keys)))
+
 (clim:define-command (com-apropos-command :name t :command-table help-table)
     ((words '(sequence string) :prompt "Search word(s)"))
   "Shows commands with documentation matching the search words.
@@ -1151,17 +1164,7 @@ Words are comma delimited. When more than two words are given, the documentation
   (setf words (coerce words 'list))
   (when words
     (let* ((command-table (find-applicable-command-table clim:*application-frame*))
-           (results (loop for (function . keys)
-                            in (find-all-commands-and-keystrokes-with-inheritance
-                                command-table)
-                          when (consp function)
-                            do (setq function (car function))
-                          when (let ((documentation (or (documentation function 'function) "")))
-                                 (cond
-                                   ((> (length words) 1)
-                                    (search-multiple-words words function documentation))
-                                   (t (search-single-word (first words) function documentation))))
-                            collect (cons function keys))))
+           (results (find-command-key-pairs words command-table)))
       (if (null results)
           (display-message "No results for ~{~A~^, ~}" words)
           (with-help-stream (out-stream (format nil "~10THelp: Apropos ~{~A~^, ~}" words))
