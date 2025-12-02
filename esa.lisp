@@ -1156,6 +1156,29 @@ documentation and other details will be displayed in a typeout pane."
                  (t (search-single-word (first words) function documentation))))
           collect (cons function keys)))
 
+(defun present-command-key-pairs (command-key-pairs command-table stream)
+  (loop for (command . keys) in command-key-pairs
+        for documentation = (or (documentation command 'function)
+                                "Not documented.")
+        do (clim:with-text-style (stream '(:sans-serif :bold nil))
+             (clim:present command
+                           `(clim:command-name :command-table ,command-table)
+                           :stream stream))
+           (clim:with-drawing-options (stream :ink clim:+dark-blue+
+                                                  :text-style '(:fix nil nil))
+             (format stream "~30T~:[M-x ... RETURN~;~:*~{~A~^, ~}~]"
+                     (mapcar (lambda (keystrokes)
+                               (format nil "~{~A~^ ~}"
+                                       (mapcar #'gesture-name (reverse keystrokes))))
+                             (car keys))))
+           (clim:with-text-style (stream '(:sans-serif nil nil))
+             (format stream "~&~2T~A~%"
+                     (subseq documentation 0 (position #\Newline documentation))))
+        count command into length
+        finally (clim:change-space-requirements stream
+                                                :height (* length (clim:stream-line-height stream)))
+                (clim:scroll-extent stream 0 0)))
+
 (clim:define-command (com-apropos-command :name t :command-table help-table)
     ((words '(sequence string) :prompt "Search word(s)"))
   "Shows commands with documentation matching the search words.
@@ -1168,27 +1191,7 @@ Words are comma delimited. When more than two words are given, the documentation
       (if (null results)
           (display-message "No results for ~{~A~^, ~}" words)
           (with-help-stream (out-stream (format nil "~10THelp: Apropos ~{~A~^, ~}" words))
-            (loop for (command . keys) in results
-                  for documentation = (or (documentation command 'function)
-                                          "Not documented.")
-                  do (clim:with-text-style (out-stream '(:sans-serif :bold nil))
-                       (clim:present command
-                                `(clim:command-name :command-table ,command-table)
-                                :stream out-stream))
-                     (clim:with-drawing-options (out-stream :ink clim:+dark-blue+
-                                                       :text-style '(:fix nil nil))
-                       (format out-stream "~30T~:[M-x ... RETURN~;~:*~{~A~^, ~}~]"
-                               (mapcar (lambda (keystrokes)
-                                         (format nil "~{~A~^ ~}"
-                                                 (mapcar #'gesture-name (reverse keystrokes))))
-                                       (car keys))))
-                     (clim:with-text-style (out-stream '(:sans-serif nil nil))
-                       (format out-stream "~&~2T~A~%"
-                               (subseq documentation 0 (position #\Newline documentation))))
-                  count command into length
-                  finally (clim:change-space-requirements out-stream
-                                                     :height (* length (clim:stream-line-height out-stream)))
-                          (clim:scroll-extent out-stream 0 0)))))))
+            (present-command-key-pairs results command-table out-stream))))))
 
 (set-key `(com-apropos-command ,clim:*unsupplied-argument-marker*)
          'help-table
