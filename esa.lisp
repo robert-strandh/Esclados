@@ -1165,11 +1165,11 @@ Words are comma delimited. When more than two words are given, the documentation
       (if (null results)
           (display-message "No results for ~{~A~^, ~}" words)
           (with-help-stream (out-stream (format nil "~10THelp: Apropos ~{~A~^, ~}" words))
-            (loop for (clim:command . keys) in results
-                  for documentation = (or (documentation clim:command 'function)
+            (loop for (command . keys) in results
+                  for documentation = (or (documentation command 'function)
                                           "Not documented.")
                   do (clim:with-text-style (out-stream '(:sans-serif :bold nil))
-                       (clim:present clim:command
+                       (clim:present command
                                 `(clim:command-name :command-table ,command-table)
                                 :stream out-stream))
                      (clim:with-drawing-options (out-stream :ink clim:+dark-blue+
@@ -1182,7 +1182,7 @@ Words are comma delimited. When more than two words are given, the documentation
                      (clim:with-text-style (out-stream '(:sans-serif nil nil))
                        (format out-stream "~&~2T~A~%"
                                (subseq documentation 0 (position #\Newline documentation))))
-                  count clim:command into length
+                  count command into length
                   finally (clim:change-space-requirements out-stream
                                                      :height (* length (clim:stream-line-height out-stream)))
                           (clim:scroll-extent out-stream 0 0)))))))
