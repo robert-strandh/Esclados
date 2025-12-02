@@ -1165,7 +1165,7 @@ documentation and other details will be displayed in a typeout pane."
                            `(clim:command-name :command-table ,command-table)
                            :stream stream))
            (clim:with-drawing-options (stream :ink clim:+dark-blue+
-                                                  :text-style '(:fix nil nil))
+                                              :text-style '(:fix nil nil))
              (format stream "~30T~:[M-x ... RETURN~;~:*~{~A~^, ~}~]"
                      (mapcar (lambda (keystrokes)
                                (format nil "~{~A~^ ~}"
@@ -1175,8 +1175,9 @@ documentation and other details will be displayed in a typeout pane."
              (format stream "~&~2T~A~%"
                      (subseq documentation 0 (position #\Newline documentation))))
         count command into length
-        finally (clim:change-space-requirements stream
-                                                :height (* length (clim:stream-line-height stream)))
+        finally (clim:change-space-requirements
+                 stream
+                 :height (* length (clim:stream-line-height stream)))
                 (clim:scroll-extent stream 0 0)))
 
 (clim:define-command (com-apropos-command :name t :command-table help-table)
