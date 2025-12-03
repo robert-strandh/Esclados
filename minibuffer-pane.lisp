@@ -4,7 +4,7 @@
 ;;;
 ;;; Minibuffer pane
 
-(defgeneric minibuffer (application-frame)
+(defgeneric minibuffer (clim:application-frame)
   (:documentation "Return the minibuffer of APPLICATION-FRAME."))
 
 (defvar *minibuffer* nil
@@ -14,7 +14,7 @@
   "The minimum number of seconds a minibuffer message will be
   displayed." )
 
-(defclass minibuffer-pane (application-pane)
+(defclass minibuffer-pane (clim:application-pane)
   ((message :initform nil
             :accessor message
             :documentation "An output record containing whatever
@@ -28,60 +28,60 @@ current message was set."))
    :display-time :command-loop
    :incremental-redisplay t))
 
-(defmethod handle-repaint ((pane minibuffer-pane) region)
-  (declare (ignore region))
-  (when (and (message pane)
+(defmethod clim:handle-repaint ((clim:pane minibuffer-pane) clim:region)
+  (declare (ignore clim:region))
+  (when (and (message clim:pane)
              (> (get-universal-time)
-                (+ *minimum-message-time* (message-time pane))))
+                (+ *minimum-message-time* (message-time clim:pane))))
     ;; We are no longer allowed to call WINDOW-CLEAR from the
     ;; application thread.
     ;; (window-clear pane)
-    (setf (message pane) nil))
+    (setf (message clim:pane) nil))
   (call-next-method))
 
-(defmethod (setf message) :after (new-value (pane minibuffer-pane))
+(defmethod (setf message) :after (new-value (clim:pane minibuffer-pane))
   (declare (ignore new-value))
-  (change-space-requirements pane))
+  (clim:change-space-requirements clim:pane))
 
-(defmethod pane-needs-redisplay ((pane minibuffer-pane))
+(defmethod clim:pane-needs-redisplay ((clim:pane minibuffer-pane))
   ;; Always call the display function, never clear the window. This
   ;; allows us to time-out the message in the minibuffer.
   (values t nil))
 
-(defun display-minibuffer (frame pane)
+(defun display-minibuffer (frame clim:pane)
   (declare (ignore frame))
   ;; We are probably no longer allowed to call dispatch-repaint in the
   ;; main thread of the application.
   ;; (dispatch-repaint pane +everywhere+))
-  (finish-output pane))
+  (finish-output clim:pane))
 
-(defmethod stream-accept :around ((pane minibuffer-pane) type &rest args)
+(defmethod clim:stream-accept :around ((clim:pane minibuffer-pane) type &rest args)
   (declare (ignore type args))
-  (when (message pane)
-    (setf (message pane) nil))
-  (window-clear pane)
+  (when (message clim:pane)
+    (setf (message clim:pane) nil))
+  (clim:window-clear clim:pane)
   ;; FIXME: this isn't the friendliest way of indicating a parse
   ;; error: there's no feedback, unlike emacs' quite nice "[no
   ;; match]".
   (unwind-protect
        (loop
          (handler-case
-             (with-input-focus (pane)
+             (clim:with-input-focus (clim:pane)
                (return (call-next-method)))
            (parse-error () nil)))
-    (window-clear pane)))
+    (clim:window-clear clim:pane)))
 
-(defmethod stream-accept ((pane minibuffer-pane) type &rest args
-                          &key (view (stream-default-view pane))
+(defmethod clim:stream-accept ((clim:pane minibuffer-pane) type &rest args
+                          &key (clim:view (clim:stream-default-view clim:pane))
                           &allow-other-keys)
   ;; default CLIM prompting is OK for now...
-  (apply #'prompt-for-accept pane type view args)
+  (apply #'clim:prompt-for-accept clim:pane type clim:view args)
   ;; but we need to turn some of ACCEPT-1 off.
-  (apply #'accept-1-for-minibuffer pane type args))
+  (apply #'accept-1-for-minibuffer clim:pane type args))
 
-(defmethod compose-space ((pane minibuffer-pane) &key width height)
+(defmethod clim:compose-space ((clim:pane minibuffer-pane) &key width height)
   (declare (ignore width height))
-  (with-sheet-medium (medium pane)
+  (clim:with-sheet-medium (clim:medium clim:pane)
     (let* ((sr (call-next-method))
            ;; We are no longer allowed to call text-style-height at
            ;; this point, because the medium is a BASIC-MEDIUM when we
@@ -90,11 +90,11 @@ current message was set."))
            ;;                                 medium)
            ;;              (bounding-rectangle-height (stream-output-history pane)))))
            (height 100))
-      (make-space-requirement
+      (clim:make-space-requirement
        :height height :min-height height :max-height height
-       :width (space-requirement-width sr)
-       :min-width (space-requirement-min-width sr)
-       :max-width (space-requirement-max-width sr)))))
+       :width (clim:space-requirement-width sr)
+       :min-width (clim:space-requirement-min-width sr)
+       :max-width (clim:space-requirement-max-width sr)))))
 
 ;;; simpler version of McCLIM's internal operators of the same names:
 ;;; HANDLE-EMPTY-INPUT to make default processing work, EMPTY-INPUT-P
@@ -120,8 +120,8 @@ current message was set."))
 ;;; the gesture, but who knows what random accept methods are doing.
 (defun empty-input-p
     (stream begin-scan-pointer activation-gestures delimiter-gestures)
-  (let ((scan-pointer (stream-scan-pointer stream))
-        (fill-pointer (fill-pointer (stream-input-buffer stream))))
+  (let ((scan-pointer (clim:stream-scan-pointer stream))
+        (fill-pointer (fill-pointer (clim:stream-input-buffer stream))))
     ;; activated?
     (cond ((and (eql begin-scan-pointer scan-pointer)
                 (eql scan-pointer fill-pointer))
@@ -129,7 +129,7 @@ current message was set."))
           ((or (eql begin-scan-pointer scan-pointer)
                (eql begin-scan-pointer (1- scan-pointer)))
            (let ((gesture
-                   (aref (stream-input-buffer stream) begin-scan-pointer)))
+                   (aref (clim:stream-input-buffer stream) begin-scan-pointer)))
              (and (characterp gesture)
                   (flet ((gesture-matches-p (g)
                            (if (characterp g)
@@ -138,18 +138,18 @@ current message was set."))
                                ;; apparently
                                ;; EVENT-MATCHES-GESTURE-NAME-P need
                                ;; not work on raw characters
-                               (event-matches-gesture-name-p gesture g))))
+                               (clim:event-matches-gesture-name-p gesture g))))
                     (or (some #'gesture-matches-p activation-gestures)
                         (some #'gesture-matches-p delimiter-gestures))))))
           (t nil))))
 
 (defun invoke-handle-empty-input
     (stream input-continuation handler-continuation)
-  (unless (input-editing-stream-p stream)
+  (unless (clim:input-editing-stream-p stream)
     (return-from invoke-handle-empty-input (funcall input-continuation)))
-  (let ((begin-scan-pointer (stream-scan-pointer stream))
-        (activation-gestures *activation-gestures*)
-        (delimiter-gestures *delimiter-gestures*))
+  (let ((begin-scan-pointer (clim:stream-scan-pointer stream))
+        (activation-gestures clim:*activation-gestures*)
+        (delimiter-gestures clim:*delimiter-gestures*))
     (block empty-input
       (handler-bind
           ((parse-error
@@ -164,9 +164,9 @@ current message was set."))
 (defun accept-1-for-minibuffer
     (stream type
      &key
-       (view (stream-default-view stream))
+       (clim:view (clim:stream-default-view stream))
        (default nil defaultp) (default-type nil default-type-p)
-       provide-default insert-default (replace-input t)
+       provide-default insert-default (clim:replace-input t)
        history active-p prompt prompt-mode display-default
        query-identifier (activation-gestures nil activationsp)
        (additional-activation-gestures nil additional-activations-p)
@@ -180,9 +180,9 @@ current message was set."))
   (when (and activationsp additional-activations-p)
     (error "only one of :activation-gestures or ~
             :additional-activation-gestures may be passed to accept."))
-  (unless (or activationsp additional-activations-p *activation-gestures*)
-    (setq activation-gestures *standard-activation-gestures*))
-  (with-input-editing
+  (unless (or activationsp additional-activations-p clim:*activation-gestures*)
+    (setq activation-gestures clim:*standard-activation-gestures*))
+  (clim:with-input-editing
       ;; this is the main change from CLIM:ACCEPT-1 -- no sensitizer.
       (stream :input-sensitizer nil)
     ;; KLUDGE: no call to CLIMI::WITH-INPUT-POSITION here, but that's
@@ -191,19 +191,19 @@ current message was set."))
     ;; default for the BUFFER-START argument to REPLACE-INPUT is
     ;; right.
     (when (and insert-default
-               (not (stream-rescanning-p stream)))
+               (not (clim:stream-rescanning-p stream)))
       ;; Insert the default value to the input stream. It should
       ;; become fully keyboard-editable. We do not want to insert
       ;; the default if we're rescanning, only during initial
       ;; setup.
-      (presentation-replace-input stream default default-type view))
-    (with-input-context (type)
-        (object object-type event options)
-        (with-activation-gestures ((if additional-activations-p
+      (clim:presentation-replace-input stream default default-type clim:view))
+    (clim:with-input-context (type)
+        (object object-type clim:event options)
+        (clim:with-activation-gestures ((if additional-activations-p
                                        additional-activation-gestures
                                        activation-gestures)
                                    :override activationsp)
-          (with-delimiter-gestures ((if additional-delimiters-p
+          (clim:with-delimiter-gestures ((if additional-delimiters-p
                                         additional-delimiter-gestures
                                         delimiter-gestures)
                                     :override delimitersp)
@@ -213,17 +213,17 @@ current message was set."))
                   (setq accept-results
                         (multiple-value-list
                          (if defaultp
-                             (funcall-presentation-generic-function
-                              accept type stream view
+                             (clim:funcall-presentation-generic-function
+                              clim:accept type stream clim:view
                               :default default :default-type default-type)
-                             (funcall-presentation-generic-function
-                              accept type stream view))))
+                             (clim:funcall-presentation-generic-function
+                              clim:accept type stream clim:view))))
                 ;; User entered activation or delimiter gesture
                 ;; without any input.
                 (if defaultp
-                    (presentation-replace-input
-                     stream default default-type view :rescan nil)
-                    (simple-parse-error
+                    (clim:presentation-replace-input
+                     stream default default-type clim:view :rescan nil)
+                    (clim:simple-parse-error
                      "Empty input for type ~S with no supplied default"
                      type))
                 (setq accept-results (list default default-type)))
@@ -232,32 +232,32 @@ current message was set."))
               ;; XXX and delimiter gestures?
               ;;
               ;; deleted check for *RECURSIVE-ACCEPT-P*
-              (let ((ag (read-gesture :stream stream :timeout 0)))
+              (let ((ag (clim:read-gesture :stream stream :timeout 0)))
                 (unless (or (null ag) (eq ag stream))
-                  (unless (activation-gesture-p ag)
-                    (unread-gesture ag :stream stream))))
+                  (unless (clim:activation-gesture-p ag)
+                    (clim:unread-gesture ag :stream stream))))
               (values (car accept-results)
                       (if (cdr accept-results) (cadr accept-results) type)))))
       ;; A presentation was clicked on, or something.
       (t
-       (when (and replace-input
+       (when (and clim:replace-input
                   (getf options :echo t)
-                  (not (stream-rescanning-p stream)))
-         (presentation-replace-input
-          stream object object-type view :rescan nil))
+                  (not (clim:stream-rescanning-p stream)))
+         (clim:presentation-replace-input
+          stream object object-type clim:view :rescan nil))
        (values object object-type)))))
 
 (defgeneric invoke-with-minibuffer-stream (minibuffer continuation))
 
 (defmethod invoke-with-minibuffer-stream ((minibuffer minibuffer-pane) continuation)
-  (window-clear minibuffer)
+  (clim:window-clear minibuffer)
   (setf (message minibuffer)
-        (with-new-output-record (minibuffer)
+        (clim:with-new-output-record (minibuffer)
           (setf (message-time minibuffer) (get-universal-time))
-          (filling-output (minibuffer :fill-width (bounding-rectangle-width minibuffer))
+          (clim:filling-output (minibuffer :fill-width (clim:bounding-rectangle-width minibuffer))
             (funcall continuation minibuffer)))))
 
-(defmethod invoke-with-minibuffer-stream ((minibuffer pointer-documentation-pane) continuation)
+(defmethod invoke-with-minibuffer-stream ((minibuffer clim:pointer-documentation-pane) continuation)
   (funcall continuation minibuffer))
 
 (defmethod invoke-with-minibuffer-stream ((minibuffer null) continuation)
