@@ -5,14 +5,19 @@
 return it, else if a file with the right name exists, return a
 fresh buffer created from the file, else return a new empty
 buffer having the associated file name."))
+
 (defgeneric frame-find-file-read-only (application-frame file-path))
+
 (defgeneric frame-set-visited-file-name (application-frame filepath buffer))
+
 (defgeneric check-buffer-writability (application-frame filepath buffer)
   (:documentation "Check that `buffer' can be written to
 `filepath', which can be an arbitrary pathname. If there is a
 problem, an error that is a subclass of
 `buffer-writing-error'should be signalled."))
+
 (defgeneric frame-save-buffer (application-frame buffer))
+
 (defgeneric frame-write-buffer (application-frame filepath buffer))
 
 (define-condition buffer-writing-error (error)
@@ -48,12 +53,16 @@ buffer `buffer' and the filepath `filepath'."
 
 (defun find-file (file-path)
   (frame-find-file *application-frame* file-path))
+
 (defun find-file-read-only (file-path)
   (frame-find-file-read-only *application-frame* file-path))
+
 (defun set-visited-file-name (filepath buffer)
   (frame-set-visited-file-name *application-frame* filepath buffer))
+
 (defun save-buffer (buffer)
   (frame-save-buffer *application-frame* buffer))
+
 (defun write-buffer (filepath buffer)
   (frame-write-buffer *application-frame* filepath buffer))
 
