@@ -16,10 +16,10 @@
   ;; toplevel should establish an input editing context for partial
   ;; commands anyway?  Then ESCLADOS-PARSE-ONE-ARG would always be called
   ;; with an input-editing-stream.
-  (let ((stream (if (encapsulating-stream-p stream)
-                    (encapsulating-stream-stream stream)
+  (let ((stream (if (clim:encapsulating-stream-p stream)
+                    (clim:encapsulating-stream-stream stream)
                     stream)))
-    (apply #'accept (eval ptype)
+    (apply #'clim:accept (eval ptype)
            :stream stream
            ;; This is fucking nuts.  FIXME: the clim spec says
            ;; ":GESTURE is not evaluated at all".  Um, but how are you
@@ -38,55 +38,55 @@
                  unless (eq key :gesture)
                  collect key and collect (eval val)))))
 
-(defun esclados-command-parser (command-table stream)
-  (let ((command-name nil))
+(defun esclados-command-parser (clim:command-table stream)
+  (let ((clim:command-name nil))
     (flet ((maybe-clear-input ()
-             (let ((gesture (read-gesture :stream stream 
+             (let ((gesture (clim:read-gesture :stream stream 
                                           :peek-p t :timeout 0)))
-               (when (and gesture (or (delimiter-gesture-p gesture)
-                                      (activation-gesture-p gesture)))
-                 (read-gesture :stream stream)))))
-      (with-delimiter-gestures (*command-name-delimiters* :override t)
+               (when (and gesture (or (clim:delimiter-gesture-p gesture)
+                                      (clim:activation-gesture-p gesture)))
+                 (clim:read-gesture :stream stream)))))
+      (clim:with-delimiter-gestures (clim:*command-name-delimiters* :override t)
         ;; While reading the command name we want use the history of
         ;; the (accept 'command ...) that's calling this function.
         ;;
         ;; FIXME: does this :history nil actually achieve the above?
-        (setq command-name (accept `(command-name :command-table ,command-table)
-                                   :stream (encapsulating-stream-stream stream)
+        (setq clim:command-name (clim:accept `(clim:command-name :command-table ,clim:command-table)
+                                   :stream (clim:encapsulating-stream-stream stream)
                                    :prompt *extended-command-prompt*
                                    :prompt-mode :raw :history nil))
         (maybe-clear-input))
-      (with-delimiter-gestures (*command-argument-delimiters* :override t)
+      (clim:with-delimiter-gestures (clim:*command-argument-delimiters* :override t)
         ;; FIXME, except we can't: use of CLIM-INTERNALS.
-        (let* ((info (gethash command-name climi::*command-parser-table*))
+        (let* ((info (gethash clim:command-name climi::*command-parser-table*))
                (required-args (climi::required-args info))
                (keyword-args (climi::keyword-args info)))
           (declare (ignore keyword-args))
           (let (result)
             ;; only required args for now.
-            (dolist (arg required-args (cons command-name (nreverse result)))
+            (dolist (arg required-args (cons clim:command-name (nreverse result)))
               (destructuring-bind (name ptype &rest args) arg
                 (push (esclados-parse-one-arg stream name ptype args) result)
                 (maybe-clear-input)))))))))
 
-(defun esclados-partial-command-parser (command-table stream command position
+(defun esclados-partial-command-parser (clim:command-table stream clim:command position
                                    &optional numeric-argument)
-  (declare (ignore command-table position))
-  (let ((command-name (car command))
-	(command-args (cdr command)))
+  (declare (ignore clim:command-table position))
+  (let ((clim:command-name (car clim:command))
+	(command-args (cdr clim:command)))
     (flet ((maybe-clear-input ()
-             (let ((gesture (read-gesture :stream stream 
+             (let ((gesture (clim:read-gesture :stream stream 
                                           :peek-p t :timeout 0)))
-               (when (and gesture (or (delimiter-gesture-p gesture)
-                                      (activation-gesture-p gesture)))
-                 (read-gesture :stream stream)))))
-      (with-delimiter-gestures (*command-argument-delimiters* :override t)
+               (when (and gesture (or (clim:delimiter-gesture-p gesture)
+                                      (clim:activation-gesture-p gesture)))
+                 (clim:read-gesture :stream stream)))))
+      (clim:with-delimiter-gestures (clim:*command-argument-delimiters* :override t)
         ;; FIXME, except we can't: use of CLIM-INTERNALS.
-        (let ((info (gethash command-name climi::*command-parser-table*)))
+        (let ((info (gethash clim:command-name climi::*command-parser-table*)))
           (if (null info)
               ;; `command' is not a real command! Well, we can still
               ;; replace numeric argument markers.
-              (substitute-numeric-argument-marker command numeric-argument)
+              (clim:substitute-numeric-argument-marker clim:command numeric-argument)
               (let ((required-args (climi::required-args info))
                     (keyword-args (climi::keyword-args info)))
                 ;; keyword arguments not yet supported
@@ -97,12 +97,12 @@
                         (arg (car required-args) (car required-args))
                         (command-args command-args (cdr command-args))
                         (command-arg (car command-args) (car command-args)))
-                       ((null required-args) (cons command-name (nreverse result)))
+                       ((null required-args) (cons clim:command-name (nreverse result)))
                     (destructuring-bind (name ptype &rest args) arg
-                      (push (cond ((eq command-arg *unsupplied-argument-marker*)
+                      (push (cond ((eq command-arg clim:*unsupplied-argument-marker*)
                                    (setf arg-parsed t)
                                    (esclados-parse-one-arg stream name ptype args))
-                                  ((eq command-arg *numeric-argument-marker*)
+                                  ((eq command-arg clim:*numeric-argument-marker*)
                                    (or numeric-argument (getf args :default)))
                                   (t (eval command-arg)))
                             result)
