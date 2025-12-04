@@ -1,13 +1,5 @@
 (defpackage :esclados-utils
-  (:use :clim-lisp :c2mop)
-  (:shadowing-import-from :clim-lisp #:describe-object)
-  (:shadowing-import-from :c2mop
-                          #:defclass
-                          #:defgeneric
-                          #:defmethod
-                          #:standard-generic-function
-                          #:standard-method
-                          #:standard-class)
+  (:use #:common-lisp)
   (:export #:unlisted
            #:listed
            #:list-aref
