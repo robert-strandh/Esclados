@@ -1,8 +1,8 @@
 (cl:in-package #:esclados)
 
-(define-command-table keyboard-macro-table)
+(clim:define-command-table keyboard-macro-table)
 
-(define-command (com-start-kbd-macro
+(clim:define-command (com-start-kbd-macro
                  :name t
                  :command-table keyboard-macro-table)
     ()
@@ -11,7 +11,7 @@
 
 (set-key 'com-start-kbd-macro 'keyboard-macro-table '((#\x :control) #\())
 
-(define-command (com-end-kbd-macro
+(clim:define-command (com-end-kbd-macro
                  :name t
                  :command-table keyboard-macro-table)
     ()
@@ -22,7 +22,7 @@
 
 (set-key 'com-end-kbd-macro 'keyboard-macro-table '((#\x :control) #\)))
 
-(define-command (com-call-last-kbd-macro
+(clim:define-command (com-call-last-kbd-macro
                  :name t
                  :command-table keyboard-macro-table)
     ((count 'integer :prompt "How many times?" :default 1))
@@ -30,13 +30,13 @@
         (loop repeat count append (recorded-keys *command-processor*)))
   (setf (executingp *command-processor*) t))
 
-(set-key `(com-call-last-kbd-macro ,*numeric-argument-marker*)
+(set-key `(com-call-last-kbd-macro ,clim:*numeric-argument-marker*)
          'keyboard-macro-table '((#\x :control) #\e))
 
 (define-menu-table keyboard-macro-menu-table (keyboard-macro-table)
   'com-start-kbd-macro
   'com-end-kbd-macro
-  `(com-call-last-kbd-macro ,*unsupplied-argument-marker*))
+  `(com-call-last-kbd-macro ,clim:*unsupplied-argument-marker*))
 
 (setf (documentation 'com-start-kbd-macro 'function)
       (format nil "Start recording keys to define a keyboard macro.~@
