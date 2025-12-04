@@ -1,5 +1,5 @@
 (defpackage :esclados-utils
-  (:use :clim-lisp :c2mop :clim)
+  (:use :clim-lisp :c2mop)
   (:shadowing-import-from :clim-lisp #:describe-object)
   (:shadowing-import-from :c2mop
                           #:defclass
@@ -15,7 +15,7 @@
            #:name-mixin #:name))
 
 (defpackage :esclados
-  (:use :clim-lisp :clim :esclados-utils :clim-extensions)
+  (:use :clim-lisp :esclados-utils :clim-extensions)
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
            #:windows #:present-window #:current-window
@@ -63,7 +63,7 @@
            #:com-call-last-macro))
 
 (defpackage :esclados-buffer
-  (:use :clim-lisp :clim :esclados :esclados-utils)
+  (:use :clim-lisp :esclados :esclados-utils)
   (:export #:frame-make-buffer-from-stream #:make-buffer-from-stream
            #:frame-save-buffer-to-stream #:save-buffer-to-stream
            #:filepath #:name #:needs-saving #:file-write-time #:file-saved-p
@@ -72,7 +72,7 @@
            #:read-only-p))
 
 (defpackage :esclados-io
-  (:use :clim-lisp :clim :esclados :esclados-buffer :esclados-utils)
+  (:use :clim-lisp :esclados :esclados-buffer :esclados-utils)
   (:export #:frame-find-file #:find-file
            #:frame-find-file-read-only #:find-file-read-only
            #:frame-set-visited-file-name #:set-visited-filename
