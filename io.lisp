@@ -1,24 +1,24 @@
 (in-package :esclados-io)
 
-(defgeneric frame-find-file (application-frame file-path)
+(defgeneric frame-find-file (clim:application-frame file-path)
   (:documentation "If a buffer with the file-path already exists,
 return it, else if a file with the right name exists, return a
 fresh buffer created from the file, else return a new empty
 buffer having the associated file name."))
 
-(defgeneric frame-find-file-read-only (application-frame file-path))
+(defgeneric frame-find-file-read-only (clim:application-frame file-path))
 
-(defgeneric frame-set-visited-file-name (application-frame filepath buffer))
+(defgeneric frame-set-visited-file-name (clim:application-frame filepath buffer))
 
-(defgeneric check-buffer-writability (application-frame filepath buffer)
+(defgeneric check-buffer-writability (clim:application-frame filepath buffer)
   (:documentation "Check that `buffer' can be written to
 `filepath', which can be an arbitrary pathname. If there is a
 problem, an error that is a subclass of
 `buffer-writing-error'should be signalled."))
 
-(defgeneric frame-save-buffer (application-frame buffer))
+(defgeneric frame-save-buffer (clim:application-frame buffer))
 
-(defgeneric frame-write-buffer (application-frame filepath buffer))
+(defgeneric frame-write-buffer (clim:application-frame filepath buffer))
 
 (define-condition buffer-writing-error (error)
   ((%buffer :reader buffer
@@ -52,21 +52,21 @@ buffer `buffer' and the filepath `filepath'."
   (error 'filepath-is-directory :buffer buffer :filepath filepath))
 
 (defun find-file (file-path)
-  (frame-find-file *application-frame* file-path))
+  (frame-find-file clim:*application-frame* file-path))
 
 (defun find-file-read-only (file-path)
-  (frame-find-file-read-only *application-frame* file-path))
+  (frame-find-file-read-only clim:*application-frame* file-path))
 
 (defun set-visited-file-name (filepath buffer)
-  (frame-set-visited-file-name *application-frame* filepath buffer))
+  (frame-set-visited-file-name clim:*application-frame* filepath buffer))
 
 (defun save-buffer (buffer)
-  (frame-save-buffer *application-frame* buffer))
+  (frame-save-buffer clim:*application-frame* buffer))
 
 (defun write-buffer (filepath buffer)
-  (frame-write-buffer *application-frame* filepath buffer))
+  (frame-write-buffer clim:*application-frame* filepath buffer))
 
-(make-command-table 'io-table :errorp nil)
+(clim:make-command-table 'io-table :errorp nil)
 
 ;;; Adapted from cl-fad/PCL
 (defun directory-pathname-p (pathspec)
@@ -82,16 +82,16 @@ buffer `buffer' and the filepath `filepath'."
       (concatenate 'string (pathname-name pathname)
                    "." (pathname-type pathname))))
 
-(defmethod frame-find-file (application-frame filepath)
-  (declare (ignore application-frame))
+(defmethod frame-find-file (clim:application-frame filepath)
+  (declare (ignore clim:application-frame))
   (cond ((null filepath)
          (display-message "No file name given.")
-         (beep))
+         (clim:beep))
         ((directory-pathname-p filepath)
          (display-message "~A is a directory name." filepath)
-         (beep))
+         (clim:beep))
         (t
-         (or (find filepath (buffers *application-frame*)
+         (or (find filepath (buffers clim:*application-frame*)
                    :key #'filepath :test #'equal)
              (let ((buffer (if (probe-file filepath)
                                (with-open-file (stream filepath :direction :input)
@@ -113,7 +113,7 @@ buffer `buffer' and the filepath `filepath'."
              (filepath (current-buffer)))
         (user-homedir-pathname)))))
 
-(define-command (com-find-file :name t :command-table io-table) 
+(clim:define-command (com-find-file :name t :command-table io-table) 
     ((filepath 'pathname
                :prompt "Find File: "
                :prompt-mode :raw
@@ -128,19 +128,19 @@ name an existing file."
     (file-error (e)
       (display-message "~A" e))))
 
-(set-key `(com-find-file ,*unsupplied-argument-marker*)
+(set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\f :control)))
 
-(defmethod frame-find-file-read-only (application-frame filepath)
-  (declare (ignore application-frame))
+(defmethod frame-find-file-read-only (clim:application-frame filepath)
+  (declare (ignore clim:application-frame))
   (cond ((null filepath)
          (display-message "No file name given.")
-         (beep))
+         (clim:beep))
         ((directory-pathname-p filepath)
          (display-message "~A is a directory name." filepath)
-         (beep))
+         (clim:beep))
         (t
-         (or (find filepath (buffers *application-frame*)
+         (or (find filepath (buffers clim:*application-frame*)
                    :key #'filepath :test #'equal)
              (if (probe-file filepath)
                  (with-open-file (stream filepath :direction :input)
@@ -151,10 +151,10 @@ name an existing file."
                            (needs-saving buffer) nil)))
                  (progn
                    (display-message "No such file: ~A" filepath)
-                   (beep)
+                   (clim:beep)
                    nil))))))
 
-(define-command (com-find-file-read-only :name t :command-table io-table)
+(clim:define-command (com-find-file-read-only :name t :command-table io-table)
     ((filepath 'pathname
                :prompt "Find File read-only: "
                :prompt-mode :raw
@@ -167,10 +167,10 @@ buffer. If the filename given does not name an existing file,
 signal an error."
   (find-file-read-only filepath))
 
-(set-key `(com-find-file-read-only ,*unsupplied-argument-marker*)
+(set-key `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\r :control)))
 
-(define-command (com-read-only :name t :command-table io-table)
+(clim:define-command (com-read-only :name t :command-table io-table)
     ()
   "Toggle the readonly status of the current buffer.
 When a buffer is readonly, attempts to change the contents of the
@@ -180,13 +180,13 @@ buffer signal an error."
 
 (set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
 
-(defmethod frame-set-visited-file-name (application-frame filepath buffer)
-  (declare (ignore application-frame))
+(defmethod frame-set-visited-file-name (clim:application-frame filepath buffer)
+  (declare (ignore clim:application-frame))
   (setf (filepath buffer) filepath
         (name buffer) (filepath-filename filepath)
         (needs-saving buffer) t))
 
-(define-command (com-set-visited-file-name :name t :command-table io-table)
+(clim:define-command (com-set-visited-file-name :name t :command-table io-table)
     ((filename 'pathname :prompt "New filename: "
                :prompt-mode :raw
                :default (directory-of-current-buffer)
@@ -198,9 +198,9 @@ The next time the buffer is saved it will be saved to a file with
 that filename."
   (set-visited-file-name filename (current-buffer)))
 
-(defmethod check-buffer-writability (application-frame (filepath pathname)
+(defmethod check-buffer-writability (clim:application-frame (filepath pathname)
                                      (buffer esclados-buffer-mixin))
-  (declare (ignore application-frame))
+  (declare (ignore clim:application-frame))
   ;; Cannot write to a directory.
   (when (directory-pathname-p filepath)
     (filepath-is-directory buffer filepath)))
@@ -232,7 +232,7 @@ to overwrite."
   (let ((f-w-d (and (probe-file filepath) (file-write-date filepath)))
 	(f-w-t (file-write-time buffer)))
     (if (and f-w-d f-w-t (> f-w-d f-w-t))
-	(if (accept 'boolean
+	(if (clim:accept 'boolean
 		    :prompt (format nil "File has changed on disk. ~a anyway?"
 				    question))
 	    t
@@ -240,10 +240,10 @@ to overwrite."
 		   nil))
 	t)))
 
-(defmethod frame-save-buffer (application-frame buffer)
+(defmethod frame-save-buffer (clim:application-frame buffer)
   (let ((filepath (or (filepath buffer)
-                      (accept 'pathname :prompt "Save Buffer to File"))))
-    (check-buffer-writability application-frame filepath buffer)
+                      (clim:accept 'pathname :prompt "Save Buffer to File"))))
+    (check-buffer-writability clim:application-frame filepath buffer)
     (unless (check-file-times buffer filepath "Overwrite" "written")
       (return-from frame-save-buffer))
     (when (and (probe-file filepath) (not (file-saved-p buffer)))
@@ -261,13 +261,13 @@ to overwrite."
     (display-message "Wrote: ~a" (filepath buffer))
     (setf (needs-saving buffer) nil)))
 
-(define-command (com-save-buffer :name t :command-table io-table) ()
+(clim:define-command (com-save-buffer :name t :command-table io-table) ()
   "Write the contents of the buffer to a file.
 If there is filename associated with the buffer, write to that
 file, replacing its contents. If not, prompt for a filename."
   (let ((buffer (current-buffer)))
     (if (null (filepath buffer))
-        (com-write-buffer (accept 'pathname :prompt "Write Buffer to File: "
+        (com-write-buffer (clim:accept 'pathname :prompt "Write Buffer to File: "
                                             :prompt-mode :raw
                                             :default (directory-of-current-buffer) :insert-default t
                                             :default-type 'pathname))
@@ -279,8 +279,8 @@ file, replacing its contents. If not, prompt for a filename."
 
 (set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
 
-(defmethod frame-write-buffer (application-frame filepath buffer)
-  (check-buffer-writability application-frame filepath buffer)
+(defmethod frame-write-buffer (clim:application-frame filepath buffer)
+  (check-buffer-writability clim:application-frame filepath buffer)
   (with-open-file (stream filepath :direction :output :if-exists :supersede)
     (save-buffer-to-stream buffer stream))
   (setf (filepath buffer) filepath
@@ -288,7 +288,7 @@ file, replacing its contents. If not, prompt for a filename."
         (needs-saving buffer) nil)
   (display-message "Wrote: ~a" (filepath buffer)))
 
-(define-command (com-write-buffer :name t :command-table io-table) 
+(clim:define-command (com-write-buffer :name t :command-table io-table) 
     ((filepath 'pathname :prompt "Write Buffer to File: " :prompt-mode :raw
                :default (directory-of-current-buffer) :insert-default t
                :default-type 'pathname))
@@ -301,14 +301,14 @@ Changes the file visted by the buffer to the given file."
           (let ((*print-escape* nil))
             (print-object e minibuffer)))))))
 
-(set-key `(com-write-buffer ,*unsupplied-argument-marker*)
+(set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\w :control)))
 
 (define-menu-table esclados-io-menu-table (io-table global-table)
-  `(com-find-file ,*unsupplied-argument-marker*)
-  `(com-find-file-read-only ,*unsupplied-argument-marker*)
+  `(com-find-file ,clim:*unsupplied-argument-marker*)
+  `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
   'com-save-buffer
-  `(com-write-buffer ,*unsupplied-argument-marker*)
-  `(com-set-visited-file-name ,*unsupplied-argument-marker*)
+  `(com-write-buffer ,clim:*unsupplied-argument-marker*)
+  `(com-set-visited-file-name ,clim:*unsupplied-argument-marker*)
   :divider
   'com-quit)
