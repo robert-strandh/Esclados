@@ -6,9 +6,9 @@
    :display-function 'display-info
    :incremental-redisplay t))
 
-(defun display-info (frame clim:pane)
+(defun display-info (frame pane)
   (declare (ignore frame))
-  (format clim:pane "Pane name: ~s" (clim:pane-name (master-pane clim:pane))))
+  (format pane "Pane name: ~s" (clim:pane-name (master-pane pane))))
 
 (defclass example-minibuffer-pane (minibuffer-pane)
   ())
@@ -40,9 +40,9 @@
    (default window))
   (:top-level (esclados-top-level)))
 
-(defun display-my-pane (frame clim:pane)
+(defun display-my-pane (frame pane)
   (declare (ignore frame))
-  (princ (contents clim:pane) *standard-output*))
+  (princ (contents pane) *standard-output*))
 
 (defun example (&key (width 900) (height 400))
   "Starts up the example application"
