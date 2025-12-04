@@ -33,7 +33,7 @@
 
 (defgeneric windows (esclados)
   (:documentation "Return a list of all the windows of the ESCLADOS.")
-  (:method ((esclados application-frame))
+  (:method ((esclados clim:application-frame))
     '()))
 
 (defgeneric present-window (esclados)
