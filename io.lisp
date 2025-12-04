@@ -1,24 +1,24 @@
 (in-package :esclados-io)
 
-(defgeneric frame-find-file (clim:application-frame file-path)
+(defgeneric frame-find-file (application-frame file-path)
   (:documentation "If a buffer with the file-path already exists,
 return it, else if a file with the right name exists, return a
 fresh buffer created from the file, else return a new empty
 buffer having the associated file name."))
 
-(defgeneric frame-find-file-read-only (clim:application-frame file-path))
+(defgeneric frame-find-file-read-only (application-frame file-path))
 
-(defgeneric frame-set-visited-file-name (clim:application-frame filepath buffer))
+(defgeneric frame-set-visited-file-name (application-frame filepath buffer))
 
-(defgeneric check-buffer-writability (clim:application-frame filepath buffer)
+(defgeneric check-buffer-writability (application-frame filepath buffer)
   (:documentation "Check that `buffer' can be written to
 `filepath', which can be an arbitrary pathname. If there is a
 problem, an error that is a subclass of
 `buffer-writing-error'should be signalled."))
 
-(defgeneric frame-save-buffer (clim:application-frame buffer))
+(defgeneric frame-save-buffer (application-frame buffer))
 
-(defgeneric frame-write-buffer (clim:application-frame filepath buffer))
+(defgeneric frame-write-buffer (application-frame filepath buffer))
 
 (define-condition buffer-writing-error (error)
   ((%buffer :reader buffer
@@ -82,8 +82,8 @@ buffer `buffer' and the filepath `filepath'."
       (concatenate 'string (pathname-name pathname)
                    "." (pathname-type pathname))))
 
-(defmethod frame-find-file (clim:application-frame filepath)
-  (declare (ignore clim:application-frame))
+(defmethod frame-find-file (application-frame filepath)
+  (declare (ignore application-frame))
   (cond ((null filepath)
          (display-message "No file name given.")
          (clim:beep))
@@ -131,8 +131,8 @@ name an existing file."
 (set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\f :control)))
 
-(defmethod frame-find-file-read-only (clim:application-frame filepath)
-  (declare (ignore clim:application-frame))
+(defmethod frame-find-file-read-only (application-frame filepath)
+  (declare (ignore application-frame))
   (cond ((null filepath)
          (display-message "No file name given.")
          (clim:beep))
@@ -180,8 +180,8 @@ buffer signal an error."
 
 (set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
 
-(defmethod frame-set-visited-file-name (clim:application-frame filepath buffer)
-  (declare (ignore clim:application-frame))
+(defmethod frame-set-visited-file-name (application-frame filepath buffer)
+  (declare (ignore application-frame))
   (setf (filepath buffer) filepath
         (name buffer) (filepath-filename filepath)
         (needs-saving buffer) t))
@@ -198,9 +198,9 @@ The next time the buffer is saved it will be saved to a file with
 that filename."
   (set-visited-file-name filename (current-buffer)))
 
-(defmethod check-buffer-writability (clim:application-frame (filepath pathname)
+(defmethod check-buffer-writability (application-frame (filepath pathname)
                                      (buffer esclados-buffer-mixin))
-  (declare (ignore clim:application-frame))
+  (declare (ignore application-frame))
   ;; Cannot write to a directory.
   (when (directory-pathname-p filepath)
     (filepath-is-directory buffer filepath)))
@@ -240,10 +240,10 @@ to overwrite."
 		   nil))
 	t)))
 
-(defmethod frame-save-buffer (clim:application-frame buffer)
+(defmethod frame-save-buffer (application-frame buffer)
   (let ((filepath (or (filepath buffer)
                       (clim:accept 'pathname :prompt "Save Buffer to File"))))
-    (check-buffer-writability clim:application-frame filepath buffer)
+    (check-buffer-writability application-frame filepath buffer)
     (unless (check-file-times buffer filepath "Overwrite" "written")
       (return-from frame-save-buffer))
     (when (and (probe-file filepath) (not (file-saved-p buffer)))
@@ -279,8 +279,8 @@ file, replacing its contents. If not, prompt for a filename."
 
 (set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
 
-(defmethod frame-write-buffer (clim:application-frame filepath buffer)
-  (check-buffer-writability clim:application-frame filepath buffer)
+(defmethod frame-write-buffer (application-frame filepath buffer)
+  (check-buffer-writability application-frame filepath buffer)
   (with-open-file (stream filepath :direction :output :if-exists :supersede)
     (save-buffer-to-stream buffer stream))
   (setf (filepath buffer) filepath
