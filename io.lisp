@@ -12,11 +12,13 @@
 
 (defgeneric frame-set-visited-file-name (application-frame filepath buffer))
 
-(defgeneric check-buffer-writability (application-frame filepath buffer)
-  (:documentation "Check that `buffer' can be written to
-`filepath', which can be an arbitrary pathname. If there is a
-problem, an error that is a subclass of
-`buffer-writing-error'should be signalled."))
+(defgeneric check-buffer-writability (application-frame filepath buffer))
+
+(setf (documentation 'check-buffer-writability 'function)
+      (format nil "Check that `buffer' can be written to `filepath',~@
+                   which can be an arbitrary pathname. If there is a~@
+                   problem, an error that is a subclass of~@
+                   `buffer-writing-error'should be signalled."))
 
 (defgeneric frame-save-buffer (application-frame buffer))
 
