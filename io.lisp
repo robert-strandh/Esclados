@@ -31,7 +31,7 @@ problem, an error that is a subclass of
               :documentation "The filepath that the buffer was attempted to be saved to when this error occured"))
   (:report (lambda (condition stream)
              (format stream "~A could not be saved to ~A"
-                     (name (buffer condition)) (filepath condition))))
+                     (utils:name (buffer condition)) (filepath condition))))
   (:documentation "An error that is a subclass of
 `buffer-writing-error' will be signalled when a buffer is
 attempted saved to a file, but something goes wrong. Not all
@@ -42,7 +42,7 @@ error cases will result in the signalling of a
   ()
   (:report (lambda (condition stream)
              (format stream "Cannot save buffer ~A to just a directory"
-                     (name (buffer condition)))))
+                     (utils:name (buffer condition)))))
   (:documentation "This error is signalled when a buffer is
 attempted saved to a directory."))
 
@@ -98,7 +98,7 @@ buffer `buffer' and the filepath `filepath'."
                                  (make-buffer-from-stream stream))
                                (make-new-buffer))))
                (setf (filepath buffer) filepath
-                     (name buffer) (filepath-filename filepath)
+                     (utils:name buffer) (filepath-filename filepath)
                      (needs-saving buffer) nil)
                buffer)))))
 
@@ -146,7 +146,7 @@ name an existing file."
                  (with-open-file (stream filepath :direction :input)
                    (let ((buffer (make-buffer-from-stream stream)))
                      (setf (filepath buffer) filepath
-                           (name buffer) (filepath-filename filepath)
+                           (utils:name buffer) (filepath-filename filepath)
                            (read-only-p buffer) t
                            (needs-saving buffer) nil)))
                  (progn
@@ -183,7 +183,7 @@ buffer signal an error."
 (defmethod frame-set-visited-file-name (application-frame filepath buffer)
   (declare (ignore application-frame))
   (setf (filepath buffer) filepath
-        (name buffer) (filepath-filename filepath)
+        (utils:name buffer) (filepath-filename filepath)
         (needs-saving buffer) t))
 
 (clim:define-command (com-set-visited-file-name :name t :command-table io-table)
@@ -257,7 +257,7 @@ to overwrite."
       (save-buffer-to-stream buffer stream))
     (setf (filepath buffer) filepath
           (file-write-time buffer) (file-write-date filepath)
-          (name buffer) (filepath-filename filepath))
+          (utils:name buffer) (filepath-filename filepath))
     (display-message "Wrote: ~a" (filepath buffer))
     (setf (needs-saving buffer) nil)))
 
@@ -275,7 +275,8 @@ file, replacing its contents. If not, prompt for a filename."
             (handler-case (save-buffer buffer)
               ((or buffer-writing-error file-error) (e)
                 (display-message "~A" e)))
-            (display-message "No changes need to be saved from ~a" (name buffer))))))
+            (display-message "No changes need to be saved from ~a"
+                             (utils:name buffer))))))
 
 (set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
 
@@ -284,7 +285,7 @@ file, replacing its contents. If not, prompt for a filename."
   (with-open-file (stream filepath :direction :output :if-exists :supersede)
     (save-buffer-to-stream buffer stream))
   (setf (filepath buffer) filepath
-        (name buffer) (filepath-filename filepath)
+        (utils:name buffer) (filepath-filename filepath)
         (needs-saving buffer) nil)
   (display-message "Wrote: ~a" (filepath buffer)))
 
