@@ -37,12 +37,14 @@
               :initform (error "A filepath must be provided")))
   (:report (lambda (condition stream)
              (format stream "~A could not be saved to ~A"
-                     (utils:name (buffer condition)) (filepath condition))))
-  (:documentation "An error that is a subclass of
-`buffer-writing-error' will be signalled when a buffer is
-attempted saved to a file, but something goes wrong. Not all
-error cases will result in the signalling of a
-`buffer-writing-error', but some defined cases will."))
+                     (utils:name (buffer condition)) (filepath condition)))))
+
+(setf (documentation 'buffer-writing-error 'type)
+      (format nil "An error that is a subclass of this class will be~@
+                   signaled when a buffer is attempted saved to a file,~@
+                   but something goes wrong. Not all error cases will~@
+                   result in the signalling of a `buffer-writing-error',~@
+                   but some defined cases will."))
 
 (define-condition filepath-is-directory (buffer-writing-error)
   ()
