@@ -7,7 +7,7 @@
            #:name-mixin #:name))
 
 (defpackage :esclados
-  (:use :clim-lisp :esclados-utils :clim-extensions)
+  (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils))
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
@@ -56,7 +56,7 @@
            #:com-call-last-macro))
 
 (defpackage :esclados-buffer
-  (:use :clim-lisp :esclados :esclados-utils)
+  (:use :clim-lisp :esclados)
   (:local-nicknames (#:utils #:esclados-utils))
   (:export #:frame-make-buffer-from-stream #:make-buffer-from-stream
            #:frame-save-buffer-to-stream #:save-buffer-to-stream
@@ -66,7 +66,7 @@
            #:read-only-p))
 
 (defpackage :esclados-io
-  (:use :clim-lisp :esclados :esclados-buffer :esclados-utils)
+  (:use :clim-lisp :esclados :esclados-buffer)
   (:local-nicknames (#:utils #:esclados-utils))
   (:export #:frame-find-file #:find-file
            #:frame-find-file-read-only #:find-file-read-only
