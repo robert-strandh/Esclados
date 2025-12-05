@@ -8,6 +8,7 @@
 
 (defpackage :esclados
   (:use :clim-lisp :esclados-utils :clim-extensions)
+  (:local-nicknames (#:utils #:esclados-utils))
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
            #:windows #:present-window #:current-window
@@ -56,6 +57,7 @@
 
 (defpackage :esclados-buffer
   (:use :clim-lisp :esclados :esclados-utils)
+  (:local-nicknames (#:utils #:esclados-utils))
   (:export #:frame-make-buffer-from-stream #:make-buffer-from-stream
            #:frame-save-buffer-to-stream #:save-buffer-to-stream
            #:filepath #:name #:needs-saving #:file-write-time #:file-saved-p
@@ -65,6 +67,7 @@
 
 (defpackage :esclados-io
   (:use :clim-lisp :esclados :esclados-buffer :esclados-utils)
+  (:local-nicknames (#:utils #:esclados-utils))
   (:export #:frame-find-file #:find-file
            #:frame-find-file-read-only #:find-file-read-only
            #:frame-set-visited-file-name #:set-visited-filename
