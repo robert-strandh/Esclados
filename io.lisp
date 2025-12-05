@@ -25,14 +25,16 @@
 (defgeneric frame-write-buffer (application-frame filepath buffer))
 
 (define-condition buffer-writing-error (error)
-  ((%buffer :reader buffer
+  (;; This slot contains the buffer that was attempted to be written
+   ;; when this error was signaled.
+   (%buffer :reader buffer
             :initarg :buffer
-            :initform (error "A buffer must be provided")
-            :documentation "The buffer that was attempted written when this error occured.")
+            :initform (error "A buffer must be provided"))
+   ;; This slot contains the filepath that the buffer was attempted
+   ;; to be saved to when this error was signaled.
    (%filepath :reader filepath
               :initarg :filepath
-              :initform (error "A filepath must be provided")
-              :documentation "The filepath that the buffer was attempted to be saved to when this error occured"))
+              :initform (error "A filepath must be provided")))
   (:report (lambda (condition stream)
              (format stream "~A could not be saved to ~A"
                      (utils:name (buffer condition)) (filepath condition))))
