@@ -163,7 +163,7 @@ Words are comma delimited. When more than two words are given, the documentation
          'help-table
          '((#\h :control) (#\a)))
 
-(define-menu-table help-menu-table (help-table)
+(utils:define-menu-table help-menu-table (help-table)
   'com-where-is
   '(com-describe-bindings nil)
   '(com-describe-bindings t)

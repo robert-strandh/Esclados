@@ -526,7 +526,7 @@ used.")
                                       (,command-unparser  'clim:command-line-command-unparser)
                                       (,partial-command-parser 'esclados-partial-command-parser)
                                       (,prompt "Extended Command: "))
-     ,(let ((frame (unlisted frame)))
+     ,(let ((frame (utils:unlisted frame)))
         `(with-slots (windows) ,frame
            (let ((*standard-output* (car windows))
                  (*standard-input* (clim:frame-standard-input ,frame))

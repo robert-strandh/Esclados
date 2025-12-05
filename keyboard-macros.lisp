@@ -33,7 +33,7 @@
 (set-key `(com-call-last-kbd-macro ,clim:*numeric-argument-marker*)
          'keyboard-macro-table '((#\x :control) #\e))
 
-(define-menu-table keyboard-macro-menu-table (keyboard-macro-table)
+(utils:define-menu-table keyboard-macro-menu-table (keyboard-macro-table)
   'com-start-kbd-macro
   'com-end-kbd-macro
   `(com-call-last-kbd-macro ,clim:*unsupplied-argument-marker*))

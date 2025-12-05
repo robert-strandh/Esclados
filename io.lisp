@@ -304,7 +304,7 @@ Changes the file visted by the buffer to the given file."
 (set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\w :control)))
 
-(define-menu-table esclados-io-menu-table (io-table global-table)
+(utils:define-menu-table esclados-io-menu-table (io-table global-table)
   `(com-find-file ,clim:*unsupplied-argument-marker*)
   `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
   'com-save-buffer
