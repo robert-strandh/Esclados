@@ -25,7 +25,7 @@ external representation"))
 representation"
   (frame-save-buffer-to-stream clim:*application-frame* buffer stream))
 
-(defclass esclados-buffer-mixin (name-mixin)
+(defclass esclados-buffer-mixin (utils:name-mixin)
   ((%filepath :initform nil :accessor filepath)
    (%needs-saving :initform nil :accessor needs-saving)
    (%file-write-time :initform nil :accessor file-write-time)
