@@ -1,10 +1,12 @@
 (in-package :esclados-io)
 
-(defgeneric frame-find-file (application-frame file-path)
-  (:documentation "If a buffer with the file-path already exists,
-return it, else if a file with the right name exists, return a
-fresh buffer created from the file, else return a new empty
-buffer having the associated file name."))
+(defgeneric frame-find-file (application-frame file-path))
+
+(setf (documentation 'frame-find-file 'function)
+      (format nil "If a buffer with the file-path already exists,~@
+                   return it, else if a file with the right name exists,~@
+                   return a fresh buffer created from the file, else return~@
+                   a new empty buffer having the associated file name."))
 
 (defgeneric frame-find-file-read-only (application-frame file-path))
 
