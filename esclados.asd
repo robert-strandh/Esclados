@@ -13,6 +13,7 @@
    (:file "info-pane")
    (:file "minibuffer-pane")
    (:file "pane-mixin")
+   (:file "command-processing")
    (:file "esa")
    (:file "help-commands")
    (:file "buffer")
