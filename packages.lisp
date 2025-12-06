@@ -18,7 +18,7 @@
            #:pane-mixin #:previous-command
            #:info-pane #:master-pane
            #:esclados-frame-mixin #:recordingp #:executingp
-           #:*esclados-abort-gestures* #:*current-gesture* #:*command-processor*
+           #:*abort-gestures* #:*current-gesture* #:*command-processor*
            #:unbound-gesture-sequence #:gestures
            #:command-processor #:instant-macro-execution-mixin
            #:asynchronous-command-processor #:command-loop-command-processor

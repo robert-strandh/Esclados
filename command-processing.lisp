@@ -1,6 +1,6 @@
 (cl:in-package #:esclados)
 
-(defparameter *esclados-abort-gestures*
+(defparameter *abort-gestures*
   `((:keyboard #\g ,(clim:make-modifier-state :control))))
 
 (defparameter *current-gesture* nil)
