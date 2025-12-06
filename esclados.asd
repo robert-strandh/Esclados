@@ -12,6 +12,7 @@
    (:file "query")
    (:file "info-pane")
    (:file "minibuffer-pane")
+   (:file "pane-mixin")
    (:file "esa")
    (:file "help-commands")
    (:file "buffer")
