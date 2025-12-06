@@ -13,7 +13,7 @@
 (defclass example-minibuffer-pane (minibuffer-pane)
   ())
 
-(defclass example-pane (esclados-pane-mixin clim:application-pane)
+(defclass example-pane (pane-mixin clim:application-pane)
   ((contents :initform "hello" :accessor contents)))
 
 (clim:define-application-frame example (esclados-frame-mixin

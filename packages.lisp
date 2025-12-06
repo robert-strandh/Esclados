@@ -15,7 +15,7 @@
            #:*previous-command*
            #:*minibuffer* #:minibuffer #:minibuffer-pane #:display-message
            #:with-minibuffer-stream
-           #:esclados-pane-mixin #:previous-command
+           #:pane-mixin #:previous-command
            #:info-pane #:master-pane
            #:esclados-frame-mixin #:recordingp #:executingp
            #:*esclados-abort-gestures* #:*current-gesture* #:*command-processor*

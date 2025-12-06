@@ -4,7 +4,7 @@
 ;;;
 ;;; ESCLADOS pane mixin
 
-(defclass esclados-pane-mixin ()
+(defclass pane-mixin ()
   (;; allows a certain number of commands to have some minimal memory
    (%previous-command
     :initform nil
