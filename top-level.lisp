@@ -5,13 +5,17 @@
 command. This only applies when the ESCLADOS command parser is being
 used.")
 
-(defgeneric esclados-top-level (frame &key
-                                   command-parser
-                                   command-unparser
-                                   partial-command-parser
-                                   prompt)
-  (:documentation "Run a top-level loop for `frame', reading
-  gestures and invoking the appropriate commands."))
+(defgeneric esclados-top-level
+    (frame
+     &key
+       command-parser
+       command-unparser
+       partial-command-parser
+       prompt))
+
+(setf (documentation 'esclados-top-level 'function)
+      (format nil "Run a top-level loop for `frame', reading gestures~@
+                   and invoking the appropriate commands."))
 
 (defmacro define-esclados-top-level ((frame command-parser
                                  command-unparser
