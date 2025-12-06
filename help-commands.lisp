@@ -14,8 +14,9 @@
 
 (clim:define-command (com-where-is :name t :command-table help-table) ()
   "Prompt for a command name and show the key that invokes it."
-  (let* ((command-table (find-applicable-command-table clim:*application-frame*))
-         (clim:command
+  (let* ((command-table
+           (find-applicable-command-table clim:*application-frame*))
+         (command
            (handler-case
                (clim:accept
                 `(clim:command-name :command-table ,command-table)
@@ -23,13 +24,15 @@
              (error () (progn (clim:beep)
                               (display-message "No such command")
                               (return-from com-where-is nil)))))
-         (keystrokes (find-keystrokes-for-command-with-inheritance clim:command command-table)))
-    (display-message "~A is ~:[not on any key~;~:*on ~{~A~^, ~}~]"
-                     (clim:command-line-name-for-command clim:command command-table)
-                     (mapcar (lambda (keys)
-                               (format nil "~{~A~^ ~}"
-                                       (mapcar #'gesture-name (reverse keys))))
-                             (car keystrokes)))))
+         (keystrokes (find-keystrokes-for-command-with-inheritance
+                      command command-table)))
+    (display-message
+     "~A is ~:[not on any key~;~:*on ~{~A~^, ~}~]"
+     (clim:command-line-name-for-command command command-table)
+     (mapcar (lambda (keys)
+               (format nil "~{~A~^ ~}"
+                       (mapcar #'gesture-name (reverse keys))))
+             (car keystrokes)))))
 
 (set-key 'com-where-is 'help-table '((#\h :control) (#\w)))
 
