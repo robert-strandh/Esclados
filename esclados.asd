@@ -15,6 +15,7 @@
    (:file "pane-mixin")
    (:file "command-processing")
    (:file "frame-mixin")
+   (:file "top-level")
    (:file "esa")
    (:file "help-commands")
    (:file "buffer")
