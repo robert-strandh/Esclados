@@ -2,7 +2,9 @@
 
 (clim:define-command-table help-table)
 
-(clim:define-command (com-describe-key-briefly :name t :command-table help-table) ()
+(clim:define-command
+    (com-describe-key-briefly :name t :command-table help-table)
+    ()
   "Prompt for a key and show the command it invokes."
   (display-message "Describe key briefly:")
   (clim:redisplay-frame-panes clim:*application-frame*)
@@ -12,19 +14,18 @@
 
 (clim:define-command (com-where-is :name t :command-table help-table) ()
   "Prompt for a command name and show the key that invokes it."
-  (let* ((clim:command-table (find-applicable-command-table clim:*application-frame*))
+  (let* ((command-table (find-applicable-command-table clim:*application-frame*))
          (clim:command
            (handler-case
                (clim:accept
-                `(clim:command-name :command-table
-                               ,clim:command-table)
+                `(clim:command-name :command-table ,command-table)
                 :prompt "Where is command")
              (error () (progn (clim:beep)
                               (display-message "No such command")
                               (return-from com-where-is nil)))))
-         (keystrokes (find-keystrokes-for-command-with-inheritance clim:command clim:command-table)))
+         (keystrokes (find-keystrokes-for-command-with-inheritance clim:command command-table)))
     (display-message "~A is ~:[not on any key~;~:*on ~{~A~^, ~}~]"
-                     (clim:command-line-name-for-command clim:command clim:command-table)
+                     (clim:command-line-name-for-command clim:command command-table)
                      (mapcar (lambda (keys)
                                (format nil "~{~A~^ ~}"
                                        (mapcar #'gesture-name (reverse keys))))
