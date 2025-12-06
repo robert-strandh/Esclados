@@ -17,6 +17,7 @@
    (:file "frame-mixin")
    (:file "top-level")
    (:file "event-handling")
+   (:file "command-table-manipulation")
    (:file "esa")
    (:file "help-commands")
    (:file "buffer")
