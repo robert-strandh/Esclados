@@ -14,6 +14,7 @@
    (:file "minibuffer-pane")
    (:file "pane-mixin")
    (:file "command-processing")
+   (:file "frame-mixin")
    (:file "esa")
    (:file "help-commands")
    (:file "buffer")
