@@ -2,18 +2,23 @@
 
 (clim:define-command-table help-table)
 
+;;; describe-key-briefly
+
 (clim:define-command
     (com-describe-key-briefly :name t :command-table help-table)
     ()
-  "Prompt for a key and show the command it invokes."
   (display-message "Describe key briefly:")
   (clim:redisplay-frame-panes clim:*application-frame*)
   (describe-key-briefly clim:*application-frame*))
 
+(setf (documentation 'com-describe-key-briefly 'function)
+      (format nil "Prompt for a key and show the command it invokes."))
+
 (set-key 'com-describe-key-briefly 'help-table '((#\h :control) (#\c)))
 
+;;; where-is
+
 (clim:define-command (com-where-is :name t :command-table help-table) ()
-  "Prompt for a command name and show the key that invokes it."
   (let* ((command-table
            (find-applicable-command-table clim:*application-frame*))
          (command
@@ -34,40 +39,61 @@
                        (mapcar #'gesture-name (reverse keys))))
              (car keystrokes)))))
 
+(setf (documentation 'com-where-is 'function)
+      (format nil "Prompt for a command name and show the key~@
+                   that invokes it."))
+
 (set-key 'com-where-is 'help-table '((#\h :control) (#\w)))
 
-(clim:define-command (com-describe-bindings :name t :command-table help-table)
+;;; describe-bindings
+
+(clim:define-command
+    (com-describe-bindings :name t :command-table help-table)
     ((sort-by-keystrokes 'boolean :prompt "Sort by keystrokes?"))
-  "Show which keys invoke which commands.
-Without a numeric prefix, sorts the list by command name. With a numeric prefix, sorts by key."
-  (let ((clim:command-table (find-applicable-command-table clim:*application-frame*)))
+  (let ((command-table
+          (find-applicable-command-table clim:*application-frame*)))
     (with-help-stream (stream (format nil "Help: Describe Bindings"))
-      (describe-bindings stream clim:command-table
+      (describe-bindings stream command-table
                          (if sort-by-keystrokes
                              #'sort-by-keystrokes
                              #'sort-by-name)))))
 
-(set-key `(com-describe-bindings ,clim:*numeric-argument-marker*) 'help-table '((#\h :control) (#\b)))
+(setf (documentation 'com-describe-bindings 'function)
+      (format nil "Show which keys invoke which commands.~@
+                   Without a numeric prefix, sorts the list by~@
+                   command name. With a numeric prefix, sorts by key."))
+
+(set-key `(com-describe-bindings ,clim:*numeric-argument-marker*)
+         'help-table
+         '((#\h :control) (#\b)))
+
+;;; describe-key
 
 (clim:define-command (com-describe-key :name t :command-table help-table)
     ()
-  "Display documentation for the command invoked by a given gesture sequence.
-When invoked, this command will wait for user input. If the user inputs a gesture
-sequence bound to a command available in the syntax of the current buffer,
-documentation and other details will be displayed in a typeout pane."
-  (let ((clim:command-table (find-applicable-command-table clim:*application-frame*)))
+  (let ((command-table (find-applicable-command-table clim:*application-frame*)))
     (display-message "Describe Key:")
     (clim:redisplay-frame-panes clim:*application-frame*)
-    (multiple-value-bind (clim:command gestures)
-        (read-gestures-for-help clim:command-table)
-      (let ((gesture-name (format nil "~{~A~#[~; ~; ~]~}"
-                                  (mapcar #'gesture-name gestures))))
-        (if clim:command
-            (with-help-stream (out-stream (format nil "~10THelp: Describe Key for ~A" gesture-name))
-              (describe-command-binding-to-stream gesture-name clim:command
-                                                  :command-table clim:command-table
-                                                  :stream out-stream))
+    (multiple-value-bind (command gestures)
+        (read-gestures-for-help command-table)
+      (let* ((gesture-name (format nil "~{~A~#[~; ~; ~]~}"
+                                   (mapcar #'gesture-name gestures)))
+             (prompt (format nil "~10THelp: Describe Key for ~A" gesture-name)))
+        (if command
+            (with-help-stream (out-stream prompt)
+              (describe-command-binding-to-stream
+               gesture-name command
+               :command-table command-table
+               :stream out-stream))
             (display-message "Unbound gesture: ~A" gesture-name))))))
+
+(setf (documentation 'com-describe-key 'function)
+      (format nil "Display documentation for the command invoked by~@
+                   a given gesture sequence.  When invoked, this command~@
+                   will wait for user input. If the user inputs a gesture~@
+                   sequence bound to a command available in the syntax~@
+                   of the current buffer,  Documentation and other details~@
+                   will be displayed in a typeout pane."))
 
 (set-key 'com-describe-key
          'help-table
