@@ -1,8 +1,10 @@
 (cl:in-package #:esclados)
 
-(defgeneric convert-to-gesture (clim:event)
-  (:documentation "Convert `event' (which must be an input event)
-  to a CLIM gesture, or NIL, if this is not possible."))
+(defgeneric convert-to-gesture (clim:event))
+
+(setf (documentation 'convert-to-gesture 'function)
+      (format nil "Convert `event' (which must be an input event) to~@
+                   a CLIM gesture, or NIL, if this is not possible."))
 
 (defmethod convert-to-gesture ((ev clim:event))
   nil)
