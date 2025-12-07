@@ -17,18 +17,22 @@ used.")
       (format nil "Run a top-level loop for `frame', reading gestures~@
                    and invoking the appropriate commands."))
 
-(defmacro define-esclados-top-level ((frame command-parser
-                                 command-unparser
-                                 partial-command-parser
-                                 prompt) &key bindings)
-  `(defmethod esclados-top-level (,frame &key
-                                      (,command-parser 'esclados-command-parser)
-                                      ;; FIXME: maybe customize this?  Under what
-                                      ;; circumstances would it be used?  Maybe try
-                                      ;; turning the clim listener into an ESCLADOS?
-                                      (,command-unparser  'clim:command-line-command-unparser)
-                                      (,partial-command-parser 'esclados-partial-command-parser)
-                                      (,prompt "Extended Command: "))
+(defmacro define-esclados-top-level
+    ((frame
+      command-parser
+      command-unparser
+      partial-command-parser
+      prompt)
+     &key bindings)
+  `(defmethod esclados-top-level
+       (,frame &key
+                 (,command-parser 'esclados-command-parser)
+                 ;; FIXME: maybe customize this?  Under what
+                 ;; circumstances would it be used?  Maybe try
+                 ;; turning the clim listener into an ESCLADOS?
+                 (,command-unparser  'clim:command-line-command-unparser)
+                 (,partial-command-parser 'esclados-partial-command-parser)
+                 (,prompt "Extended Command: "))
      ,(let ((frame (utils:unlisted frame)))
         `(with-slots (windows) ,frame
            (let ((*standard-output* (car windows))
