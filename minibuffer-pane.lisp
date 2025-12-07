@@ -55,7 +55,8 @@ current message was set."))
   ;; (dispatch-repaint pane +everywhere+))
   (finish-output clim:pane))
 
-(defmethod clim:stream-accept :around ((clim:pane minibuffer-pane) type &rest args)
+(defmethod clim:stream-accept :around
+    ((clim:pane minibuffer-pane) type &rest args)
   (declare (ignore type args))
   (when (message clim:pane)
     (setf (message clim:pane) nil))
@@ -71,9 +72,12 @@ current message was set."))
            (parse-error () nil)))
     (clim:window-clear clim:pane)))
 
-(defmethod clim:stream-accept ((clim:pane minibuffer-pane) type &rest args
-                          &key (clim:view (clim:stream-default-view clim:pane))
-                          &allow-other-keys)
+(defmethod clim:stream-accept
+    ((clim:pane minibuffer-pane)
+     type
+     &rest args
+     &key (clim:view (clim:stream-default-view clim:pane))
+     &allow-other-keys)
   ;; default CLIM prompting is OK for now...
   (apply #'clim:prompt-for-accept clim:pane type clim:view args)
   ;; but we need to turn some of ACCEPT-1 off.
@@ -249,33 +253,41 @@ current message was set."))
 
 (defgeneric invoke-with-minibuffer-stream (minibuffer continuation))
 
-(defmethod invoke-with-minibuffer-stream ((minibuffer minibuffer-pane) continuation)
+(defmethod invoke-with-minibuffer-stream
+    ((minibuffer minibuffer-pane) continuation)
   (clim:window-clear minibuffer)
   (setf (message minibuffer)
         (clim:with-new-output-record (minibuffer)
           (setf (message-time minibuffer) (get-universal-time))
-          (clim:filling-output (minibuffer :fill-width (clim:bounding-rectangle-width minibuffer))
+          (clim:filling-output
+              (minibuffer :fill-width
+                          (clim:bounding-rectangle-width minibuffer))
             (funcall continuation minibuffer)))))
 
-(defmethod invoke-with-minibuffer-stream ((minibuffer clim:pointer-documentation-pane) continuation)
+(defmethod invoke-with-minibuffer-stream
+    ((minibuffer clim:pointer-documentation-pane) continuation)
   (funcall continuation minibuffer))
 
 (defmethod invoke-with-minibuffer-stream ((minibuffer null) continuation)
   (declare (ignore continuation))
   nil)
 
-(defmacro with-minibuffer-stream ((stream-symbol)
-                                  &body body)
-  "Bind `stream-symbol' to the minibuffer stream and evaluate
-  `body'. This macro makes sure to setup the initial blanking of
-  the minibuffer as well as taking care of for how long the
-  message should be displayed."
+(defmacro with-minibuffer-stream ((stream-symbol) &body body)
   `(invoke-with-minibuffer-stream *minibuffer*
                                   #'(lambda (,stream-symbol)
                                       ,@body)))
 
+(setf (documentation 'with-minibuffer-stream 'function)
+      (format nil "Bind `stream-symbol' to the minibuffer stream and~@
+                   evaluate `body'. This macro makes sure to setup the~@
+                   initial blanking of the minibuffer as well as taking~@
+                   care of for how long the message should be displayed."))
+
 (defun display-message (format-string &rest format-args)
-  "Display a message in the minibuffer. Composes the string based
-on the `format-string' and the `format-args'."
   (with-minibuffer-stream (minibuffer)
     (apply #'format minibuffer format-string format-args)))
+
+(setf (documentation 'display-message 'function)
+      (format nil "Display a message in the minibuffer.  Composes~@
+                   the string based on the `format-string' and the~@
+                   `format-args'."))
