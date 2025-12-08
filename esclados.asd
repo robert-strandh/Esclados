@@ -18,6 +18,7 @@
    (:file "top-level")
    (:file "event-handling")
    (:file "command-table-manipulation")
+   (:file "standard-key-bindings")
    (:file "esa")
    (:file "help-commands")
    (:file "buffer")
