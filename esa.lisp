@@ -4,12 +4,14 @@
 ;;;
 ;;; Help
 
-(defgeneric invoke-with-help-stream (esclados title continuation)
-  (:documentation
-   #.(format nil "Invoke CONTINUATION with a single argument - a stream~@
+(defgeneric invoke-with-help-stream (esclados title continuation))
+
+(setf (documentation 'invoke-with-help-stream 'function)
+      (format nil "Invoke CONTINUATION with a single argument - a stream~@
                   for writing on-line help for ESCLADOS onto. The stream~@
-                  should have the title, or name, TITLE (a string), but the~@
-                  specific meaning of this is left to the respective ESCLADOS.")))
+                  should have the title, or name, TITLE (a string), but~@
+                  the specific meaning of this is left to the respective~@
+                  ESCLADOS."))
 
 (defmethod invoke-with-help-stream (frame title continuation)
   (declare (ignore frame))
@@ -20,13 +22,16 @@
             :width 400)))
 
 (defmacro with-help-stream ((stream title) &body body)
-  "Evaluate `body' with `stream' bound to a stream suitable for
-writing help information on. `Title' must evaluate to a string,
-and will be used for naming the resulting stream, if that makes
-sense for the ESCLADOS."
   `(invoke-with-help-stream *esclados-instance* ,title
                             #'(lambda (,stream)
                                 ,@body)))
+
+(setf (documentation 'with-help-stream 'function)
+      (format nil "Evaluate `body' with `stream' bound to a stream~@
+                   suitable for writing help information on. `Title'~@
+                   must evaluate to a string, and will be used for~@
+                   naming the resulting stream, if that makes sense~@
+                   for the ESCLADOS."))
 
 (defun read-gestures-for-help (clim:command-table)
   (clim:with-input-focus (t)
