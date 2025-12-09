@@ -259,7 +259,7 @@
      command
      &key
        (command-table
-        (find-applicable-command-table clim:*application-frame*))
+        applicable-command-table)
        (stream *standard-output*))
   "Describe `command' as invoked by `gesture' to `stream'."
   (let* ((command-name (if (listp command)
@@ -304,7 +304,7 @@
     (command-name
      &key
        (command-table
-        (find-applicable-command-table clim:*application-frame*))
+        applicable-command-table)
        (stream *standard-output*))
   "Describe `command' to `stream'."
   (let ((keystrokes (find-keystrokes-for-command-with-inheritance

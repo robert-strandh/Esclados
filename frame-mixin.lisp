@@ -52,3 +52,11 @@ on `frame' should be found in."))
 
 (defmethod find-applicable-command-table ((frame esclados-frame-mixin))
   (esclados-command-table (car (windows frame))))
+
+;;; For convenience.
+
+(define-symbol-macro applicable-command-table
+    (find-applicable-command-table clim:*application-frame*))
+
+
+  

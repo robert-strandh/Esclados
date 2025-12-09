@@ -20,7 +20,7 @@
 
 (clim:define-command (com-where-is :name t :command-table help-table) ()
   (let* ((command-table
-           (find-applicable-command-table clim:*application-frame*))
+           applicable-command-table)
          (command
            (handler-case
                (clim:accept
@@ -51,7 +51,7 @@
     (com-describe-bindings :name t :command-table help-table)
     ((sort-by-keystrokes 'boolean :prompt "Sort by keystrokes?"))
   (let ((command-table
-          (find-applicable-command-table clim:*application-frame*)))
+          applicable-command-table))
     (with-help-stream (stream (format nil "Help: Describe Bindings"))
       (describe-bindings stream command-table
                          (if sort-by-keystrokes
@@ -71,7 +71,7 @@
 
 (clim:define-command (com-describe-key :name t :command-table help-table)
     ()
-  (let ((command-table (find-applicable-command-table clim:*application-frame*)))
+  (let ((command-table applicable-command-table))
     (display-message "Describe Key:")
     (clim:redisplay-frame-panes clim:*application-frame*)
     (multiple-value-bind (command gestures)
@@ -102,7 +102,7 @@
 (clim:define-command (com-describe-command :name t :command-table help-table)
     ((clim:command 'clim:command-name :prompt "Describe command"))
   "Display documentation for the given command."
-  (let ((clim:command-table (find-applicable-command-table clim:*application-frame*)))
+  (let ((clim:command-table applicable-command-table))
     (with-help-stream (out-stream (format nil "~10THelp: Describe Command for ~A"
                                           (clim:command-line-name-for-command clim:command
                                                                          clim:command-table
@@ -182,7 +182,7 @@ Words are comma delimited. When more than two words are given, the documentation
   ;; 23.8.6 "It is unspecified whether accept returns a list or a vector."
   (setf words (coerce words 'list))
   (when words
-    (let* ((command-table (find-applicable-command-table clim:*application-frame*))
+    (let* ((command-table applicable-command-table)
            (results (find-command-key-pairs words command-table)))
       (if (null results)
           (display-message "No results for ~{~A~^, ~}" words)
