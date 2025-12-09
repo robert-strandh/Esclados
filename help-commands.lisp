@@ -98,14 +98,14 @@
          '((#\h :control) (#\k)))
 
 (clim:define-command (com-describe-command :name t :command-table help-table)
-    ((clim:command 'clim:command-name :prompt "Describe command"))
+    ((command 'clim:command-name :prompt "Describe command"))
   "Display documentation for the given command."
   (let ((command-table applicable-command-table))
     (with-help-stream (out-stream (format nil "~10THelp: Describe Command for ~A"
-                                          (clim:command-line-name-for-command clim:command
+                                          (clim:command-line-name-for-command command
                                                                          command-table
                                                                          :errorp nil)))
-      (describe-command-to-stream clim:command
+      (describe-command-to-stream command
                                   :command-table command-table
                                   :stream out-stream))))
 
