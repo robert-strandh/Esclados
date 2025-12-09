@@ -100,14 +100,13 @@
 (clim:define-command (com-describe-command :name t :command-table help-table)
     ((command 'clim:command-name :prompt "Describe command"))
   "Display documentation for the given command."
-  (let ((command-table applicable-command-table))
-    (with-help-stream (out-stream (format nil "~10THelp: Describe Command for ~A"
-                                          (clim:command-line-name-for-command command
-                                                                         command-table
-                                                                         :errorp nil)))
-      (describe-command-to-stream command
-                                  :command-table command-table
-                                  :stream out-stream))))
+  (let* ((command-table applicable-command-table)
+         (prompt "~10THelp: Describe Command for ~A")
+         (name (clim:command-line-name-for-command
+                command command-table :errorp nil)))
+    (with-help-stream (out-stream (format nil prompt name))
+      (describe-command-to-stream
+       command :command-table command-table :stream out-stream))))
 
 (set-key `(com-describe-command ,clim:*unsupplied-argument-marker*)
          'help-table
