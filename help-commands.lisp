@@ -19,8 +19,7 @@
 ;;; where-is
 
 (clim:define-command (com-where-is :name t :command-table help-table) ()
-  (let* ((command-table
-           applicable-command-table)
+  (let* ((command-table applicable-command-table)
          (command
            (handler-case
                (clim:accept
@@ -50,8 +49,7 @@
 (clim:define-command
     (com-describe-bindings :name t :command-table help-table)
     ((sort-by-keystrokes 'boolean :prompt "Sort by keystrokes?"))
-  (let ((command-table
-          applicable-command-table))
+  (let ((command-table applicable-command-table))
     (with-help-stream (stream (format nil "Help: Describe Bindings"))
       (describe-bindings stream command-table
                          (if sort-by-keystrokes
@@ -102,13 +100,13 @@
 (clim:define-command (com-describe-command :name t :command-table help-table)
     ((clim:command 'clim:command-name :prompt "Describe command"))
   "Display documentation for the given command."
-  (let ((clim:command-table applicable-command-table))
+  (let ((command-table applicable-command-table))
     (with-help-stream (out-stream (format nil "~10THelp: Describe Command for ~A"
                                           (clim:command-line-name-for-command clim:command
-                                                                         clim:command-table
+                                                                         command-table
                                                                          :errorp nil)))
       (describe-command-to-stream clim:command
-                                  :command-table clim:command-table
+                                  :command-table command-table
                                   :stream out-stream))))
 
 (set-key `(com-describe-command ,clim:*unsupplied-argument-marker*)

@@ -15,8 +15,7 @@
 
 (clim:define-command (com-extended-command :command-table global-table)
     ()
-  (let* ((command-table
-           applicable-command-table)
+  (let* ((command-table applicable-command-table)
          (item (handler-case
                    (clim:accept
                     `(clim:command :command-table ,command-table)
