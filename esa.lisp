@@ -258,7 +258,8 @@
     (gesture
      command
      &key
-       (command-table (find-applicable-command-table clim:*application-frame*))
+       (command-table
+        (find-applicable-command-table clim:*application-frame*))
        (stream *standard-output*))
   "Describe `command' as invoked by `gesture' to `stream'."
   (let* ((command-name (if (listp command)
@@ -278,7 +279,9 @@
       (princ " is bound to the command " stream)
       (if (clim:command-present-in-command-table-p command-name real-command-table)
           (clim:with-text-style (stream '(nil :bold nil))
-            (clim:present command-name `(clim:command-name :command-table ,command-table) :stream stream))
+            (clim:present command-name
+                          `(clim:command-name :command-table ,command-table)
+                          :stream stream))
           (clim:present command-name 'symbol :stream stream))
       (princ " in " stream)
       (clim:present real-command-table 'command-table :stream stream)
@@ -291,24 +294,31 @@
                                   "unsupplied-argument")
                                  ((eq arg clim:*numeric-argument-marker*)
                                   "numeric-argument")
-                                 (t arg))) command-args)))
+                                 (t arg)))
+                       command-args)))
       (terpri stream)
       (print-docstring-for-command command-name command-table stream)
       (clim:scroll-extent stream 0 0))))
 
 (defun describe-command-to-stream
-    (command-name &key
-                    (command-table (find-applicable-command-table clim:*application-frame*))
-                    (stream *standard-output*))
+    (command-name
+     &key
+       (command-table
+        (find-applicable-command-table clim:*application-frame*))
+       (stream *standard-output*))
   "Describe `command' to `stream'."
-  (let ((keystrokes (find-keystrokes-for-command-with-inheritance command-name command-table)))
+  (let ((keystrokes (find-keystrokes-for-command-with-inheritance
+                     command-name command-table)))
     (clim:with-text-style (stream '(:sans-serif nil nil))
       (clim:with-text-style (stream '(nil :bold nil))
-        (clim:present command-name `(clim:command-name :command-table ,command-table) :stream stream))
+        (clim:present command-name
+                      `(clim:command-name :command-table ,command-table)
+                      :stream stream))
       (princ " calls the function " stream)
       (clim:present command-name 'symbol :stream stream)
       (princ " and is accessible in " stream)
-      (if (clim:command-accessible-in-command-table-p command-name command-table)
+      (if (clim:command-accessible-in-command-table-p
+           command-name command-table)
           (clim:present (clim:command-accessible-in-command-table-p command-name command-table)
                    'command-table
                    :stream stream)
