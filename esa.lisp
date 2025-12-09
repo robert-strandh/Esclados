@@ -317,13 +317,12 @@
       (princ " calls the function " stream)
       (clim:present command-name 'symbol :stream stream)
       (princ " and is accessible in " stream)
-      (if (clim:command-accessible-in-command-table-p
-           command-name command-table)
-          (clim:present (clim:command-accessible-in-command-table-p command-name command-table)
-                   'command-table
-                   :stream stream)
-          (princ "an unknown command table" stream))
-
+      (let ((accessible
+              (clim:command-accessible-in-command-table-p
+               command-name command-table)))
+        (if accessible
+          (clim:present accessible 'command-table :stream stream)
+          (princ "an unknown command table" stream)))
       (format stream ".~%")
       (when (plusp (length keystrokes))
         (princ "It is bound to " stream)
@@ -331,7 +330,8 @@
               do (clim:with-drawing-options (stream :ink clim:+dark-blue+
                                                :text-style '(:fix nil nil))
                    (format stream "~{~A~^ ~}"
-                           (mapcar #'gesture-name (reverse (first gestures-list)))))
+                           (mapcar #'gesture-name
+                                   (reverse (first gestures-list)))))
               when (not (null (rest gestures-list)))
                 do (princ ", " stream))
         (terpri stream))
