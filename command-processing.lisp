@@ -68,11 +68,13 @@ that resulted in the signalling of this condition."))
   (:report (lambda (condition stream)
              (declare (ignore condition))
              (format stream "Gesture sequence that cannot
-possibly result in command invocation encountered.")))
-  (:documentation "This condition is signalled during gesture
-processing, when a sequence of gestures has been entered that
-does not, and cannot by the addition of more gestures, result in
-preferring to a command."))
+possibly result in command invocation encountered."))))
+
+(setf (documentation 'unbound-gesture-sequence 'type)
+      (format nil "This condition is signalled during gesture processing,~@
+                   when a sequence of gestures has been entered that does~@
+                   not, and cannot by the addition of more gestures,~@
+                   result in preferring to a command."))
 
 (defclass command-processor ()
   ((%recordingp :initform nil :accessor recordingp)
