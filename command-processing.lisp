@@ -100,11 +100,14 @@ preferring to a command."))
                    these actions. ESCLADOS command processing works~@
                    through instances of this class."))
 
-(defgeneric process-gesture (command-processor gesture)
-  (:documentation "Tell the command processor to process
-`gesture'. This might result in either the execution of a command
-or the signalling of `unbound-gesture-sequence'. This is the
-fundamental interface to the command processor."))
+(defgeneric process-gesture (command-processor gesture))
+
+(setf (documentation 'process-gesture 'function)
+      (format nil "Tell the command processor to process `gesture'.~@
+                   This might result in either the execution of a command~@
+                   or the signalling of `unbound-gesture-sequence'.~@
+                   This is the fundamental interface to the command~@
+                   processor."))
 
 (defgeneric directly-processing-p (command-processor)
   (:documentation "Return true if `command-processor' is directly
