@@ -65,10 +65,7 @@ bound to the current command processor.")
               :initform '()
               :documentation "A list of the provided gestures
 that resulted in the signalling of this condition."))
-  (:report (lambda (condition stream)
-             (declare (ignore condition))
-             (format stream "Gesture sequence that cannot
-possibly result in command invocation encountered."))))
+  (:report "Gesture sequence that cannot possibly result in command invocation encountered."))
 
 (setf (documentation 'unbound-gesture-sequence 'type)
       (format nil "This condition is signalled during gesture processing,~@
