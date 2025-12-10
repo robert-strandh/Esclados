@@ -41,9 +41,6 @@ bound to the current command processor.")
             :test #'gesture-matches-gesture-name-p))
 
 (defun proper-gesture-p (gesture)
-  "Return non-NIL if `gesture' is a proper gesture, NIL
-otherwise. A proper gesture is loosely defined as any gesture
-that is not just the sole pressing of a modifier key."
   (or (characterp gesture)
       (and (typep gesture 'clim:keyboard-event)
            (or (clim:keyboard-event-character gesture)
@@ -55,6 +52,12 @@ that is not just the sole pressing of a modifier key."
                               :hyper-left :hyper-right
                               :shift-lock :caps-lock
                               :alt-left :alt-right)))))))
+
+(setf (documentation 'proper-gesture-p 'function)
+      (format nil "Return non-NIL if `gesture' is a proper gesture,~@
+                   NIL otherwise. A proper gesture is loosely defined~@
+                   as any gesture that is not just the sole pressing~@
+                   of a modifier key."))
 
 (define-condition unbound-gesture-sequence (simple-condition)
   ((%gestures :initarg :gestures
