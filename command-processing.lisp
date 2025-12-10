@@ -80,20 +80,25 @@ preferring to a command."))
    (%recorded-keys :initform '() :accessor recorded-keys)
    (%remaining-keys :initform '() :accessor remaining-keys)
    (%accumulated-gestures :initform '() :accessor accumulated-gestures)
+   ;; When this slot contains an object other than NIL, any action
+   ;; on the command processor will be forwarded to this object.
+   ;; FIXME: what is the nature of this object?
+   ;; FIXME: what kind of action is meant?
    (%overriding-handler :initform nil
-                        :accessor overriding-handler
-                        :documentation "When non-NIL, any action on
-the command processor will be forwarded to this object.")
+                        :accessor overriding-handler)
+   ;; This slot contains the object used to execute commands.  It is
+   ;; coerced to be a function, and that function is called with two
+   ;; arguments, the command processor and the command.
    (%command-executor :initform 'clim:execute-frame-command
                       :accessor command-executor
-                      :initarg :command-executor
-                      :documentation "The object used to execute
-commands. Will be coerced to a function and called with two
-arguments, the command processor and the command."))
-  (:documentation "The command processor is fed gestures and will
-execute commands or signal conditions when the provided getures
-unambigiously suggest one of these actions. ESCLADOS command
-processing works through instances of this class."))
+                      :initarg :command-executor)))
+
+(setf (documentation 'command-processor 'type)
+      (format nil "The command processor is fed gestures and will~@
+                   execute commands or signal conditions when the~@
+                   provided getures unambigiously suggest one of~@
+                   these actions. ESCLADOS command processing works~@
+                   through instances of this class."))
 
 (defgeneric process-gesture (command-processor gesture)
   (:documentation "Tell the command processor to process
