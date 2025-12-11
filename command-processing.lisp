@@ -79,10 +79,12 @@ that resulted in the signaling of this condition."))
    (%recorded-keys :initform '() :accessor recorded-keys)
    (%remaining-keys :initform '() :accessor remaining-keys)
    (%accumulated-gestures :initform '() :accessor accumulated-gestures)
-   ;; When this slot contains an object other than NIL, any action
-   ;; on the command processor will be forwarded to this object.
-   ;; FIXME: what is the nature of this object?
-   ;; FIXME: what kind of action is meant?
+   ;; When this slot contains an object other than NIL, any action on
+   ;; the command processor will be forwarded to this object.  In
+   ;; other words, whatever operator uses an instance of this class as
+   ;; an argument, a recursive call to that operator will be made,
+   ;; where the instance of this class is replaced by the object in
+   ;; this slot.
    (%overriding-handler :initform nil
                         :accessor overriding-handler)
    ;; This slot contains the object used to execute commands.  It is
