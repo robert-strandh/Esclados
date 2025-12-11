@@ -35,8 +35,8 @@
 
 (defun read-gestures-for-help (command-table)
   (clim:with-input-focus (t)
-    (loop for gestures = (list (esclados-read-gesture))
-            then (nconc gestures (list (esclados-read-gesture)))
+    (loop for gestures = (list (read-gesture))
+            then (nconc gestures (list (read-gesture)))
           for item = (find-gestures-with-inheritance gestures command-table)
           unless item
             do (return (values nil gestures))

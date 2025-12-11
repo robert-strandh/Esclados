@@ -156,7 +156,7 @@ that resulted in the signaling of this condition."))
   (:documentation "Helper class that provides behavior necessary
 for a command processor that expects to receive gestures through
 asynchronous event handling, and not through
-`esclados-read-gesture'."))
+`read-gesture'."))
 
 (defmethod process-gesture :before
     ((command-processor asynchronous-command-processor) gesture)
@@ -386,18 +386,18 @@ never refer to a command."))
                (list gesture)))
   (process-gestures command-processor))
 
-(defun esclados-read-gesture
+(defun read-gesture
     (&key
        (command-processor *command-processor*)
        (stream *standard-input*))
   (unless (null (remaining-keys command-processor))
-    (return-from esclados-read-gesture
+    (return-from read-gesture
       (pop (remaining-keys command-processor))))
   (loop for gesture = (clim:read-gesture :stream stream)
         until (proper-gesture-p gesture)
         finally (return gesture)))
 
-(defun esclados-unread-gesture
+(defun unread-gesture
     (gesture
      &key
        (command-processor *command-processor*)
@@ -454,7 +454,7 @@ corresponding commands in `command-table' and invoke them using
   ;; well, something that either requires this kind of repeated
   ;; rescanning of accumulated input data or some yet-unimplemented
   ;; complex state retaining mechanism (such as continuations).
-  (loop (let ((*current-gesture* (esclados-read-gesture :command-processor command-processor)))
+  (loop (let ((*current-gesture* (read-gesture :command-processor command-processor)))
           (unless (process-gesture command-processor *current-gesture*)
             (return)))))
 
