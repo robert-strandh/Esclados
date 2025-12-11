@@ -64,7 +64,7 @@ bound to the current command processor.")
               :reader gestures
               :initform '()
               :documentation "A list of the provided gestures
-that resulted in the signalling of this condition."))
+that resulted in the signaling of this condition."))
   (:report "Gesture sequence that cannot possibly result in command invocation encountered."))
 
 (setf (documentation 'unbound-gesture-sequence 'type)
@@ -104,7 +104,7 @@ that resulted in the signalling of this condition."))
 (setf (documentation 'process-gesture 'function)
       (format nil "Tell the command processor to process `gesture'.~@
                    This might result in either the execution of a command~@
-                   or the signalling of `unbound-gesture-sequence'.~@
+                   or the signaling of `unbound-gesture-sequence'.~@
                    This is the fundamental interface to the command~@
                    processor."))
 
