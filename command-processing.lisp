@@ -221,10 +221,12 @@ to do stuff such as incremental search)."))
   (:method ((command-processor command-processor))
     nil))
 
-(defmethod end-command-loop ((command-processor command-loop-command-processor))
+(defmethod end-command-loop
+    ((command-processor command-loop-command-processor))
   (when (overriding-handler command-processor)
     (end-command-loop (overriding-handler command-processor)))
-  (setf (overriding-handler (super-command-processor command-processor)) nil))
+  (setf (overriding-handler (super-command-processor command-processor))
+        nil))
 
 (defmethod process-gesture :around
     ((command-processor command-loop-command-processor) gesture)
