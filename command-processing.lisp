@@ -109,11 +109,13 @@ that resulted in the signalling of this condition."))
                    processor."))
 
 (defgeneric directly-processing-p (command-processor)
-  (:documentation "Return true if `command-processor' is directly
-  processing commands. In most cases, this means that
-  `overriding-handler' is null.")
   (:method ((command-processor command-processor))
     (null (overriding-handler command-processor))))
+
+(setf (documentation 'directly-processing-p 'function)
+      (format nil "Return true if `command-processor' is directly~@
+                   processing commands. In most cases, this means that~@
+                   `overriding-handler' is null."))
 
 (defgeneric command-for-unbound-gestures (thing gestures)
   (:documentation "Called when `gestures' is input by the user
