@@ -372,7 +372,8 @@ never refer to a command."))
                     nil))
                  (t t))))))))
 
-(defmethod process-gesture :around ((command-processor command-processor) gesture)
+(defmethod process-gesture :around
+    ((command-processor command-processor) gesture)
   (with-accessors ((overriding-handler overriding-handler)) command-processor
     (if overriding-handler
         (let ((*command-processor* overriding-handler))
@@ -385,8 +386,10 @@ never refer to a command."))
                (list gesture)))
   (process-gestures command-processor))
 
-(defun esclados-read-gesture (&key (command-processor *command-processor*)
-                           (stream *standard-input*))
+(defun esclados-read-gesture
+    (&key
+       (command-processor *command-processor*)
+       (stream *standard-input*))
   (unless (null (remaining-keys command-processor))
     (return-from esclados-read-gesture
       (pop (remaining-keys command-processor))))
@@ -394,8 +397,11 @@ never refer to a command."))
         until (proper-gesture-p gesture)
         finally (return gesture)))
 
-(defun esclados-unread-gesture (gesture &key (command-processor *command-processor*)
-                                     (stream *standard-input*))
+(defun esclados-unread-gesture
+    (gesture
+     &key
+       (command-processor *command-processor*)
+       (stream *standard-input*))
   (cond ((recordingp command-processor)
          (cond ((equal (first (recorded-keys command-processor)) gesture)
                 (pop (recorded-keys command-processor)))
@@ -417,7 +423,8 @@ never refer to a command."))
 corresponding commands in `command-table' and invoke them using
 `command-executor'."))
 
-(defmethod process-gestures-or-command :around ((command-processor clim:application-frame))
+(defmethod process-gestures-or-command :around
+    ((command-processor clim:application-frame))
   (clim:with-input-context
       (`(clim:command :command-table ,(esclados-command-table command-processor)))
       (object)
@@ -430,7 +437,8 @@ corresponding commands in `command-table' and invoke them using
                (esclados-command-table command-processor)
                *standard-input*)))))
 
-(defmethod process-gestures-or-command :around ((command-processor command-processor))
+(defmethod process-gestures-or-command :around
+    ((command-processor command-processor))
   (handler-case (call-next-method)
     (clim:abort-gesture (c)
       ;; If the user aborts, we want to forget whatever previous
@@ -438,7 +446,8 @@ corresponding commands in `command-table' and invoke them using
       (setf (accumulated-gestures command-processor) nil)
       (signal c))))
 
-(defmethod process-gestures-or-command ((command-processor command-processor))
+(defmethod process-gestures-or-command
+    ((command-processor command-processor))
   ;; Build up a list of gestures and repeatedly pass them to
   ;; `process-gestures'. This "clumsy" approach is chosen because we
   ;; want ESCLADOS command processing to support asynchronous operation as
