@@ -118,18 +118,22 @@ that resulted in the signalling of this condition."))
                    `overriding-handler' is null."))
 
 (defgeneric command-for-unbound-gestures (thing gestures)
-  (:documentation "Called when `gestures' is input by the user
-and there is no associated command in the current command
-table. The function should return either a (possibly incomplete)
-command or NIL. In the latter case (which is handled by a default
-method), the gestures will be treated as actual unbound
-gestures. `Thing' is something that might be interested in
-commands, at the beginning usually a command processor, but it
-can call the function for other objects it knows in order to get
-their opinion. `Gestures' is a list of gestures.")
   (:method (thing gestures)
     (declare (ignore thing gestures))
     nil))
+
+(setf (documentation 'command-for-unbound-gestures 'function)
+      (format nil "Called when `gestures' is input by the user and~@
+                   there is no associated command in the current~@
+                   command table. The function should return either~@
+                   a (possibly incomplete) command or NIL. In the latter~@
+                   case (which is handled by a default method), the~@
+                   gestures will be treated as actual unbound gestures.~@
+                   `Thing' is something that might be interested in~@
+                   commands, at the beginning usually a command processor,~@
+                   but it can call the function for other objects it knows~@
+                   in order to get their opinion. `Gestures' is a list~@
+                   of gestures."))
 
 (defclass instant-macro-execution-mixin ()
   ()
