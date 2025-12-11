@@ -246,19 +246,6 @@ to do stuff such as incremental search)."))
            (end-command-loop command-processor)))))
 
 (defun process-gestures-for-numeric-argument (gestures)
-  "Processes a list of gestures for numeric argument
-information. Returns three values: prefix argument, a bool value
-indicating whether prefix was given and a list of remaining
-gestures to handle. Accepts: EITHER C-u, optionally followed by
-other C-u's, optionally followed by a minus sign, optionally
-followed by decimal digits; OR An optional M-minus, optionally
-followed by M-decimal-digits.  You cannot mix C-u and M-digits.
-C-u gives a numarg of 4. Additional C-u's multiply by 4 (e.g. C-u
-C-u C-u = 64).  After C-u you can enter decimal digits, possibly
-preceded by a minus (but not a plus) sign. C-u 3 4 = 34, C-u - 3
-4 = -34. Note that C-u 3 - prints 3 '-'s.  M-1 M-2 = 12. M-- M-1
-M-2 = -12. As a special case, C-u - and M-- = -1.  In the absence
-of a prefix arg returns 1 (and nil)."
   (let ((first-gesture (pop gestures)))
     (cond ((gesture-matches-gesture-name-p
             first-gesture 'universal-argument)
@@ -306,6 +293,23 @@ of a prefix arg returns 1 (and nil)."
                                            t gestures)))))
           (t (values 1 nil (when first-gesture
                              (cons first-gesture gestures)))))))
+
+(setf (documentation 'process-gestures-for-numeric-argument 'function)
+      (format nil "Processes a list of gestures for numeric argument~@
+                   information. Returns three values: prefix argument,~@
+                   a Boolean value indicating whether prefix was given~@
+                   and a list of remaining gestures to handle. Accepts:~@
+                   EITHER C-u, optionally followed by other C-u's,~@
+                   optionally followed by a minus sign, optionally followed~@
+                   by decimal digits; OR An optional M-minus, optionally~@
+                   followed by M-decimal-digits.  You cannot mix C-u and~@
+                   M-digits. C-u gives a numarg of 4. Additional C-u's~@
+                   multiply by 4 (e.g. C-u C-u C-u = 64).  After C-u you~@
+                   can enter decimal digits, possibly preceded by a minus~@
+                   (but not a plus) sign. C-u 3 4 = 34, C-u - 3 4 = -34.~@
+                   Note that C-u 3 - prints 3 '-'s.  M-1 M-2 = 12. M-- M-1~@
+                   M-2 = -12. As a special case, C-u - and M-- = -1.  In~@
+                   the absence of a prefix arg returns 1 (and nil)."))
 
 (defgeneric process-gestures (command-processor)
   (:documentation "Process the gestures accumulated in
