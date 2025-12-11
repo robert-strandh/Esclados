@@ -177,31 +177,36 @@ processors, merges incoming dead keys with the following key."))
     (call-next-method command-processor gesture)))
 
 (defclass command-loop-command-processor (command-processor)
-  ((%command-table :reader esclados-command-table
-                   :initarg :command-table
-                   :initform nil)
-   (%end-condition :reader end-condition
-                   :initarg :end-condition
-                   :initform (constantly nil)
-                   :documentation "When this function of zero
+  ((%command-table
+    :reader esclados-command-table
+    :initarg :command-table
+    :initform nil)
+   (%end-condition
+    :reader end-condition
+    :initarg :end-condition
+    :initform (constantly nil)
+    :documentation "When this function of zero
 arguments returns true, the `command-loop-command-processor' will
 disable itself in its associated super command processor and call
 its `end-function', effectively dropping out of the
 sub-command-loop.")
-   (%end-function :reader end-function
-                  :initarg :end-function
-                  :initform (constantly nil)
-                  :documentation "This function of zero arguments
+   (%end-function
+    :reader end-function
+    :initarg :end-function
+    :initform (constantly nil)
+    :documentation "This function of zero arguments
 will be called when the command processor disables itself.")
-   (%abort-function :reader abort-function
-                    :initarg :abort-function
-                    :initform (constantly nil)
-                    :documentation "This function is called if
+   (%abort-function
+    :reader abort-function
+    :initarg :abort-function
+    :initform (constantly nil)
+    :documentation "This function is called if
 the command processor encounters an abort gesture.")
-   (%super-command-processor :reader super-command-processor
-                             :initarg :super-command-processor
-                             :initform (error "Must provide a super command processor.")
-                             :documentation "The command
+   (%super-command-processor
+    :reader super-command-processor
+    :initarg :super-command-processor
+    :initform (error "Must provide a super command processor.")
+    :documentation "The command
 processor that the `command-loop-command-processor' object
 handles gestures for."))
   (:default-initargs
