@@ -417,11 +417,15 @@ never refer to a command."))
 
 (clim:define-gesture-name meta-minus :keyboard (#\- :meta))
 
-(defgeneric process-gestures-or-command (command-processor)
-  (:documentation "Process gestures for
-`command-processor' (typically an application frame), look up the
-corresponding commands in `command-table' and invoke them using
-`command-executor'."))
+(defgeneric process-gestures-or-command (command-processor))
+
+;;; FIXME: COMMAND-EXECUTOR is a slot in the command processor, but
+;;; where is COMMAND-TABLE.
+(setf (documentation 'process-gestures-or-command 'function)
+      (format nil "Process gestures for `command-processor' (typically~@
+                   an application frame), look up the corresponding~@
+                   commands in `command-table' and invoke them using~@
+                  `command-executor'."))
 
 (defmethod process-gestures-or-command :around
     ((command-processor clim:application-frame))
