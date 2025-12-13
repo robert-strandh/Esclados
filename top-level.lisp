@@ -5,7 +5,7 @@
 command. This only applies when the ESCLADOS command parser is being
 used.")
 
-(defgeneric esclados-top-level
+(defgeneric top-level
     (frame
      &key
        command-parser
@@ -13,18 +13,18 @@ used.")
        partial-command-parser
        prompt))
 
-(setf (documentation 'esclados-top-level 'function)
+(setf (documentation 'top-level 'function)
       (format nil "Run a top-level loop for `frame', reading gestures~@
                    and invoking the appropriate commands."))
 
-(defmacro define-esclados-top-level
+(defmacro define-top-level
     ((frame
       command-parser
       command-unparser
       partial-command-parser
       prompt)
      &key bindings)
-  `(defmethod esclados-top-level
+  `(defmethod top-level
        (,frame &key
                  (,command-parser 'esclados-command-parser)
                  ;; FIXME: maybe customize this?  Under what
@@ -76,7 +76,7 @@ used.")
                       (setf (overriding-handler ,frame) nil)
                       (setf (remaining-keys ,frame) nil)))))))))
 
-(define-esclados-top-level (frame command-parser
+(define-top-level (frame command-parser
                              command-unparser
                              partial-command-parser
                              prompt))

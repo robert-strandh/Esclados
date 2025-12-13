@@ -26,7 +26,7 @@
            #:overriding-handler #:directly-processing-p #:process-gesture #:process-gestures-or-command
            #:command-for-unbound-gestures
            #:*extended-command-prompt*
-           #:define-esclados-top-level #:esclados-top-level #:simple-command-loop
+           #:define-top-level #:top-level #:simple-command-loop
            #:convert-to-gesture #:gesture-name
 	   #:invoke-with-help-stream #:with-help-stream
            #:set-key
