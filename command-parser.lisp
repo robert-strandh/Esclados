@@ -6,7 +6,7 @@
 ;;; gospel and not even mentioned to the user, as we do now; or they
 ;;; should be treated as the default, but the user should be prompted
 ;;; to confirm, as we used to do.
-(defun esclados-parse-one-arg (stream name ptype accept-args)
+(defun parse-one-arg (stream name ptype accept-args)
   (declare (ignore name))
   ;; this conditional doesn't feel entirely happy.  The issue is that
   ;; we could be called either recursively from an outer call to
@@ -66,7 +66,7 @@
             ;; only required args for now.
             (dolist (arg required-args (cons clim:command-name (nreverse result)))
               (destructuring-bind (name ptype &rest args) arg
-                (push (esclados-parse-one-arg stream name ptype args) result)
+                (push (parse-one-arg stream name ptype args) result)
                 (maybe-clear-input)))))))))
 
 (defun esclados-partial-command-parser (clim:command-table stream clim:command position
@@ -101,7 +101,7 @@
                     (destructuring-bind (name ptype &rest args) arg
                       (push (cond ((eq command-arg clim:*unsupplied-argument-marker*)
                                    (setf arg-parsed t)
-                                   (esclados-parse-one-arg stream name ptype args))
+                                   (parse-one-arg stream name ptype args))
                                   ((eq command-arg clim:*numeric-argument-marker*)
                                    (or numeric-argument (getf args :default)))
                                   (t (eval command-arg)))
