@@ -33,7 +33,7 @@
            #:find-applicable-command-table
            #:esclados-command-parser
            #:esclados-partial-command-parser
-           #:esclados-command-table
+           #:command-table
 
            #:gesture-matches-gesture-name-p #:meta-digit
            #:proper-gesture-p

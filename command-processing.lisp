@@ -180,7 +180,7 @@ processors, merges incoming dead keys with the following key."))
 
 (defclass command-loop-command-processor (command-processor)
   ((%command-table
-    :reader esclados-command-table
+    :reader command-table
     :initarg :command-table
     :initform nil)
    (%end-condition
@@ -338,7 +338,7 @@ never refer to a command."))
       (cond ((null gestures)
              t)
             (t
-             (let* ((command-table (esclados-command-table command-processor))
+             (let* ((command-table (command-table command-processor))
                     (item (or (find-gestures-with-inheritance gestures command-table)
                               (command-for-unbound-gestures command-processor gestures))))
                (cond
@@ -358,7 +358,7 @@ never refer to a command."))
                     (unwind-protect
                          (setq command
                                (funcall clim:*partial-command-parser*
-                                        (esclados-command-table command-processor)
+                                        (command-table command-processor)
                                         *standard-input*
                                         command 0 (when prefix-p prefix-arg)))
                       ;; If we are macrorecording, store whatever the user
@@ -422,7 +422,7 @@ never refer to a command."))
 (setf (documentation 'process-gestures-or-command 'function)
       (format nil "Process gestures for `command-processor' (typically~@
                    an application frame).  The commands are found by~@
-                   calling `esclados-command-table', passing the~@
+                   calling `command-table', passing the~@
                    `command-processor' as an argument.  The command~@
                    is invoked using the `command-executor' which is a~@
                    slot in `command-processor'"))
@@ -430,7 +430,7 @@ never refer to a command."))
 (defmethod process-gestures-or-command :around
     ((command-processor clim:application-frame))
   (clim:with-input-context
-      (`(clim:command :command-table ,(esclados-command-table command-processor)))
+      (`(clim:command :command-table ,(command-table command-processor)))
       (object)
       (call-next-method)
     (clim:command
@@ -438,7 +438,7 @@ never refer to a command."))
               command-processor
               (climi::ensure-complete-command
                object
-               (esclados-command-table command-processor)
+               (command-table command-processor)
                *standard-input*)))))
 
 (defmethod process-gestures-or-command :around

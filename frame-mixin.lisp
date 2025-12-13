@@ -9,7 +9,7 @@
 (defmethod present-window ((esclados esclados-frame-mixin))
   (first (windows esclados)))
 
-(defmethod esclados-command-table ((frame esclados-frame-mixin))
+(defmethod command-table ((frame esclados-frame-mixin))
   (find-applicable-command-table frame))
 
 ;; Defaults for non-ESCLADOS-frames.
@@ -51,7 +51,7 @@
 on `frame' should be found in."))
 
 (defmethod find-applicable-command-table ((frame esclados-frame-mixin))
-  (esclados-command-table (car (windows frame))))
+  (command-table (car (windows frame))))
 
 ;;; For convenience.
 

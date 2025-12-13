@@ -43,7 +43,7 @@
   "Return the currently active window of the running ESCLADOS instance."
   (present-window *esclados-instance*))
 
-(defgeneric esclados-command-table (esclados)
+(defgeneric command-table (esclados)
   (:documentation "Return command table of ESCLADOS."))
 
 (defvar *previous-command* nil

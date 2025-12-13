@@ -11,7 +11,7 @@
     :accessor previous-command)
    (%command-table
     :initarg :command-table
-    :accessor esclados-command-table)))
+    :accessor command-table)))
 
 (defmethod previous-command ((pane clim:pane))
   nil)
