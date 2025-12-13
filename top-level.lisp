@@ -76,10 +76,8 @@ used.")
                       (setf (overriding-handler ,frame) nil)
                       (setf (remaining-keys ,frame) nil)))))))))
 
-(define-top-level (frame command-parser
-                             command-unparser
-                             partial-command-parser
-                             prompt))
+(define-top-level
+    (frame command-parser command-unparser partial-command-parser prompt))
 
 (defmacro simple-command-loop (command-table loop-condition
                                &optional end-clauses (abort-clauses '((signal 'clim:abort-gesture :event *current-gesture*))))
