@@ -38,7 +38,7 @@
                  unless (eq key :gesture)
                  collect key and collect (eval val)))))
 
-(defun esclados-command-parser (clim:command-table stream)
+(defun command-parser (clim:command-table stream)
   (let ((clim:command-name nil))
     (flet ((maybe-clear-input ()
              (let ((gesture (clim:read-gesture :stream stream 

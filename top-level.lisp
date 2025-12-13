@@ -26,7 +26,7 @@ used.")
      &key bindings)
   `(defmethod top-level
        (,frame &key
-                 (,command-parser 'esclados-command-parser)
+                 (,command-parser 'command-parser)
                  ;; FIXME: maybe customize this?  Under what
                  ;; circumstances would it be used?  Maybe try
                  ;; turning the clim listener into an ESCLADOS?

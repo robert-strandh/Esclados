@@ -31,7 +31,7 @@
 	   #:invoke-with-help-stream #:with-help-stream
            #:set-key
            #:find-applicable-command-table
-           #:esclados-command-parser
+           #:command-parser
            #:esclados-partial-command-parser
            #:command-table
 
