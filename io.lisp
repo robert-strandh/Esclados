@@ -43,7 +43,7 @@
       (format nil "An error that is a subclass of this class will be~@
                    signaled when a buffer is attempted saved to a file,~@
                    but something goes wrong. Not all error cases will~@
-                   result in the signalling of a `buffer-writing-error',~@
+                   result in the signaling of a `buffer-writing-error',~@
                    but some defined cases will."))
 
 (define-condition filepath-is-directory (buffer-writing-error)
