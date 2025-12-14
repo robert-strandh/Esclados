@@ -50,9 +50,11 @@
   ()
   (:report (lambda (condition stream)
              (format stream "Cannot save buffer ~A to just a directory"
-                     (utils:name (buffer condition)))))
-  (:documentation "This error is signaled when a buffer is
-attempted saved to a directory."))
+                     (utils:name (buffer condition))))))
+
+(setf (documentation 'filepath-is-directory 'type)
+      (format nil "This error is signaled when a buffer is attempted~@
+                   saved to a directory."))
 
 (defun filepath-is-directory (buffer filepath)
   "Signal an error of type `filepath-is-directory' with the
