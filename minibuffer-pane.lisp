@@ -118,7 +118,7 @@ current message was set."))
        (declare (dynamic-extent #',input-cont #',handler-cont))
        (invoke-handle-empty-input ,stream #',input-cont #',handler-cont))))
 
-;;; The code that signalled the error might have consumed the gesture, or
+;;; The code that signaled the error might have consumed the gesture, or
 ;;; not.
 ;;; XXX Actually, it would be a violation of the `accept' protocol to consume
 ;;; the gesture, but who knows what random accept methods are doing.

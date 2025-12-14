@@ -68,7 +68,7 @@ that resulted in the signaling of this condition."))
   (:report "Gesture sequence that cannot possibly result in command invocation encountered."))
 
 (setf (documentation 'unbound-gesture-sequence 'type)
-      (format nil "This condition is signalled during gesture processing,~@
+      (format nil "This condition is signaled during gesture processing,~@
                    when a sequence of gestures has been entered that does~@
                    not, and cannot by the addition of more gestures,~@
                    result in preferring to a command."))
@@ -241,7 +241,7 @@ to do stuff such as incremental search)."))
                :test #'gesture-matches-gesture-name-p)
          ;; It is to be expected that the abort function might signal
          ;; `abort-gesture'. If that happens, we must end the command
-         ;; loop, but ONLY if this is signalled.
+         ;; loop, but ONLY if this is signaled.
          (handler-case (funcall (abort-function command-processor))
            (clim:abort-gesture (c)
              (end-command-loop command-processor)

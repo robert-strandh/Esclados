@@ -18,7 +18,7 @@
       (format nil "Check that `buffer' can be written to `filepath',~@
                    which can be an arbitrary pathname. If there is a~@
                    problem, an error that is a subclass of~@
-                   `buffer-writing-error'should be signalled."))
+                   `buffer-writing-error'should be signaled."))
 
 (defgeneric frame-save-buffer (application-frame buffer))
 
@@ -51,7 +51,7 @@
   (:report (lambda (condition stream)
              (format stream "Cannot save buffer ~A to just a directory"
                      (utils:name (buffer condition)))))
-  (:documentation "This error is signalled when a buffer is
+  (:documentation "This error is signaled when a buffer is
 attempted saved to a directory."))
 
 (defun filepath-is-directory (buffer filepath)

@@ -71,7 +71,7 @@
                     * A symbol `:divider', which will present a horizontal~@
                       divider line.~@
                     ~@
-                    An error of type`command-table-error' will be signalled~@
+                    An error of type`command-table-error' will be signaled~@
                     if a command cannot be found in any of the provided~@
                     command tables."))
 
