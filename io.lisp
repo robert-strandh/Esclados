@@ -57,9 +57,11 @@
                    saved to a directory."))
 
 (defun filepath-is-directory (buffer filepath)
-  "Signal an error of type `filepath-is-directory' with the
-buffer `buffer' and the filepath `filepath'."
   (error 'filepath-is-directory :buffer buffer :filepath filepath))
+
+(setf (documentation 'filepath-is-directory 'function)
+      (format nil "Signal an error of type `filepath-is-directory' with~@
+                   the buffer `buffer' and the filepath `filepath'."))
 
 (defun find-file (file-path)
   (frame-find-file clim:*application-frame* file-path))
