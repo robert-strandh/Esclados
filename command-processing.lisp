@@ -152,13 +152,15 @@ that resulted in the signaling of this condition."))
         do (process-gesture drei gesture)
         finally (setf (executingp drei) nil)))
 
-(defclass asynchronous-command-processor (command-processor
-                                          instant-macro-execution-mixin)
-  ()
-  (:documentation "Helper class that provides behavior necessary
-for a command processor that expects to receive gestures through
-asynchronous event handling, and not through
-`read-gesture'."))
+(defclass asynchronous-command-processor
+    (command-processor instant-macro-execution-mixin)
+  ())
+
+(setf (documentation 'asynchronous-command-processor 'type)
+      (format nil "Helper class that provides behavior necessary for~@
+                   a command processor that expects to receive gestures~@
+                   through asynchronous event handling, and not through~@
+                   `read-gesture'."))
 
 (defmethod process-gesture :before
     ((command-processor asynchronous-command-processor) gesture)
