@@ -137,13 +137,16 @@ that resulted in the signaling of this condition."))
                    of gestures."))
 
 (defclass instant-macro-execution-mixin ()
-  ()
-  (:documentation "Subclasses of this class will immediately
-  process the gestures of a macro when macro processing is
-  started by setting `executingp'. This is essential for
-  event-based command processing schemes."))
+  ())
 
-(defmethod (setf executingp) :after ((new-val (eql t)) (drei instant-macro-execution-mixin))
+(setf (documentation 'instant-macro-execution-mixin 'type)
+      (format nil "Subclasses of this class will immediately process~@
+                   the gestures of a macro when macro processing is~@
+                   started by setting `executingp'. This is essential~@
+                   for event-based command processing schemes."))
+
+(defmethod (setf executingp) :after
+    ((new-val (eql t)) (drei instant-macro-execution-mixin))
   (loop until (null (remaining-keys drei))
         for gesture = (pop (remaining-keys drei))
         do (process-gesture drei gesture)
