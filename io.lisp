@@ -107,9 +107,9 @@
                    :key #'filepath :test #'equal)
              (let ((buffer (if (probe-file filepath)
                                (with-open-file (stream filepath :direction :input)
-                                 (make-buffer-from-stream stream))
-                               (make-new-buffer))))
-               (setf (filepath buffer) filepath
+                                 (buf:make-buffer-from-stream stream))
+                               (buf:make-new-buffer))))
+               (setf (buf:filepath buffer) filepath
                      (utils:name buffer) (filepath-filename filepath)
                      (needs-saving buffer) nil)
                buffer)))))
@@ -122,7 +122,7 @@
    :directory
    (pathname-directory
     (or (and (current-buffer)
-             (filepath (current-buffer)))
+             (buf:filepath (current-buffer)))
         (user-homedir-pathname)))))
 
 (clim:define-command (com-find-file :name t :command-table io-table) 
@@ -156,10 +156,10 @@ name an existing file."
                    :key #'filepath :test #'equal)
              (if (probe-file filepath)
                  (with-open-file (stream filepath :direction :input)
-                   (let ((buffer (make-buffer-from-stream stream)))
-                     (setf (filepath buffer) filepath
+                   (let ((buffer (buf:make-buffer-from-stream stream)))
+                     (setf (buf:filepath buffer) filepath
                            (utils:name buffer) (filepath-filename filepath)
-                           (read-only-p buffer) t
+                           (buf:read-only-p buffer) t
                            (needs-saving buffer) nil)))
                  (progn
                    (display-message "No such file: ~A" filepath)
@@ -188,13 +188,13 @@ signal an error."
 When a buffer is readonly, attempts to change the contents of the
 buffer signal an error."
   (let ((buffer (current-buffer)))
-    (setf (read-only-p buffer) (not (read-only-p buffer)))))
+    (setf (buf:read-only-p buffer) (not (buf:read-only-p buffer)))))
 
 (set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
 
 (defmethod frame-set-visited-file-name (application-frame filepath buffer)
   (declare (ignore application-frame))
-  (setf (filepath buffer) filepath
+  (setf (buf:filepath buffer) filepath
         (utils:name buffer) (filepath-filename filepath)
         (needs-saving buffer) t))
 
@@ -211,7 +211,7 @@ that filename."
   (set-visited-file-name filename (current-buffer)))
 
 (defmethod check-buffer-writability (application-frame (filepath pathname)
-                                     (buffer esclados-buffer-mixin))
+                                     (buffer buf:esclados-buffer-mixin))
   (declare (ignore application-frame))
   ;; Cannot write to a directory.
   (when (directory-pathname-p filepath)
@@ -253,7 +253,7 @@ to overwrite."
 	t)))
 
 (defmethod frame-save-buffer (application-frame buffer)
-  (let ((filepath (or (filepath buffer)
+  (let ((filepath (or (buf:filepath buffer)
                       (clim:accept 'pathname :prompt "Save Buffer to File"))))
     (check-buffer-writability application-frame filepath buffer)
     (unless (check-file-times buffer filepath "Overwrite" "written")
@@ -266,11 +266,11 @@ to overwrite."
         (rename-file filepath (make-pathname :name backup-name
                                              :type backup-type))))
     (with-open-file (stream filepath :direction :output :if-exists :supersede)
-      (save-buffer-to-stream buffer stream))
-    (setf (filepath buffer) filepath
+      (buf:save-buffer-to-stream buffer stream))
+    (setf (buf:filepath buffer) filepath
           (file-write-time buffer) (file-write-date filepath)
           (utils:name buffer) (filepath-filename filepath))
-    (display-message "Wrote: ~a" (filepath buffer))
+    (display-message "Wrote: ~a" (buf:filepath buffer))
     (setf (needs-saving buffer) nil)))
 
 (clim:define-command (com-save-buffer :name t :command-table io-table) ()
@@ -278,7 +278,7 @@ to overwrite."
 If there is filename associated with the buffer, write to that
 file, replacing its contents. If not, prompt for a filename."
   (let ((buffer (current-buffer)))
-    (if (null (filepath buffer))
+    (if (null (buf:filepath buffer))
         (com-write-buffer (clim:accept 'pathname :prompt "Write Buffer to File: "
                                             :prompt-mode :raw
                                             :default (directory-of-current-buffer) :insert-default t
@@ -295,11 +295,11 @@ file, replacing its contents. If not, prompt for a filename."
 (defmethod frame-write-buffer (application-frame filepath buffer)
   (check-buffer-writability application-frame filepath buffer)
   (with-open-file (stream filepath :direction :output :if-exists :supersede)
-    (save-buffer-to-stream buffer stream))
-  (setf (filepath buffer) filepath
+    (buf:save-buffer-to-stream buffer stream))
+  (setf (buf:filepath buffer) filepath
         (utils:name buffer) (filepath-filename filepath)
         (needs-saving buffer) nil)
-  (display-message "Wrote: ~a" (filepath buffer)))
+  (display-message "Wrote: ~a" (buf:filepath buffer)))
 
 (clim:define-command (com-write-buffer :name t :command-table io-table) 
     ((filepath 'pathname :prompt "Write Buffer to File: " :prompt-mode :raw
