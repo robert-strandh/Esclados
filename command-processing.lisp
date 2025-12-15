@@ -13,7 +13,7 @@ bound to the current command processor.")
   (loop with table = (clim:find-command-table start-table)
         for (gesture . rest) on gestures
         for item = (clim:find-keystroke-item gesture table :errorp nil)
-        while item
+        until (null item)
         do (if (eq (clim:command-menu-item-type item) :command)
                (return (if (null rest) item nil))
                (setf table (clim:command-menu-item-value item)))
