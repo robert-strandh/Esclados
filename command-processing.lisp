@@ -12,7 +12,7 @@ bound to the current command processor.")
 (defun find-gestures (gestures start-table)
   (loop with table = (clim:find-command-table start-table)
         for (gesture . rest) on gestures
-        for item = (clim:find-keystroke-item  gesture table :errorp nil)
+        for item = (clim:find-keystroke-item gesture table :errorp nil)
         while item
         do (if (eq (clim:command-menu-item-type item) :command)
                (return (if (null rest) item nil))
@@ -25,7 +25,6 @@ bound to the current command processor.")
               (find-gestures-with-inheritance gestures table))
             (clim:command-table-inherit-from
              (clim:find-command-table start-table)))))
-
 
 (defun gesture-matches-gesture-name-p (gesture gesture-name)
   (clim:event-matches-gesture-name-p gesture gesture-name))
