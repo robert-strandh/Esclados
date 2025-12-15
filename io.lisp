@@ -111,7 +111,7 @@
                                (buf:make-new-buffer))))
                (setf (buf:filepath buffer) filepath
                      (utils:name buffer) (filepath-filename filepath)
-                     (needs-saving buffer) nil)
+                     (buf:needs-saving buffer) nil)
                buffer)))))
 
 (defun directory-of-current-buffer ()
@@ -160,7 +160,7 @@ name an existing file."
                      (setf (buf:filepath buffer) filepath
                            (utils:name buffer) (filepath-filename filepath)
                            (buf:read-only-p buffer) t
-                           (needs-saving buffer) nil)))
+                           (buf:needs-saving buffer) nil)))
                  (progn
                    (display-message "No such file: ~A" filepath)
                    (clim:beep)
@@ -196,7 +196,7 @@ buffer signal an error."
   (declare (ignore application-frame))
   (setf (buf:filepath buffer) filepath
         (utils:name buffer) (filepath-filename filepath)
-        (needs-saving buffer) t))
+        (buf:needs-saving buffer) t))
 
 (clim:define-command (com-set-visited-file-name :name t :command-table io-table)
     ((filename 'pathname :prompt "New filename: "
@@ -242,7 +242,7 @@ returns highest X."
   "Return NIL if filepath newer than buffer and user doesn't want
 to overwrite."
   (let ((f-w-d (and (probe-file filepath) (file-write-date filepath)))
-	(f-w-t (file-write-time buffer)))
+	(f-w-t (buf:file-write-time buffer)))
     (if (and f-w-d f-w-t (> f-w-d f-w-t))
 	(if (clim:accept 'boolean
 		    :prompt (format nil "File has changed on disk. ~a anyway?"
@@ -258,7 +258,7 @@ to overwrite."
     (check-buffer-writability application-frame filepath buffer)
     (unless (check-file-times buffer filepath "Overwrite" "written")
       (return-from frame-save-buffer))
-    (when (and (probe-file filepath) (not (file-saved-p buffer)))
+    (when (and (probe-file filepath) (not (buf:file-saved-p buffer)))
       (let ((backup-name (pathname-name filepath))
             (backup-type (format nil "~A~~~D~~"
                                  (pathname-type filepath)
@@ -268,10 +268,10 @@ to overwrite."
     (with-open-file (stream filepath :direction :output :if-exists :supersede)
       (buf:save-buffer-to-stream buffer stream))
     (setf (buf:filepath buffer) filepath
-          (file-write-time buffer) (file-write-date filepath)
+          (buf:file-write-time buffer) (file-write-date filepath)
           (utils:name buffer) (filepath-filename filepath))
     (display-message "Wrote: ~a" (buf:filepath buffer))
-    (setf (needs-saving buffer) nil)))
+    (setf (buf:needs-saving buffer) nil)))
 
 (clim:define-command (com-save-buffer :name t :command-table io-table) ()
   "Write the contents of the buffer to a file.
@@ -283,7 +283,7 @@ file, replacing its contents. If not, prompt for a filename."
                                             :prompt-mode :raw
                                             :default (directory-of-current-buffer) :insert-default t
                                             :default-type 'pathname))
-        (if (needs-saving buffer)
+        (if (buf:needs-saving buffer)
             (handler-case (save-buffer buffer)
               ((or buffer-writing-error file-error) (e)
                 (display-message "~A" e)))
@@ -298,7 +298,7 @@ file, replacing its contents. If not, prompt for a filename."
     (buf:save-buffer-to-stream buffer stream))
   (setf (buf:filepath buffer) filepath
         (utils:name buffer) (filepath-filename filepath)
-        (needs-saving buffer) nil)
+        (buf:needs-saving buffer) nil)
   (display-message "Wrote: ~a" (buf:filepath buffer)))
 
 (clim:define-command (com-write-buffer :name t :command-table io-table) 
