@@ -97,13 +97,13 @@
 (defmethod frame-find-file (application-frame filepath)
   (declare (ignore application-frame))
   (cond ((null filepath)
-         (display-message "No file name given.")
+         (esclados:display-message "No file name given.")
          (clim:beep))
         ((directory-pathname-p filepath)
-         (display-message "~A is a directory name." filepath)
+         (esclados:display-message "~A is a directory name." filepath)
          (clim:beep))
         (t
-         (or (find filepath (buffers clim:*application-frame*)
+         (or (find filepath (esclados:buffers clim:*application-frame*)
                    :key #'filepath :test #'equal)
              (let ((buffer (if (probe-file filepath)
                                (with-open-file (stream filepath :direction :input)
@@ -121,8 +121,8 @@
   (make-pathname
    :directory
    (pathname-directory
-    (or (and (current-buffer)
-             (buf:filepath (current-buffer)))
+    (or (and (esclados:current-buffer)
+             (buf:filepath (esclados:current-buffer)))
         (user-homedir-pathname)))))
 
 (clim:define-command (com-find-file :name t :command-table io-table) 
@@ -138,21 +138,21 @@ buffer. Does not create a file if the filename given does not
 name an existing file."
   (handler-case (find-file filepath)
     (file-error (e)
-      (display-message "~A" e))))
+      (esclados:display-message "~A" e))))
 
-(set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
-         'io-table '((#\x :control) (#\f :control)))
+(esclados:set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
+                  'io-table '((#\x :control) (#\f :control)))
 
 (defmethod frame-find-file-read-only (application-frame filepath)
   (declare (ignore application-frame))
   (cond ((null filepath)
-         (display-message "No file name given.")
+         (esclados:display-message "No file name given.")
          (clim:beep))
         ((directory-pathname-p filepath)
-         (display-message "~A is a directory name." filepath)
+         (esclados:display-message "~A is a directory name." filepath)
          (clim:beep))
         (t
-         (or (find filepath (buffers clim:*application-frame*)
+         (or (find filepath (esclados:buffers clim:*application-frame*)
                    :key #'filepath :test #'equal)
              (if (probe-file filepath)
                  (with-open-file (stream filepath :direction :input)
@@ -162,7 +162,7 @@ name an existing file."
                            (buf:read-only-p buffer) t
                            (buf:needs-saving buffer) nil)))
                  (progn
-                   (display-message "No such file: ~A" filepath)
+                   (esclados:display-message "No such file: ~A" filepath)
                    (clim:beep)
                    nil))))))
 
@@ -179,18 +179,18 @@ buffer. If the filename given does not name an existing file,
 signal an error."
   (find-file-read-only filepath))
 
-(set-key `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
-         'io-table '((#\x :control) (#\r :control)))
+(esclados:set-key `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
+                  'io-table '((#\x :control) (#\r :control)))
 
 (clim:define-command (com-read-only :name t :command-table io-table)
     ()
   "Toggle the readonly status of the current buffer.
 When a buffer is readonly, attempts to change the contents of the
 buffer signal an error."
-  (let ((buffer (current-buffer)))
+  (let ((buffer (esclados:current-buffer)))
     (setf (buf:read-only-p buffer) (not (buf:read-only-p buffer)))))
 
-(set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
+(esclados:set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
 
 (defmethod frame-set-visited-file-name (application-frame filepath buffer)
   (declare (ignore application-frame))
@@ -208,7 +208,7 @@ buffer signal an error."
     "Prompt for a new filename for the current buffer.
 The next time the buffer is saved it will be saved to a file with
 that filename."
-  (set-visited-file-name filename (current-buffer)))
+  (set-visited-file-name filename (esclados:current-buffer)))
 
 (defmethod check-buffer-writability (application-frame (filepath pathname)
                                      (buffer buf:esclados-buffer-mixin))
@@ -248,7 +248,7 @@ to overwrite."
 		    :prompt (format nil "File has changed on disk. ~a anyway?"
 				    question))
 	    t
-	    (progn (display-message "~a not ~a" filepath answer)
+	    (progn (esclados:display-message "~a not ~a" filepath answer)
 		   nil))
 	t)))
 
@@ -270,14 +270,14 @@ to overwrite."
     (setf (buf:filepath buffer) filepath
           (buf:file-write-time buffer) (file-write-date filepath)
           (utils:name buffer) (filepath-filename filepath))
-    (display-message "Wrote: ~a" (buf:filepath buffer))
+    (esclados:display-message "Wrote: ~a" (buf:filepath buffer))
     (setf (buf:needs-saving buffer) nil)))
 
 (clim:define-command (com-save-buffer :name t :command-table io-table) ()
   "Write the contents of the buffer to a file.
 If there is filename associated with the buffer, write to that
 file, replacing its contents. If not, prompt for a filename."
-  (let ((buffer (current-buffer)))
+  (let ((buffer (esclados:current-buffer)))
     (if (null (buf:filepath buffer))
         (com-write-buffer (clim:accept 'pathname :prompt "Write Buffer to File: "
                                             :prompt-mode :raw
@@ -286,11 +286,11 @@ file, replacing its contents. If not, prompt for a filename."
         (if (buf:needs-saving buffer)
             (handler-case (save-buffer buffer)
               ((or buffer-writing-error file-error) (e)
-                (display-message "~A" e)))
-            (display-message "No changes need to be saved from ~a"
+                (esclados:display-message "~A" e)))
+            (esclados:display-message "No changes need to be saved from ~a"
                              (utils:name buffer))))))
 
-(set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
+(esclados:set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
 
 (defmethod frame-write-buffer (application-frame filepath buffer)
   (check-buffer-writability application-frame filepath buffer)
@@ -299,7 +299,7 @@ file, replacing its contents. If not, prompt for a filename."
   (setf (buf:filepath buffer) filepath
         (utils:name buffer) (filepath-filename filepath)
         (buf:needs-saving buffer) nil)
-  (display-message "Wrote: ~a" (buf:filepath buffer)))
+  (esclados:display-message "Wrote: ~a" (buf:filepath buffer)))
 
 (clim:define-command (com-write-buffer :name t :command-table io-table) 
     ((filepath 'pathname :prompt "Write Buffer to File: " :prompt-mode :raw
@@ -307,21 +307,22 @@ file, replacing its contents. If not, prompt for a filename."
                :default-type 'pathname))
     "Prompt for a filename and write the current buffer to it.
 Changes the file visted by the buffer to the given file."
-  (let ((buffer (current-buffer)))
+  (let ((buffer (esclados:current-buffer)))
     (handler-case (write-buffer filepath buffer)
       (buffer-writing-error (e)
-        (with-minibuffer-stream (minibuffer)
+        (esclados:with-minibuffer-stream (minibuffer)
           (let ((*print-escape* nil))
             (print-object e minibuffer)))))))
 
-(set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
+(esclados:set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\w :control)))
 
-(utils:define-menu-table esclados-io-menu-table (io-table global-table)
+(utils:define-menu-table esclados-io-menu-table
+    (io-table esclados:global-table)
   `(com-find-file ,clim:*unsupplied-argument-marker*)
   `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
   'com-save-buffer
   `(com-write-buffer ,clim:*unsupplied-argument-marker*)
   `(com-set-visited-file-name ,clim:*unsupplied-argument-marker*)
   :divider
-  'com-quit)
+  'esclados:com-quit)
