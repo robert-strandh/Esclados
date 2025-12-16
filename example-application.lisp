@@ -10,7 +10,7 @@
   (declare (ignore frame))
   (format pane "Pane name: ~s" (clim:pane-name (master-pane pane))))
 
-(defclass example-minibuffer-pane (minibuffer-pane)
+(defclass example-minibuffer-pane (mini:minibuffer-pane)
   ())
 
 (defclass example-pane (pane-mixin clim:application-pane)

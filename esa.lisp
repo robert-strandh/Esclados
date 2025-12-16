@@ -49,7 +49,7 @@
         (read-gestures-for-help command-table)
       (when (consp command)
         (setf command (car command)))
-      (display-message "~{~A ~}~:[is not bound~;runs the command ~:*~A~]"
+      (mini:display-message "~{~A ~}~:[is not bound~;runs the command ~:*~A~]"
                        (mapcar #'gesture-name gestures)
                        (or (clim:command-line-name-for-command
                             command command-table :errorp nil)

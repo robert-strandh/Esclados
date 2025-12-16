@@ -354,7 +354,7 @@ never refer to a command."))
                   (let ((command (if (commandp item) item
                                      (clim:command-menu-item-value item)))
                         (*current-gesture* (first (last gestures)))
-                        (*standard-input* (or *minibuffer* *standard-input*)))
+                        (*standard-input* (or mini:*minibuffer* *standard-input*)))
                     (unless (consp command)
                       (setf command (list command)))
                     ;; Call `*partial-command-parser*' to handle numeric

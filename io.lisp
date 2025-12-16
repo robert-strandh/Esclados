@@ -97,10 +97,10 @@
 (defmethod frame-find-file (application-frame filepath)
   (declare (ignore application-frame))
   (cond ((null filepath)
-         (esclados:display-message "No file name given.")
+         (mini:display-message "No file name given.")
          (clim:beep))
         ((directory-pathname-p filepath)
-         (esclados:display-message "~A is a directory name." filepath)
+         (mini:display-message "~A is a directory name." filepath)
          (clim:beep))
         (t
          (or (find filepath (esclados:buffers clim:*application-frame*)
@@ -138,7 +138,7 @@ buffer. Does not create a file if the filename given does not
 name an existing file."
   (handler-case (find-file filepath)
     (file-error (e)
-      (esclados:display-message "~A" e))))
+      (mini:display-message "~A" e))))
 
 (esclados:set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
                   'io-table '((#\x :control) (#\f :control)))
@@ -146,10 +146,10 @@ name an existing file."
 (defmethod frame-find-file-read-only (application-frame filepath)
   (declare (ignore application-frame))
   (cond ((null filepath)
-         (esclados:display-message "No file name given.")
+         (mini:display-message "No file name given.")
          (clim:beep))
         ((directory-pathname-p filepath)
-         (esclados:display-message "~A is a directory name." filepath)
+         (mini:display-message "~A is a directory name." filepath)
          (clim:beep))
         (t
          (or (find filepath (esclados:buffers clim:*application-frame*)
@@ -162,7 +162,7 @@ name an existing file."
                            (buf:read-only-p buffer) t
                            (buf:needs-saving buffer) nil)))
                  (progn
-                   (esclados:display-message "No such file: ~A" filepath)
+                   (mini:display-message "No such file: ~A" filepath)
                    (clim:beep)
                    nil))))))
 
@@ -248,7 +248,7 @@ to overwrite."
 		    :prompt (format nil "File has changed on disk. ~a anyway?"
 				    question))
 	    t
-	    (progn (esclados:display-message "~a not ~a" filepath answer)
+	    (progn (mini:display-message "~a not ~a" filepath answer)
 		   nil))
 	t)))
 
@@ -270,7 +270,7 @@ to overwrite."
     (setf (buf:filepath buffer) filepath
           (buf:file-write-time buffer) (file-write-date filepath)
           (utils:name buffer) (filepath-filename filepath))
-    (esclados:display-message "Wrote: ~a" (buf:filepath buffer))
+    (mini:display-message "Wrote: ~a" (buf:filepath buffer))
     (setf (buf:needs-saving buffer) nil)))
 
 (clim:define-command (com-save-buffer :name t :command-table io-table) ()
@@ -286,8 +286,8 @@ file, replacing its contents. If not, prompt for a filename."
         (if (buf:needs-saving buffer)
             (handler-case (save-buffer buffer)
               ((or buffer-writing-error file-error) (e)
-                (esclados:display-message "~A" e)))
-            (esclados:display-message "No changes need to be saved from ~a"
+                (mini:display-message "~A" e)))
+            (mini:display-message "No changes need to be saved from ~a"
                              (utils:name buffer))))))
 
 (esclados:set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
@@ -299,7 +299,7 @@ file, replacing its contents. If not, prompt for a filename."
   (setf (buf:filepath buffer) filepath
         (utils:name buffer) (filepath-filename filepath)
         (buf:needs-saving buffer) nil)
-  (esclados:display-message "Wrote: ~a" (buf:filepath buffer)))
+  (mini:display-message "Wrote: ~a" (buf:filepath buffer)))
 
 (clim:define-command (com-write-buffer :name t :command-table io-table) 
     ((filepath 'pathname :prompt "Write Buffer to File: " :prompt-mode :raw
@@ -310,7 +310,7 @@ Changes the file visted by the buffer to the given file."
   (let ((buffer (esclados:current-buffer)))
     (handler-case (write-buffer filepath buffer)
       (buffer-writing-error (e)
-        (esclados:with-minibuffer-stream (minibuffer)
+        (mini:with-minibuffer-stream (minibuffer)
           (let ((*print-escape* nil))
             (print-object e minibuffer)))))))
 

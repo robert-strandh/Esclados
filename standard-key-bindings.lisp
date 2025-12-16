@@ -25,7 +25,7 @@
                       clim:command-not-present)
                    ()
                   (clim:beep)
-                  (display-message "No such command")
+                  (mini:display-message "No such command")
                   (return-from com-extended-command nil)))))
     (clim:execute-frame-command clim:*application-frame* item)))
 

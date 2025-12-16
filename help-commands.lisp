@@ -7,7 +7,7 @@
 (clim:define-command
     (com-describe-key-briefly :name t :command-table help-table)
     ()
-  (display-message "Describe key briefly:")
+  (mini:display-message "Describe key briefly:")
   (clim:redisplay-frame-panes clim:*application-frame*)
   (describe-key-briefly clim:*application-frame*))
 
@@ -26,11 +26,11 @@
                 `(clim:command-name :command-table ,command-table)
                 :prompt "Where is command")
              (error () (progn (clim:beep)
-                              (display-message "No such command")
+                              (mini:display-message "No such command")
                               (return-from com-where-is nil)))))
          (keystrokes (find-keystrokes-for-command-with-inheritance
                       command command-table)))
-    (display-message
+    (mini:display-message
      "~A is ~:[not on any key~;~:*on ~{~A~^, ~}~]"
      (clim:command-line-name-for-command command command-table)
      (mapcar (lambda (keys)
@@ -70,7 +70,7 @@
 (clim:define-command (com-describe-key :name t :command-table help-table)
     ()
   (let ((command-table applicable-command-table))
-    (display-message "Describe Key:")
+    (mini:display-message "Describe Key:")
     (clim:redisplay-frame-panes clim:*application-frame*)
     (multiple-value-bind (command gestures)
         (read-gestures-for-help command-table)
@@ -83,7 +83,7 @@
                gesture-name command
                :command-table command-table
                :stream out-stream))
-            (display-message "Unbound gesture: ~A" gesture-name))))))
+            (mini:display-message "Unbound gesture: ~A" gesture-name))))))
 
 (setf (documentation 'com-describe-key 'function)
       (format nil "Display documentation for the command invoked by~@
@@ -182,7 +182,7 @@ Words are comma delimited. When more than two words are given, the documentation
     (let* ((command-table applicable-command-table)
            (results (find-command-key-pairs words command-table)))
       (if (null results)
-          (display-message "No results for ~{~A~^, ~}" words)
+          (mini:display-message "No results for ~{~A~^, ~}" words)
           (with-help-stream (out-stream (format nil "~10THelp: Apropos ~{~A~^, ~}" words))
             (present-command-key-pairs results command-table out-stream))))))
 
