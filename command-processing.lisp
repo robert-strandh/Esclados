@@ -462,7 +462,7 @@ never refer to a command."))
   ;; well, something that either requires this kind of repeated
   ;; rescanning of accumulated input data or some yet-unimplemented
   ;; complex state retaining mechanism (such as continuations).
-  (loop (let ((*current-gesture* (read-gesture :command-processor command-processor)))
+  (loop (let ((*current-gesture*
+                (read-gesture :command-processor command-processor)))
           (unless (process-gesture command-processor *current-gesture*)
             (return)))))
-
