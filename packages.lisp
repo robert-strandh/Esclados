@@ -6,9 +6,18 @@
            #:build-menu #:define-menu-table
            #:name-mixin #:name))
 
+(defpackage #:esclados-minibuffer
+  (:use #:common-lisp)
+  (:export
+   #:minibuffer-pane
+   #:*minibuffer*
+   #:display-message
+   #:with-minibuffer-stream))
+
 (defpackage :esclados
   (:use :clim-lisp :clim-extensions)
-  (:local-nicknames (#:utils #:esclados-utils))
+  (:local-nicknames (#:utils #:esclados-utils)
+                    (#:mini #:esclados-minibuffer))
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
            #:windows #:present-window #:current-window
@@ -68,7 +77,8 @@
 (defpackage :esclados-io
   (:use :clim-lisp)
   (:local-nicknames (#:utils #:esclados-utils)
-                    (#:buf #:esclados-buffer))
+                    (#:buf #:esclados-buffer)
+                    (#:mini #:esclados-minibuffer))
   (:export #:frame-find-file #:find-file
            #:frame-find-file-read-only #:find-file-read-only
            #:frame-set-visited-file-name #:set-visited-filename
