@@ -66,7 +66,7 @@
            #:read-only-p))
 
 (defpackage :esclados-io
-  (:use :clim-lisp :esclados)
+  (:use :clim-lisp)
   (:local-nicknames (#:utils #:esclados-utils)
                     (#:buf #:esclados-buffer))
   (:export #:frame-find-file #:find-file
