@@ -146,11 +146,11 @@ that resulted in the signaling of this condition."))
                    for event-based command processing schemes."))
 
 (defmethod (setf executingp) :after
-    ((new-val (eql t)) (drei instant-macro-execution-mixin))
-  (loop until (null (remaining-keys drei))
-        for gesture = (pop (remaining-keys drei))
-        do (process-gesture drei gesture)
-        finally (setf (executingp drei) nil)))
+    ((new-val (eql t)) (object instant-macro-execution-mixin))
+  (loop until (null (remaining-keys object))
+        for gesture = (pop (remaining-keys object))
+        do (process-gesture object gesture)
+        finally (setf (executingp object) nil)))
 
 (defclass asynchronous-command-processor
     (command-processor instant-macro-execution-mixin)
