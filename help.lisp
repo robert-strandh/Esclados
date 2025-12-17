@@ -1,9 +1,5 @@
 (cl:in-package #:esclados)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Help
-
 (defgeneric invoke-with-help-stream (esclados title continuation))
 
 (setf (documentation 'invoke-with-help-stream 'function)
