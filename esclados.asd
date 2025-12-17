@@ -19,7 +19,7 @@
    (:file "event-handling")
    (:file "command-table-manipulation")
    (:file "standard-key-bindings")
-   (:file "esa")
+   (:file "help")
    (:file "help-commands")
    (:file "buffer")
    (:file "io")
