@@ -18,9 +18,8 @@
             :width 400)))
 
 (defmacro with-help-stream ((stream title) &body body)
-  `(invoke-with-help-stream *esclados-instance* ,title
-                            #'(lambda (,stream)
-                                ,@body)))
+  `(invoke-with-help-stream
+    *esclados-instance* ,title #'(lambda (,stream) ,@body)))
 
 (setf (documentation 'with-help-stream 'function)
       (format nil "Evaluate `body' with `stream' bound to a stream~@
@@ -29,16 +28,22 @@
                    naming the resulting stream, if that makes sense~@
                    for the ESCLADOS."))
 
+(defun item-type (item)
+  (clim:command-menu-item-type item))
+
+(defun item-value (item)
+  (clim:command-menu-item-value item))
+
 (defun read-gestures-for-help (command-table)
   (clim:with-input-focus (t)
     (loop for gestures = (list (cmd:read-gesture))
             then (nconc gestures (list (cmd:read-gesture)))
           for item
             = (cmd:find-gestures-with-inheritance gestures command-table)
-          unless item
+          when (null item)
             do (return (values nil gestures))
-          when (eq (clim:command-menu-item-type item) :command)
-            do (return (values (clim:command-menu-item-value item) gestures)))))
+          when (eq (item-type item) :command)
+            do (return (values (item-value item) gestures)))))
 
 (defun describe-key-briefly (frame)
   (let ((command-table (find-applicable-command-table frame)))
@@ -46,11 +51,12 @@
         (read-gestures-for-help command-table)
       (when (consp command)
         (setf command (car command)))
-      (mini:display-message "~{~A ~}~:[is not bound~;runs the command ~:*~A~]"
-                       (mapcar #'gesture-name gestures)
-                       (or (clim:command-line-name-for-command
-                            command command-table :errorp nil)
-                           command)))))
+      (mini:display-message
+       "~{~A ~}~:[is not bound~;runs the command ~:*~A~]"
+       (mapcar #'gesture-name gestures)
+       (or (clim:command-line-name-for-command
+            command command-table :errorp nil)
+           command)))))
 
 (defgeneric gesture-name (gesture))
 
@@ -85,7 +91,8 @@
   (cond ((eq (car gesture) :keyboard)
          (translate-name-and-modifiers (second gesture) (third gesture)))
         ;; Assume `gesture' is a list of gestures.
-        (t (format nil "~{~A~#[~; ~; ~]~}" (mapcar #'gesture-name gesture)))))
+        (t (format nil "~{~A~#[~; ~; ~]~}"
+                   (mapcar #'gesture-name gesture)))))
 
 (defun find-keystrokes-for-command (command command-table)
   (let ((keystrokes '()))
@@ -93,14 +100,14 @@
                (clim:map-over-command-table-keystrokes
                 #'(lambda (menu-name keystroke item)
                     (declare (ignore menu-name))
-                    (cond ((and (eq (clim:command-menu-item-type item) :command)
-                                (or (and (symbolp (clim:command-menu-item-value item))
-                                         (eq (clim:command-menu-item-value item) command))
-                                    (and (listp (clim:command-menu-item-value item))
-                                         (eq (car (clim:command-menu-item-value item)) command))))
+                    (cond ((and (eq (item-type item) :command)
+                                (or (and (symbolp (item-value item))
+                                         (eq (item-value item) command))
+                                    (and (listp (item-value item))
+                                         (eq (car (item-value item)) command))))
                            (push (cons keystroke prefix) keystrokes))
-                          ((eq (clim:command-menu-item-type item) :menu)
-                           (helper command (clim:command-menu-item-value item) (cons keystroke prefix)))
+                          ((eq (item-type item) :menu)
+                           (helper command (item-value item) (cons keystroke prefix)))
                           (t nil)))
                 command-table)))
       (helper command command-table nil)
@@ -123,12 +130,12 @@
                (clim:map-over-command-table-keystrokes
                 #'(lambda (menu-name keystroke item)
                     (declare (ignore menu-name))
-                    (cond ((eq (clim:command-menu-item-type item) :command)
+                    (cond ((eq (item-type item) :command)
                            (push (cons (cons keystroke prefix)
-                                       (clim:command-menu-item-value item))
+                                       (item-value item))
                                  results))
-                          ((eq (clim:command-menu-item-type item) :menu)
-                           (helper (clim:command-menu-item-value item) (cons keystroke prefix)))
+                          ((eq (item-type item) :menu)
+                           (helper (item-value item) (cons keystroke prefix)))
                           (t nil)))
                 command-table)))
       (helper command-table nil)
