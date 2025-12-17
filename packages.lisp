@@ -14,8 +14,10 @@
    #:display-message
    #:with-minibuffer-stream))
 
-(defpackage #:esclados-command-procesor
+(defpackage #:esclados-command-processor
   (:use #:common-lisp)
+  (:local-nicknames (#:mini #:esclados-minibuffer)
+                    (#:clime #:clim-extensions))
   (:export
    #:command-processor
    #:command-loop-command-processor
@@ -24,15 +26,23 @@
    #:executingp
    #:recorded-keys
    #:remaining-keys
+   #:command-table
+   #:gestures
    #:*current-gesture*
    #:*command-processor*
+   #:*abort-gestures*
+   #:read-gesture
+   #:process-gestures-or-command
+   #:process-gesture
    #:find-gestures
-   #:find-gestures-with-inheritance))
+   #:find-gestures-with-inheritance
+   #:unbound-gesture-sequence))
 
 (defpackage #:esclados
   (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils)
-                    (#:mini #:esclados-minibuffer))
+                    (#:mini #:esclados-minibuffer)
+                    (#:cmd #:esclados-command-processor))
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
            #:windows #:present-window #:current-window
