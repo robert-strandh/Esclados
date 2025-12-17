@@ -6,8 +6,8 @@
                  :name t
                  :command-table keyboard-macro-table)
     ()
-  (setf (recordingp *command-processor*) t)
-  (setf (recorded-keys *command-processor*) '()))
+  (setf (cmd:recordingp cmd:*command-processor*) t)
+  (setf (cmd:recorded-keys cmd:*command-processor*) '()))
 
 (set-key 'com-start-kbd-macro 'keyboard-macro-table '((#\x :control) #\())
 
@@ -15,10 +15,10 @@
                  :name t
                  :command-table keyboard-macro-table)
     ()
-  (setf (recordingp *command-processor*) nil)
-  (setf (recorded-keys *command-processor*)
+  (setf (cmd:recordingp cmd:*command-processor*) nil)
+  (setf (cmd:recorded-keys cmd:*command-processor*)
         ;; this won't work if the command was invoked in any old way
-        (reverse (cddr (recorded-keys *command-processor*)))))
+        (reverse (cddr (cmd:recorded-keys cmd:*command-processor*)))))
 
 (set-key 'com-end-kbd-macro 'keyboard-macro-table '((#\x :control) #\)))
 
@@ -26,9 +26,10 @@
                  :name t
                  :command-table keyboard-macro-table)
     ((count 'integer :prompt "How many times?" :default 1))
-  (setf (remaining-keys *command-processor*)
-        (loop repeat count append (recorded-keys *command-processor*)))
-  (setf (executingp *command-processor*) t))
+  (setf (cmd:remaining-keys cmd:*command-processor*)
+        (loop repeat count
+              append (cmd:recorded-keys cmd:*command-processor*)))
+  (setf (cmd:executingp cmd:*command-processor*) t))
 
 (set-key `(com-call-last-kbd-macro ,clim:*numeric-argument-marker*)
          'keyboard-macro-table '((#\x :control) #\e))

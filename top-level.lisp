@@ -39,7 +39,7 @@ used.")
                  (*standard-input* (clim:frame-standard-input ,frame))
                  (mini:*minibuffer* (minibuffer ,frame))
                  (*print-pretty* nil)
-                 (clim:*abort-gestures* *abort-gestures*)
+                 (clim:*abort-gestures* cmd:*abort-gestures*)
                  (clim:*command-parser* ,command-parser)
                  (clim:*command-unparser* ,command-unparser)
                  (clim:*partial-command-parser* ,partial-command-parser)
@@ -53,7 +53,7 @@ used.")
              (loop
                do (restart-case
                       (handler-case
-                          (let* ((*command-processor* ,frame)
+                          (let* ((cmd:*command-processor* ,frame)
                                  (command-table (find-applicable-command-table ,frame))
                                  ,@bindings)
                             ;; for presentation-to-command-translators,
@@ -61,33 +61,33 @@ used.")
                             ;; (frame-command-table *application-frame*)
                             (clim:redisplay-frame-pane ,frame (clim:frame-standard-input ,frame))
                             (setf (clim:frame-command-table ,frame) command-table)
-                            (process-gestures-or-command ,frame))
-                        (unbound-gesture-sequence (c)
-                          (mini:display-message "~A is not bound" (gesture-name (gestures c)))
+                            (cmd:process-gestures-or-command ,frame))
+                        (cmd:unbound-gesture-sequence (c)
+                          (mini:display-message "~A is not bound" (gesture-name (cmd:gestures c)))
                           (clim:redisplay-frame-panes ,frame))
                         (clim:abort-gesture (c)
-                          (if (overriding-handler ,frame)
-                              (let ((*command-processor* (overriding-handler ,frame)))
-                                (process-gesture (overriding-handler ,frame)
+                          (if (cmd:overriding-handler ,frame)
+                              (let ((cmd:*command-processor* (cmd:overriding-handler ,frame)))
+                                (cmd:process-gesture (cmd:overriding-handler ,frame)
                                                  (clim:abort-gesture-event c)))
                               (mini:display-message "Quit"))
                           (clim:redisplay-frame-panes ,frame)))
                     (return-to-esclados ()
-                      (setf (overriding-handler ,frame) nil)
-                      (setf (remaining-keys ,frame) nil)))))))))
+                      (setf (cmd:overriding-handler ,frame) nil)
+                      (setf (cmd:remaining-keys ,frame) nil)))))))))
 
 (define-top-level
     (frame command-parser command-unparser partial-command-parser prompt))
 
 (defmacro simple-command-loop (command-table loop-condition
                                &optional end-clauses (abort-clauses '((signal 'clim:abort-gesture :event *current-gesture*))))
-  `(progn (setf (overriding-handler *command-processor*)
-                (make-instance 'command-loop-command-processor
-                               :command-table ,command-table
-                               :end-condition #'(lambda ()
-                                                  (not ,loop-condition))
-                               :super-command-processor *command-processor*
-                               :end-function #'(lambda ()
-                                                 ,@end-clauses)
-                               :abort-function #'(lambda ()
-                                                   ,@abort-clauses)))))
+  `(progn (setf (cmd:overriding-handler cmd:*command-processor*)
+                (make-instance 'cmd:command-loop-command-processor
+                  :command-table ,command-table
+                  :end-condition #'(lambda ()
+                                     (not ,loop-condition))
+                  :super-command-processor cmd:*command-processor*
+                  :end-function #'(lambda ()
+                                    ,@end-clauses)
+                  :abort-function #'(lambda ()
+                                      ,@abort-clauses)))))

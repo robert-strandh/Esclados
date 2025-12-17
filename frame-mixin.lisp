@@ -1,6 +1,6 @@
 (cl:in-package #:esclados)
 
-(defclass esclados-frame-mixin (command-processor)
+(defclass esclados-frame-mixin (cmd:command-processor)
   ((windows :accessor windows)))
 
 (defmethod present-buffer ((esclados esclados-frame-mixin))
@@ -9,20 +9,20 @@
 (defmethod present-window ((esclados esclados-frame-mixin))
   (first (windows esclados)))
 
-(defmethod command-table ((frame esclados-frame-mixin))
+(defmethod cmd:command-table ((frame esclados-frame-mixin))
   (find-applicable-command-table frame))
 
 ;; Defaults for non-ESCLADOS-frames.
-(defmethod recordingp ((frame clim:application-frame))
+(defmethod cmd:recordingp ((frame clim:application-frame))
   nil)
 
-(defmethod executingp ((frame clim:application-frame))
+(defmethod cmd:executingp ((frame clim:application-frame))
   nil)
 
-(defmethod recorded-keys ((frame clim:application-frame))
+(defmethod cmd:recorded-keys ((frame clim:application-frame))
   nil)
 
-(defmethod remaining-keys ((frame clim:application-frame))
+(defmethod cmd:remaining-keys ((frame clim:application-frame))
   nil)
 
 (defmethod minibuffer ((clim:application-frame esclados-frame-mixin))
@@ -31,8 +31,8 @@
 (defmethod clim:redisplay-frame-panes :around
     ((frame esclados-frame-mixin) &key force-p)
   (declare (ignore force-p))
-  (when (null (remaining-keys frame))
-    (setf (executingp frame) nil)
+  (when (null (cmd:remaining-keys frame))
+    (setf (cmd:executingp frame) nil)
     (call-next-method)))
 
 (defmethod clim:execute-frame-command :after
@@ -60,6 +60,3 @@ on `frame' should be found in."))
 
 (define-symbol-macro applicable-command-table
     (find-applicable-command-table clim:*application-frame*))
-
-
-  

@@ -35,9 +35,10 @@
 
 (defun read-gestures-for-help (command-table)
   (clim:with-input-focus (t)
-    (loop for gestures = (list (read-gesture))
-            then (nconc gestures (list (read-gesture)))
-          for item = (find-gestures-with-inheritance gestures command-table)
+    (loop for gestures = (list (cmd:read-gesture))
+            then (nconc gestures (list (cmd:read-gesture)))
+          for item
+            = (cmd:find-gestures-with-inheritance gestures command-table)
           unless item
             do (return (values nil gestures))
           when (eq (clim:command-menu-item-type item) :command)

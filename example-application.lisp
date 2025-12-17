@@ -16,8 +16,8 @@
 (defclass example-pane (pane-mixin clim:application-pane)
   ((contents :initform "hello" :accessor contents)))
 
-(clim:define-application-frame example (esclados-frame-mixin
-                                   clim:standard-application-frame)
+(clim:define-application-frame example
+    (esclados-frame-mixin clim:standard-application-frame)
   ()
   (:panes
    (window (let* ((my-pane (clim:make-pane 'example-pane
