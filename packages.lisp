@@ -1,4 +1,4 @@
-(defpackage :esclados-utils
+(defpackage #:esclados-utils
   (:use #:common-lisp)
   (:export #:unlisted
            #:listed
@@ -14,7 +14,22 @@
    #:display-message
    #:with-minibuffer-stream))
 
-(defpackage :esclados
+(defpackage #:esclados-command-procesor
+  (:use #:common-lisp)
+  (:export
+   #:command-processor
+   #:command-loop-command-processor
+   #:overriding-handler
+   #:recordingp
+   #:executingp
+   #:recorded-keys
+   #:remaining-keys
+   #:*current-gesture*
+   #:*command-processor*
+   #:find-gestures
+   #:find-gestures-with-inheritance))
+
+(defpackage #:esclados
   (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils)
                     (#:mini #:esclados-minibuffer))
@@ -64,7 +79,7 @@
            #:com-start-macro #:com-end-macro
            #:com-call-last-macro))
 
-(defpackage :esclados-buffer
+(defpackage #:esclados-buffer
   (:use :clim-lisp :esclados)
   (:local-nicknames (#:utils #:esclados-utils))
   (:export #:frame-make-buffer-from-stream #:make-buffer-from-stream
@@ -74,7 +89,7 @@
            #:frame-make-new-buffer #:make-new-buffer
            #:read-only-p))
 
-(defpackage :esclados-io
+(defpackage #:esclados-io
   (:use :clim-lisp)
   (:local-nicknames (#:utils #:esclados-utils)
                     (#:buf #:esclados-buffer)

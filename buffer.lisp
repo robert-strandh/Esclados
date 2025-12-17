@@ -1,4 +1,4 @@
-(cl:in-package :esclados-buffer)
+(cl:in-package #:esclados-buffer)
 
 (defgeneric frame-make-buffer-from-stream (application-frame stream)
   (:documentation "Create a fresh buffer by reading the external

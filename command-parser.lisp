@@ -1,4 +1,4 @@
-(cl:in-package :esclados)
+(cl:in-package #:esclados)
 
 ;;; There is an ambiguity over what to do for parsing partial commands
 ;;; with certain values filled in, as might occur for keyboard
