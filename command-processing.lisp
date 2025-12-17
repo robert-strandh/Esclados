@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-command-processor)
 
 (defparameter *abort-gestures*
   `((:keyboard #\g ,(clim:make-modifier-state :control))))
@@ -179,7 +179,7 @@ handling as per `merging-dead-keys'."))
 processors, merges incoming dead keys with the following key."))
 
 (defmethod process-gesture :around ((command-processor dead-key-merging-command-processor) gesture)
-  (merging-dead-keys (gesture (dead-key-state command-processor))
+  (clime:merging-dead-keys (gesture (dead-key-state command-processor))
     (call-next-method command-processor gesture)))
 
 (defclass command-loop-command-processor (command-processor)
