@@ -34,7 +34,7 @@ used.")
                  (,partial-command-parser 'esclados-partial-command-parser)
                  (,prompt "Extended Command: "))
      ,(let ((frame (utils:unlisted frame)))
-        `(with-slots (windows) ,frame
+        `(with-accessors ((windows windows)) ,frame
            (let ((*standard-output* (car windows))
                  (*standard-input* (clim:frame-standard-input ,frame))
                  (mini:*minibuffer* (minibuffer ,frame))
