@@ -1,7 +1,7 @@
 (cl:in-package #:esclados)
 
 (defclass esclados-frame-mixin (cmd:command-processor)
-  ((windows :accessor windows)))
+  ((%windows :accessor windows)))
 
 (defmethod present-buffer ((esclados esclados-frame-mixin))
   (first (buffers esclados)))

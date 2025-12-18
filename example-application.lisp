@@ -14,7 +14,7 @@
   ())
 
 (defclass example-pane (pane-mixin clim:application-pane)
-  ((contents :initform "hello" :accessor contents)))
+  ((%contents :initform "hello" :accessor contents)))
 
 (clim:define-application-frame example
     (esclados-frame-mixin clim:standard-application-frame)

@@ -15,9 +15,9 @@
   displayed." )
 
 (defclass minibuffer-pane (clim:application-pane)
-  ((message :initform nil
-            :accessor message
-            :documentation "An output record containing whatever
+  ((%message :initform nil
+             :accessor message
+             :documentation "An output record containing whatever
 message is supposed to be displayed in the minibuffer.")
    (message-time :initform 0
                  :accessor message-time
