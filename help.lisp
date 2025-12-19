@@ -205,6 +205,13 @@
                                              :height (* length (clim:stream-line-height stream)))
                   (clim:scroll-extent stream 0 0))))
 
+(defun find-paragraphs (string)
+  (loop for start = 0 then (+ 2 end)
+        for end = (search '(#\Newline #\Newline) string :start2 start)
+        collecting
+        (nsubstitute #\Space #\Newline (subseq string start end))
+        while end))
+
 (defun print-docstring-for-command (command-name command-table &optional (stream *standard-output*))
   (declare (ignore command-table))
   ;; This needs more regex magic. Also, it is only an interim
@@ -221,13 +228,7 @@
       (format stream "~A~%" first-line)
       (unless (null first-newline)
         (let* ((rest (subseq command-documentation first-newline))
-               (paras (delete ""
-                              (loop for start = 0 then (+ 2 end)
-                                    for end = (search '(#\Newline #\Newline) rest :start2 start)
-                                    collecting
-                                    (nsubstitute #\Space #\Newline (subseq rest start end))
-                                    while end)
-                              :test #'string=)))
+               (paras (delete "" (find-paragraphs rest) :test #'string=)))
           (dolist (para paras)
             (terpri stream)
             (let ((words (loop with length = (length para)
