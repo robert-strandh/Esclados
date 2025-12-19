@@ -192,9 +192,10 @@
             do (clim:formatting-row (stream)
                  (clim:formatting-cell (stream :align-x :right)
                    (clim:with-text-style (stream '(:sans-serif nil nil))
-                     (clim:present command
-                              `(clim:command-name :command-table ,command-table)
-                              :stream stream)))
+                     (clim:present
+                      command
+                      `(clim:command-name :command-table ,command-table)
+                      :stream stream)))
                  (clim:formatting-cell (stream)
                    (clim:with-drawing-options (stream :ink clim:+dark-blue+
                                                  :text-style '(:fix nil nil))
@@ -211,6 +212,22 @@
         collecting
         (nsubstitute #\Space #\Newline (subseq string start end))
         while end))
+
+(defun find-words (paragraph)
+  (loop with length = (length paragraph)
+        with index = 0
+        with start = 0
+        while (< index length)
+        do (loop until (>= index length)
+                 while (member (char paragraph index) '(#\Space #\Tab))
+                 do (incf index))
+           (setf start index)
+           (loop until (>= index length)
+                 until (member (char paragraph index) '(#\Space #\Tab))
+                 do (incf index))
+        until (= start index)
+        collecting (string-trim '(#\Space #\Tab #\Newline)
+                                (subseq paragraph start index))))
 
 (defun print-docstring-for-command (command-name command-table &optional (stream *standard-output*))
   (declare (ignore command-table))
@@ -231,20 +248,7 @@
                (paras (delete "" (find-paragraphs rest) :test #'string=)))
           (dolist (para paras)
             (terpri stream)
-            (let ((words (loop with length = (length para)
-                               with index = 0
-                               with start = 0
-                               while (< index length)
-                               do (loop until (>= index length)
-                                        while (member (char para index) '(#\Space #\Tab))
-                                        do (incf index))
-                                  (setf start index)
-                                  (loop until (>= index length)
-                                        until (member (char para index) '(#\Space #\Tab))
-                                        do (incf index))
-                               until (= start index)
-                               collecting (string-trim '(#\Space #\Tab #\Newline)
-                                                       (subseq para start index)))))
+            (let ((words (find-words para)))
               (loop with margin = (clim:stream-text-margin stream)
                     with space-width = (clim:stream-character-width stream #\Space)
                     with current-width = 0
