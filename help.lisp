@@ -206,9 +206,6 @@
                   (clim:scroll-extent stream 0 0))))
 
 (defun print-docstring-for-command (command-name command-table &optional (stream *standard-output*))
-  "Print documentation for `command-name', which should
-   be a symbol bound to a function, to `stream'. If no
-   documentation can be found, this fact will be printed to the stream."
   (declare (ignore command-table))
   ;; This needs more regex magic. Also, it is only an interim
   ;; solution.
@@ -257,6 +254,12 @@
                        (princ #\Space stream)
                        (incf current-width (+ word-width space-width))))
             (terpri stream)))))))
+
+(setf (documentation 'print-docstring-for-command 'function)
+      (format nil "Print documentation for `command-name', which should~@
+                   be a symbol bound to a function, to `stream'. If no~@
+                   documentation can be found, this fact will be printed~@
+                   to the stream."))
 
 (defun describe-command-binding-to-stream
     (gesture
