@@ -210,13 +210,16 @@
   ;; This needs more regex magic. Also, it is only an interim
   ;; solution.
   (clim:with-text-style (stream '(:sans-serif nil nil))
-    (let* ((command-documentation (or (documentation command-name 'function)
-                                      "This command is not documented."))
+    (let* ((documentation (documentation command-name 'function))
+           (command-documentation
+             (if (stringp documentation)
+                 documentation
+                 "This command is not documented."))
            (first-newline (position #\Newline command-documentation))
            (first-line (subseq command-documentation 0 first-newline)))
       ;; First line is special
       (format stream "~A~%" first-line)
-      (when first-newline
+      (unless (null first-newline)
         (let* ((rest (subseq command-documentation first-newline))
                (paras (delete ""
                               (loop for start = 0 then (+ 2 end)
