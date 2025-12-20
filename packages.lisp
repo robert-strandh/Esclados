@@ -6,30 +6,6 @@
            #:build-menu #:define-menu-table
            #:name-mixin #:name))
 
-(defpackage #:esclados-command-processor
-  (:use #:common-lisp)
-  (:local-nicknames (#:mini #:esclados-minibuffer)
-                    (#:clime #:clim-extensions))
-  (:export
-   #:command-processor
-   #:command-loop-command-processor
-   #:overriding-handler
-   #:recordingp
-   #:executingp
-   #:recorded-keys
-   #:remaining-keys
-   #:command-table
-   #:gestures
-   #:*current-gesture*
-   #:*command-processor*
-   #:*abort-gestures*
-   #:read-gesture
-   #:process-gestures-or-command
-   #:process-gesture
-   #:find-gestures
-   #:find-gestures-with-inheritance
-   #:unbound-gesture-sequence))
-
 (defpackage #:esclados
   (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils)
