@@ -58,7 +58,7 @@
            #:com-call-last-macro))
 
 (defpackage #:esclados-buffer
-  (:use :clim-lisp :esclados)
+  (:use :clim-lisp)
   (:local-nicknames (#:utils #:esclados-utils))
   (:export #:frame-make-buffer-from-stream #:make-buffer-from-stream
            #:frame-save-buffer-to-stream #:save-buffer-to-stream
