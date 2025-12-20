@@ -4,14 +4,14 @@
 ;;; Copyright (c) 2006, Troels Henriksen (athas@sigkill.dk)
 
 (defsystem "esclados"
-  :depends-on ("clim-core")
+  :depends-on ("clim-core"
+               "esclados-minibuffer")
   :serial t
   :components
   ((:file "packages")
    (:file "utils")
    (:file "query")
    (:file "info-pane")
-   (:file "minibuffer-pane")
    (:file "pane-mixin")
    (:file "command-processing")
    (:file "frame-mixin")
