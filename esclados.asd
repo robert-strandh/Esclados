@@ -5,7 +5,8 @@
 
 (defsystem "esclados"
   :depends-on ("clim-core"
-               "esclados-minibuffer")
+               "esclados-minibuffer"
+               "esclados-command-processing")
   :serial t
   :components
   ((:file "packages")
@@ -13,7 +14,6 @@
    (:file "query")
    (:file "info-pane")
    (:file "pane-mixin")
-   (:file "command-processing")
    (:file "frame-mixin")
    (:file "top-level")
    (:file "event-handling")
