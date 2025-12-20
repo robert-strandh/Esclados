@@ -6,14 +6,6 @@
            #:build-menu #:define-menu-table
            #:name-mixin #:name))
 
-(defpackage #:esclados-minibuffer
-  (:use #:common-lisp)
-  (:export
-   #:minibuffer-pane
-   #:*minibuffer*
-   #:display-message
-   #:with-minibuffer-stream))
-
 (defpackage #:esclados-command-processor
   (:use #:common-lisp)
   (:local-nicknames (#:mini #:esclados-minibuffer)
