@@ -70,7 +70,7 @@
 (defun translate-name-and-modifiers (key-name modifiers)
   (with-output-to-string (s)
     (loop for (modifier name) on (list
-                                        ;(+alt-key+ "A-")
+                                  ;;(+alt-key+ "A-")
                                   clim:+hyper-key+ "H-"
                                   clim:+super-key+ "s-"
                                   clim:+meta-key+ "M-"
@@ -276,11 +276,8 @@
        (command-table applicable-command-table)
        (stream *standard-output*))
   "Describe `command' as invoked by `gesture' to `stream'."
-  (let* ((command-name (if (listp command)
-                           (first command)
-                           command))
-         (command-args (if (listp command)
-                           (rest command)))
+  (let* ((command-name (if (listp command) (first command) command))
+         (command-args (if (listp command) (rest command) '()))
          (real-command-table (or (clim:command-accessible-in-command-table-p
                                   command-name
                                   command-table)
