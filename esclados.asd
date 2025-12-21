@@ -5,6 +5,7 @@
 
 (defsystem "esclados"
   :depends-on ("clim-core"
+               "esclados-utilities"
                "esclados-minibuffer"
                "esclados-command-processing")
   :serial t
