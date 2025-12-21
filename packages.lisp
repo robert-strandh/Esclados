@@ -1,11 +1,3 @@
-(defpackage #:esclados-utils
-  (:use #:common-lisp)
-  (:export #:unlisted
-           #:listed
-           #:list-aref
-           #:build-menu #:define-menu-table
-           #:name-mixin #:name))
-
 (defpackage #:esclados
   (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils)
