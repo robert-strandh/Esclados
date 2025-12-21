@@ -10,7 +10,6 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "utils")
    (:file "query")
    (:file "info-pane")
    (:file "pane-mixin")
