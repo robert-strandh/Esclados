@@ -7,7 +7,8 @@
   :depends-on ("clim-core"
                "esclados-utilities"
                "esclados-minibuffer"
-               "esclados-command-processing")
+               "esclados-command-processing"
+               "esclados-buffer")
   :serial t
   :components
   ((:file "packages")
@@ -21,7 +22,6 @@
    (:file "standard-key-bindings")
    (:file "help")
    (:file "help-commands")
-   (:file "buffer")
    (:file "io")
    (:file "command-parser")
    (:file "keyboard-macros")
