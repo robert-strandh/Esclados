@@ -1,3 +1,5 @@
+(cl:in-package #:common-lisp-user)
+
 (defpackage #:esclados
   (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils)
