@@ -31,7 +31,7 @@ used.")
                  ;; circumstances would it be used?  Maybe try
                  ;; turning the clim listener into an ESCLADOS?
                  (,command-unparser  'clim:command-line-command-unparser)
-                 (,partial-command-parser 'esclados-partial-command-parser)
+                 (,partial-command-parser 'partial-command-parser)
                  (,prompt "Extended Command: "))
      ,(let ((frame (utils:unlisted frame)))
         `(with-accessors ((windows windows)) ,frame

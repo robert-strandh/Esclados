@@ -28,7 +28,7 @@
            #:set-key
            #:find-applicable-command-table
            #:command-parser
-           #:esclados-partial-command-parser
+           #:partial-command-parser
            #:command-table
 
            #:gesture-matches-gesture-name-p #:meta-digit

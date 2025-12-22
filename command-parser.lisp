@@ -74,7 +74,7 @@
               (push (parse-one-arg stream name ptype args) result)
               (maybe-clear-input stream))))))))
 
-(defun esclados-partial-command-parser
+(defun partial-command-parser
     (clim:command-table stream clim:command position
      &optional numeric-argument)
   (declare (ignore clim:command-table position))
