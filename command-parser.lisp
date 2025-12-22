@@ -87,7 +87,8 @@
         (if (null info)
             ;; `command' is not a real command! Well, we can still
             ;; replace numeric argument markers.
-            (clim:substitute-numeric-argument-marker clim:command numeric-argument)
+            (clim:substitute-numeric-argument-marker
+             clim:command numeric-argument)
             (let ((required-args (climi::required-args info))
                   (keyword-args (climi::keyword-args info)))
               ;; keyword arguments not yet supported
@@ -99,12 +100,15 @@
                       (arg (car required-args) (car required-args))
                       (command-args command-args (cdr command-args))
                       (command-arg (car command-args) (car command-args)))
-                     ((null required-args) (cons command-name (nreverse result)))
+                     ((null required-args)
+                      (cons command-name (nreverse result)))
                   (destructuring-bind (name ptype &rest args) arg
-                    (push (cond ((eq command-arg clim:*unsupplied-argument-marker*)
+                    (push (cond ((eq command-arg
+                                     clim:*unsupplied-argument-marker*)
                                  (setf arg-parsed t)
                                  (parse-one-arg stream name ptype args))
-                                ((eq command-arg clim:*numeric-argument-marker*)
+                                ((eq command-arg
+                                     clim:*numeric-argument-marker*)
                                  (or numeric-argument (getf args :default)))
                                 (t (eval command-arg)))
                           result)
