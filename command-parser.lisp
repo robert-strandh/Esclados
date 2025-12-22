@@ -45,14 +45,14 @@
       (clim:read-gesture :stream stream))))
 
 (defun command-parser (clim:command-table stream)
-  (let ((clim:command-name nil))
+  (let ((command-name nil))
     (clim:with-delimiter-gestures
         (clim:*command-name-delimiters* :override t)
       ;; While reading the command name we want use the history of
       ;; the (accept 'command ...) that's calling this function.
       ;;
       ;; FIXME: does this :history nil actually achieve the above?
-      (setq clim:command-name
+      (setq command-name
             (clim:accept
              `(clim:command-name :command-table ,clim:command-table)
              :stream (clim:encapsulating-stream-stream stream)
@@ -62,13 +62,13 @@
     (clim:with-delimiter-gestures
         (clim:*command-argument-delimiters* :override t)
       ;; FIXME, except we can't: use of CLIM-INTERNALS.
-      (let* ((info (gethash clim:command-name climi::*command-parser-table*))
+      (let* ((info (gethash command-name climi::*command-parser-table*))
              (required-args (climi::required-args info))
              (keyword-args (climi::keyword-args info)))
         (declare (ignore keyword-args))
         (let (result)
           ;; only required args for now.
-          (dolist (arg required-args (cons clim:command-name (nreverse result)))
+          (dolist (arg required-args (cons command-name (nreverse result)))
             (destructuring-bind (name ptype &rest args) arg
               (push (parse-one-arg stream name ptype args) result)
               (maybe-clear-input stream))))))))
@@ -77,12 +77,12 @@
     (clim:command-table stream clim:command position
      &optional numeric-argument)
   (declare (ignore clim:command-table position))
-  (let ((clim:command-name (car clim:command))
+  (let ((command-name (car clim:command))
 	(command-args (cdr clim:command)))
     (clim:with-delimiter-gestures
         (clim:*command-argument-delimiters* :override t)
       ;; FIXME, except we can't: use of CLIM-INTERNALS.
-      (let ((info (gethash clim:command-name climi::*command-parser-table*)))
+      (let ((info (gethash command-name climi::*command-parser-table*)))
         (if (null info)
             ;; `command' is not a real command! Well, we can still
             ;; replace numeric argument markers.
@@ -97,7 +97,7 @@
                       (arg (car required-args) (car required-args))
                       (command-args command-args (cdr command-args))
                       (command-arg (car command-args) (car command-args)))
-                     ((null required-args) (cons clim:command-name (nreverse result)))
+                     ((null required-args) (cons command-name (nreverse result)))
                   (destructuring-bind (name ptype &rest args) arg
                     (push (cond ((eq command-arg clim:*unsupplied-argument-marker*)
                                  (setf arg-parsed t)
