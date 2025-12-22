@@ -42,21 +42,25 @@
   (let ((clim:command-name nil))
     (flet ((maybe-clear-input ()
              (let ((gesture (clim:read-gesture :stream stream 
-                                          :peek-p t :timeout 0)))
+                                               :peek-p t :timeout 0)))
                (when (and gesture (or (clim:delimiter-gesture-p gesture)
                                       (clim:activation-gesture-p gesture)))
                  (clim:read-gesture :stream stream)))))
-      (clim:with-delimiter-gestures (clim:*command-name-delimiters* :override t)
+      (clim:with-delimiter-gestures
+          (clim:*command-name-delimiters* :override t)
         ;; While reading the command name we want use the history of
         ;; the (accept 'command ...) that's calling this function.
         ;;
         ;; FIXME: does this :history nil actually achieve the above?
-        (setq clim:command-name (clim:accept `(clim:command-name :command-table ,clim:command-table)
-                                   :stream (clim:encapsulating-stream-stream stream)
-                                   :prompt *extended-command-prompt*
-                                   :prompt-mode :raw :history nil))
+        (setq clim:command-name
+              (clim:accept
+               `(clim:command-name :command-table ,clim:command-table)
+               :stream (clim:encapsulating-stream-stream stream)
+               :prompt *extended-command-prompt*
+               :prompt-mode :raw :history nil))
         (maybe-clear-input))
-      (clim:with-delimiter-gestures (clim:*command-argument-delimiters* :override t)
+      (clim:with-delimiter-gestures
+          (clim:*command-argument-delimiters* :override t)
         ;; FIXME, except we can't: use of CLIM-INTERNALS.
         (let* ((info (gethash clim:command-name climi::*command-parser-table*))
                (required-args (climi::required-args info))
@@ -69,18 +73,20 @@
                 (push (parse-one-arg stream name ptype args) result)
                 (maybe-clear-input)))))))))
 
-(defun esclados-partial-command-parser (clim:command-table stream clim:command position
-                                   &optional numeric-argument)
+(defun esclados-partial-command-parser
+    (clim:command-table stream clim:command position
+     &optional numeric-argument)
   (declare (ignore clim:command-table position))
   (let ((clim:command-name (car clim:command))
 	(command-args (cdr clim:command)))
     (flet ((maybe-clear-input ()
              (let ((gesture (clim:read-gesture :stream stream 
-                                          :peek-p t :timeout 0)))
+                                               :peek-p t :timeout 0)))
                (when (and gesture (or (clim:delimiter-gesture-p gesture)
                                       (clim:activation-gesture-p gesture)))
                  (clim:read-gesture :stream stream)))))
-      (clim:with-delimiter-gestures (clim:*command-argument-delimiters* :override t)
+      (clim:with-delimiter-gestures
+          (clim:*command-argument-delimiters* :override t)
         ;; FIXME, except we can't: use of CLIM-INTERNALS.
         (let ((info (gethash clim:command-name climi::*command-parser-table*)))
           (if (null info)
