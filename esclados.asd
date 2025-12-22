@@ -22,7 +22,6 @@
    (:file "standard-key-bindings")
    (:file "help")
    (:file "help-commands")
-   (:file "io")
    (:file "command-parser")
    (:file "keyboard-macros")
    (:file "example-application")))
