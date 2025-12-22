@@ -65,8 +65,9 @@
       (let* ((info (gethash command-name climi::*command-parser-table*))
              (required-args (climi::required-args info))
              (keyword-args (climi::keyword-args info)))
+        ;; keyword arguments not yet supported
         (declare (ignore keyword-args))
-        (let (result)
+        (let ((result '()))
           ;; only required args for now.
           (dolist (arg required-args (cons command-name (nreverse result)))
             (destructuring-bind (name ptype &rest args) arg
@@ -91,7 +92,8 @@
                   (keyword-args (climi::keyword-args info)))
               ;; keyword arguments not yet supported
               (declare (ignore keyword-args))
-              (let (result arg-parsed)
+              (let ((result '())
+                    (arg-parsed nil))
                 ;; only required args for now.
                 (do* ((required-args required-args (cdr required-args))
                       (arg (car required-args) (car required-args))
