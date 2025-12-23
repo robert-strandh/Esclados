@@ -104,10 +104,13 @@
                                 (or (and (symbolp (item-value item))
                                          (eq (item-value item) command))
                                     (and (listp (item-value item))
-                                         (eq (car (item-value item)) command))))
+                                         (eq (car (item-value item))
+                                             command))))
                            (push (cons keystroke prefix) keystrokes))
                           ((eq (item-type item) :menu)
-                           (helper command (item-value item) (cons keystroke prefix)))
+                           (helper command
+                                   (item-value item)
+                                   (cons keystroke prefix)))
                           (t nil)))
                 command-table)))
       (helper command command-table nil)
@@ -117,7 +120,8 @@
   (let ((keystrokes '()))
     (labels  ((helper (table)
                 (let ((keys (find-keystrokes-for-command command table)))
-                  (when keys (push keys keystrokes))
+                  (unless (null keys)
+                    (push keys keystrokes))
                   (dolist (subtable (clim:command-table-inherit-from
                                      (clim:find-command-table table)))
                     (helper subtable)))))
@@ -135,7 +139,8 @@
                                        (item-value item))
                                  results))
                           ((eq (item-type item) :menu)
-                           (helper (item-value item) (cons keystroke prefix)))
+                           (helper (item-value item)
+                                   (cons keystroke prefix)))
                           (t nil)))
                 command-table)))
       (helper command-table nil)
@@ -197,13 +202,15 @@
                       `(clim:command-name :command-table ,command-table)
                       :stream stream)))
                  (clim:formatting-cell (stream)
-                   (clim:with-drawing-options (stream :ink clim:+dark-blue+
-                                                 :text-style '(:fix nil nil))
+                   (clim:with-drawing-options
+                       (stream :ink clim:+dark-blue+
+                               :text-style '(:fix nil nil))
                      (format stream "~&~{~A~^ ~}"
                              (mapcar #'gesture-name (reverse keys))))))
           count command into length
-          finally (clim:change-space-requirements stream
-                                             :height (* length (clim:stream-line-height stream)))
+          finally (clim:change-space-requirements
+                   stream
+                   :height (* length (clim:stream-line-height stream)))
                   (clim:scroll-extent stream 0 0))))
 
 (defun find-paragraphs (string)
