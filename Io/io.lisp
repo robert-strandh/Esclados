@@ -317,7 +317,7 @@ Changes the file visted by the buffer to the given file."
 (esclados:set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
          'io-table '((#\x :control) (#\w :control)))
 
-(utils:define-menu-table esclados-io-menu-table
+(utils:define-menu-table io-menu-table
     (io-table esclados:global-table)
   `(com-find-file ,clim:*unsupplied-argument-marker*)
   `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)

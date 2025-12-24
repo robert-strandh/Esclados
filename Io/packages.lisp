@@ -13,7 +13,7 @@
            #:frame-write-buffer #:write-buffer
            #:buffer-writing-error #:buffer #:filepath
            #:filepath-is-directory
-           #:io-table #:esclados-io-menu-table
+           #:io-table #:io-menu-table
            #:com-find-file #:com-find-file-read-only
            #:com-read-only #:com-set-visited-file-name
            #:com-save-buffer #:com-write-buffer))
