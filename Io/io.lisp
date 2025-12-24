@@ -211,7 +211,7 @@ that filename."
   (set-visited-file-name filename (esclados:current-buffer)))
 
 (defmethod check-buffer-writability (application-frame (filepath pathname)
-                                     (buffer buf:esclados-buffer-mixin))
+                                     (buffer buf:buffer-mixin))
   (declare (ignore application-frame))
   ;; Cannot write to a directory.
   (when (directory-pathname-p filepath)

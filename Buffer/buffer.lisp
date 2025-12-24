@@ -37,7 +37,7 @@
       (format nil "Save the entire BUFFER to STREAM in the~@
                    appropriate external representation"))
 
-(defclass esclados-buffer-mixin (utils:name-mixin)
+(defclass buffer-mixin (utils:name-mixin)
   ((%filepath :initform nil :accessor filepath)
    (%needs-saving :initform nil :accessor needs-saving)
    (%file-write-time :initform nil :accessor file-write-time)

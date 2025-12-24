@@ -6,6 +6,6 @@
   (:export #:frame-make-buffer-from-stream #:make-buffer-from-stream
            #:frame-save-buffer-to-stream #:save-buffer-to-stream
            #:filepath #:name #:needs-saving #:file-write-time #:file-saved-p
-           #:esclados-buffer-mixin
+           #:buffer-mixin
            #:frame-make-new-buffer #:make-new-buffer
            #:read-only-p))
