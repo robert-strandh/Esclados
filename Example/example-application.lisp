@@ -7,8 +7,10 @@
    :incremental-redisplay t))
 
 (defun display-info (frame pane)
-  (declare (ignore frame))
-  (format pane "Pane name: ~s" (clim:pane-name (info:master-pane pane))))
+  (format pane
+          "Pane name: ~s ~a"
+          (clim:pane-name (info:master-pane pane))
+          (if (cmd:recordingp frame) "(Def)" "")))
 
 (defclass example-minibuffer-pane (mini:minibuffer-pane)
   ())
@@ -20,16 +22,19 @@
     (frame-mixin clim:standard-application-frame)
   ()
   (:panes
-   (window (let* ((my-pane (clim:make-pane 'example-pane
-                                      :width 900 :height 400
-                                      :display-function 'display-my-pane
-                                      :name "Example"
-                                      :command-table 'global-example-table))
-                  (my-info-pane (clim:make-pane 'example-info-pane
-                                           :master-pane my-pane
-                                           :width 900))
-                  (minibuffer (clim:make-pane 'example-minibuffer-pane
-                                         :width 900)))
+   (window (let* ((my-pane (clim:make-pane
+                            'example-pane
+                            :width 900 :height 400
+                            :display-function 'display-my-pane
+                            :name "Example"
+                            :command-table 'global-example-table))
+                  (my-info-pane (clim:make-pane
+                                 'example-info-pane
+                                 :master-pane my-pane
+                                 :width 900))
+                  (minibuffer (clim:make-pane
+                               'example-minibuffer-pane
+                               :width 900)))
              (setf (windows clim:*application-frame*) (list my-pane))
              (clim:vertically ()
                (clim:scrolling ()
