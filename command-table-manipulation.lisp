@@ -1,7 +1,8 @@
 (cl:in-package #:esclados)
 
-;;; Helper to avoid calling find-keystroke-item at load time. In Classic CLIM
-;;; that function doesn't work if not connected to a port.
+;;; Helper to avoid calling find-keystroke-item at load time. In
+;;; Classic CLIM that function doesn't work if not connected to a
+;;; port.
 
 (defun compare-gestures (g1 g2)
   (and (eql (car g1) (car g2))
@@ -21,18 +22,20 @@
   ;; Not having a sheet here is not conforming.
   (let* ((modifier-state (apply #'clim:make-modifier-state (cdr gesture)))
          (clim:event (make-instance 'clim:key-press-event
-                               :sheet nil
-                               :x 0 :y 0
-                               :key-name nil
-                               :key-character (car gesture)
-                               :modifier-state modifier-state))
+                       :sheet nil
+                       :x 0 :y 0
+                       :key-name nil
+                       :key-character (car gesture)
+                       :modifier-state modifier-state))
          (item (clim:find-keystroke-item clim:event table :errorp nil)))
-    (when (or (null item) (not (eq (clim:command-menu-item-type item) :menu)))
+    (when (or (null item)
+              (not (eq (clim:command-menu-item-type item) :menu)))
       (let ((name (gensym)))
         (clim:make-command-table name :errorp nil)
-        (clim:add-menu-item-to-command-table table (symbol-name name)
-                                        :menu name
-                                        :keystroke gesture)))
+        (clim:add-menu-item-to-command-table
+         table (symbol-name name)
+         :menu name
+         :keystroke gesture)))
     (clim:command-menu-item-value
      (clim:find-keystroke-item clim:event table :errorp nil))))
 

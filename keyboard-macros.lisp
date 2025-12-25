@@ -2,18 +2,20 @@
 
 (clim:define-command-table keyboard-macro-table)
 
-(clim:define-command (com-start-kbd-macro
-                 :name t
-                 :command-table keyboard-macro-table)
+(clim:define-command
+    (com-start-kbd-macro
+     :name t
+     :command-table keyboard-macro-table)
     ()
   (setf (cmd:recordingp cmd:*command-processor*) t)
   (setf (cmd:recorded-keys cmd:*command-processor*) '()))
 
 (set-key 'com-start-kbd-macro 'keyboard-macro-table '((#\x :control) #\())
 
-(clim:define-command (com-end-kbd-macro
-                 :name t
-                 :command-table keyboard-macro-table)
+(clim:define-command
+    (com-end-kbd-macro
+     :name t
+     :command-table keyboard-macro-table)
     ()
   (setf (cmd:recordingp cmd:*command-processor*) nil)
   (setf (cmd:recorded-keys cmd:*command-processor*)
@@ -22,9 +24,10 @@
 
 (set-key 'com-end-kbd-macro 'keyboard-macro-table '((#\x :control) #\)))
 
-(clim:define-command (com-call-last-kbd-macro
-                 :name t
-                 :command-table keyboard-macro-table)
+(clim:define-command
+    (com-call-last-kbd-macro
+     :name t
+     :command-table keyboard-macro-table)
     ((count 'integer :prompt "How many times?" :default 1))
   (setf (cmd:remaining-keys cmd:*command-processor*)
         (loop repeat count
