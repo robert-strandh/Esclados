@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-example)
 
 (defclass example-info-pane (info-pane)
   ()
