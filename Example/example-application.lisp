@@ -1,6 +1,6 @@
 (cl:in-package #:esclados-example)
 
-(defclass example-info-pane (info-pane)
+(defclass example-info-pane (info:info-pane)
   ()
   (:default-initargs
    :display-function 'display-info
@@ -8,7 +8,7 @@
 
 (defun display-info (frame pane)
   (declare (ignore frame))
-  (format pane "Pane name: ~s" (clim:pane-name (master-pane pane))))
+  (format pane "Pane name: ~s" (clim:pane-name (info:master-pane pane))))
 
 (defclass example-minibuffer-pane (mini:minibuffer-pane)
   ())
