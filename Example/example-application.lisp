@@ -17,7 +17,7 @@
   ((%contents :initform "hello" :accessor contents)))
 
 (clim:define-application-frame example
-    (esclados-frame-mixin clim:standard-application-frame)
+    (frame-mixin clim:standard-application-frame)
   ()
   (:panes
    (window (let* ((my-pane (clim:make-pane 'example-pane

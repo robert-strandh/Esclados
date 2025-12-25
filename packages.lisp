@@ -13,7 +13,7 @@
            #:with-minibuffer-stream
            #:pane-mixin #:previous-command
            #:info-pane #:master-pane
-           #:esclados-frame-mixin #:recordingp #:executingp
+           #:frame-mixin #:recordingp #:executingp
            #:*abort-gestures* #:*current-gesture* #:*command-processor*
            #:unbound-gesture-sequence #:gestures
            #:command-processor #:instant-macro-execution-mixin
