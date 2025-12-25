@@ -35,15 +35,13 @@
     (setf (cmd:executingp frame) nil)
     (call-next-method)))
 
-(defmethod clim:execute-frame-command :after
-    ((frame frame-mixin) command)
+(defmethod clim:execute-frame-command :after ((frame frame-mixin) command)
   ;; FIXME: I'm not sure that we want to do this for commands sent
   ;; from other threads; we almost certainly don't want to do it twice
   ;; in such cases...
   (setf (previous-command (present-window frame)) command))
 
-(defmethod clim:execute-frame-command :around
-    ((frame frame-mixin) command)
+(defmethod clim:execute-frame-command :around ((frame frame-mixin) command)
   (declare (ignore command))
   (call-next-method)
   (when (eq frame clim:*application-frame*)
