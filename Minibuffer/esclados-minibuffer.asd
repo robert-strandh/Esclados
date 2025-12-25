@@ -1,6 +1,6 @@
 (cl:in-package #:asdf-user)
 
-(defsystem esclados-minibuffer
+(defsystem "esclados-minibuffer"
   :depends-on ("mcclim")
   :serial t
   :components
