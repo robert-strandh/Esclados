@@ -2,7 +2,8 @@
 
 (defsystem "esclados-example"
   :depends-on ("esclados"
-               "esclados-info-pane")
+               "esclados-info-pane"
+               "esclados-command-processing")
   :serial t
   :components
   ((:file "packages")
