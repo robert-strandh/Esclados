@@ -13,7 +13,6 @@
   :components
   ((:file "packages")
    (:file "query")
-   (:file "info-pane")
    (:file "pane-mixin")
    (:file "frame-mixin")
    (:file "top-level")
