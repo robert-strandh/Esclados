@@ -23,5 +23,4 @@
    (:file "help")
    (:file "help-commands")
    (:file "command-parser")
-   (:file "keyboard-macros")
-   (:file "example-application")))
+   (:file "keyboard-macros")))
