@@ -10,7 +10,8 @@
   (setf (cmd:recordingp cmd:*command-processor*) t)
   (setf (cmd:recorded-keys cmd:*command-processor*) '()))
 
-(set-key 'com-start-kbd-macro 'keyboard-macro-table '((#\x :control) #\())
+(tbl:set-key 'com-start-kbd-macro 'keyboard-macro-table
+             '((#\x :control) #\())
 
 (clim:define-command
     (com-end-kbd-macro
@@ -22,7 +23,7 @@
         ;; this won't work if the command was invoked in any old way
         (reverse (cddr (cmd:recorded-keys cmd:*command-processor*)))))
 
-(set-key 'com-end-kbd-macro 'keyboard-macro-table '((#\x :control) #\)))
+(tbl:set-key 'com-end-kbd-macro 'keyboard-macro-table '((#\x :control) #\)))
 
 (clim:define-command
     (com-call-last-kbd-macro
@@ -34,8 +35,8 @@
               append (cmd:recorded-keys cmd:*command-processor*)))
   (setf (cmd:executingp cmd:*command-processor*) t))
 
-(set-key `(com-call-last-kbd-macro ,clim:*numeric-argument-marker*)
-         'keyboard-macro-table '((#\x :control) #\e))
+(tbl:set-key `(com-call-last-kbd-macro ,clim:*numeric-argument-marker*)
+             'keyboard-macro-table '((#\x :control) #\e))
 
 (utils:define-menu-table keyboard-macro-menu-table (keyboard-macro-table)
   'com-start-kbd-macro

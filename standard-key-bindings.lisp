@@ -11,7 +11,7 @@
                    If you decide not to save a modified buffer, you~@
                    will be asked to confirm your decision to exit."))
 
-(set-key 'com-quit 'global-table '((#\x :control) (#\c :control)))
+(tbl:set-key 'com-quit 'global-table '((#\x :control) (#\c :control)))
 
 (clim:define-command (com-extended-command :command-table global-table)
     ()
@@ -32,4 +32,4 @@
 (setf (documentation 'com-extended-command 'function)
       (format nil "Prompt for a command name and arguments, then run it."))
 
-(set-key 'com-extended-command 'global-table '((#\x :meta)))
+(tbl:set-key 'com-extended-command 'global-table '((#\x :meta)))

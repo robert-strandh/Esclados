@@ -14,7 +14,7 @@
 (setf (documentation 'com-describe-key-briefly 'function)
       (format nil "Prompt for a key and show the command it invokes."))
 
-(set-key 'com-describe-key-briefly 'help-table '((#\h :control) (#\c)))
+(tbl:set-key 'com-describe-key-briefly 'help-table '((#\h :control) (#\c)))
 
 ;;; where-is
 
@@ -42,7 +42,7 @@
       (format nil "Prompt for a command name and show the key~@
                    that invokes it."))
 
-(set-key 'com-where-is 'help-table '((#\h :control) (#\w)))
+(tbl:set-key 'com-where-is 'help-table '((#\h :control) (#\w)))
 
 ;;; describe-bindings
 
@@ -61,9 +61,9 @@
                    Without a numeric prefix, sorts the list by~@
                    command name. With a numeric prefix, sorts by key."))
 
-(set-key `(com-describe-bindings ,clim:*numeric-argument-marker*)
-         'help-table
-         '((#\h :control) (#\b)))
+(tbl:set-key `(com-describe-bindings ,clim:*numeric-argument-marker*)
+             'help-table
+             '((#\h :control) (#\b)))
 
 ;;; describe-key
 
@@ -93,9 +93,9 @@
                    of the current buffer,  Documentation and other details~@
                    will be displayed in a typeout pane."))
 
-(set-key 'com-describe-key
-         'help-table
-         '((#\h :control) (#\k)))
+(tbl:set-key 'com-describe-key
+             'help-table
+             '((#\h :control) (#\k)))
 
 (clim:define-command (com-describe-command :name t :command-table help-table)
     ((command 'clim:command-name :prompt "Describe command"))
@@ -108,9 +108,9 @@
       (describe-command-to-stream
        command :command-table command-table :stream out-stream))))
 
-(set-key `(com-describe-command ,clim:*unsupplied-argument-marker*)
-         'help-table
-         '((#\h :control) (#\f)))
+(tbl:set-key `(com-describe-command ,clim:*unsupplied-argument-marker*)
+             'help-table
+             '((#\h :control) (#\f)))
 
 (clim:define-presentation-to-command-translator describe-command
     (clim:command-name com-describe-command help-table
@@ -186,9 +186,9 @@ Words are comma delimited. When more than two words are given, the documentation
           (with-help-stream (out-stream (format nil "~10THelp: Apropos ~{~A~^, ~}" words))
             (present-command-key-pairs results command-table out-stream))))))
 
-(set-key `(com-apropos-command ,clim:*unsupplied-argument-marker*)
-         'help-table
-         '((#\h :control) (#\a)))
+(tbl:set-key `(com-apropos-command ,clim:*unsupplied-argument-marker*)
+             'help-table
+             '((#\h :control) (#\a)))
 
 (utils:define-menu-table help-menu-table (help-table)
   'com-where-is
