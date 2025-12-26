@@ -16,11 +16,13 @@
   ())
 
 (defclass example-pane (pane-mixin clim:application-pane)
-  ((%contents :initform "hello" :accessor contents)))
+  ())
 
 (clim:define-application-frame example
     (frame-mixin clim:standard-application-frame)
-  ()
+  ((%buffer
+    :initform (make-instance 'buffer)
+    :reader buffer))
   (:panes
    (window (let* ((my-pane (clim:make-pane
                             'example-pane
@@ -46,8 +48,16 @@
   (:top-level (top-level)))
 
 (defun display-my-pane (frame pane)
-  (declare (ignore frame))
-  (princ (contents pane) *standard-output*))
+  (let* ((buffer (buffer frame))
+         (contents (contents buffer))
+         (cursor (cursor buffer)))
+    (princ (subseq contents 0 cursor) pane)
+    (finish-output pane)
+    (multiple-value-bind (x y)
+        (clim:cursor-position (clim:stream-text-cursor pane))
+      (clim:with-drawing-options (pane :ink clim:+red+)
+        (clim:draw-line* pane (1+ x) (- y 2) (1+ x) (+ y 20))))
+    (princ (subseq contents cursor) pane)))
 
 (defun example (&key (width 900) (height 400))
   "Starts up the example application"
@@ -55,10 +65,3 @@
                 'example
                 :width width :height height)))
     (clim:run-frame-top-level frame)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Commands and key bindings
-
-(clim:define-command-table global-example-table
-  :inherit-from (global-table keyboard-macro-table))
