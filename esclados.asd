@@ -17,7 +17,6 @@
    (:file "frame-mixin")
    (:file "top-level")
    (:file "event-handling")
-   (:file "command-table-manipulation")
    (:file "standard-key-bindings")
    (:file "help")
    (:file "help-commands")
