@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-command-table-manipulation)
 
 ;;; Helper to avoid calling find-keystroke-item at load time. In
 ;;; Classic CLIM that function doesn't work if not connected to a
