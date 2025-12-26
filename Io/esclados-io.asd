@@ -5,6 +5,7 @@
                "esclados-utilities"
                "esclados-buffer"
                "esclados-minibuffer"
+               "esclados-command-table-manipulation"
                "esclados")
   :serial t
   :components
