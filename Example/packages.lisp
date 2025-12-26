@@ -4,5 +4,6 @@
   (:use #:common-lisp #:esclados)
   (:local-nicknames (#:mini #:esclados-minibuffer)
                     (#:info #:esclados-info-pane)
-                    (#:cmd #:esclados-command-processor))
+                    (#:cmd #:esclados-command-processor)
+                    (#:tbl #:esclados))
   (:export #:example))
