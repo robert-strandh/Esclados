@@ -4,7 +4,8 @@
   (:use :clim-lisp :clim-extensions)
   (:local-nicknames (#:utils #:esclados-utils)
                     (#:mini #:esclados-minibuffer)
-                    (#:cmd #:esclados-command-processor))
+                    (#:cmd #:esclados-command-processor)
+                    (#:tbl #:esclados-command-table-manipulation))
   (:export #:*esclados-instance*
            #:buffers #:present-buffer #:current-buffer
            #:windows #:present-window #:current-window
@@ -25,7 +26,6 @@
            #:define-top-level #:top-level #:simple-command-loop
            #:convert-to-gesture #:gesture-name
 	   #:invoke-with-help-stream #:with-help-stream
-           #:set-key
            #:find-applicable-command-table
            #:command-parser
            #:partial-command-parser
