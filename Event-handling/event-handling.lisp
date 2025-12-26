@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-event-handling)
 
 (defgeneric convert-to-gesture (clim:event))
 
