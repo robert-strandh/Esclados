@@ -8,7 +8,8 @@
                "esclados-utilities"
                "esclados-minibuffer"
                "esclados-command-processing"
-               "esclados-buffer")
+               "esclados-buffer"
+               "esclados-command-table-manipulation")
   :serial t
   :components
   ((:file "packages")
