@@ -24,7 +24,7 @@
            #:command-for-unbound-gestures
            #:*extended-command-prompt*
            #:define-top-level #:top-level #:simple-command-loop
-           #:convert-to-gesture #:gesture-name
+           #:gesture-name
 	   #:invoke-with-help-stream #:with-help-stream
            #:find-applicable-command-table
            #:command-parser
