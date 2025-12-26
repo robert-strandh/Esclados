@@ -140,8 +140,8 @@ name an existing file."
     (file-error (e)
       (mini:display-message "~A" e))))
 
-(esclados:set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
-                  'io-table '((#\x :control) (#\f :control)))
+(tbl:set-key `(com-find-file ,clim:*unsupplied-argument-marker*)
+             'io-table '((#\x :control) (#\f :control)))
 
 (defmethod frame-find-file-read-only (application-frame filepath)
   (declare (ignore application-frame))
@@ -179,8 +179,8 @@ buffer. If the filename given does not name an existing file,
 signal an error."
   (find-file-read-only filepath))
 
-(esclados:set-key `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
-                  'io-table '((#\x :control) (#\r :control)))
+(tbl:set-key `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
+             'io-table '((#\x :control) (#\r :control)))
 
 (clim:define-command (com-read-only :name t :command-table io-table)
     ()
@@ -190,7 +190,7 @@ buffer signal an error."
   (let ((buffer (esclados:current-buffer)))
     (setf (buf:read-only-p buffer) (not (buf:read-only-p buffer)))))
 
-(esclados:set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
+(tbl:set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
 
 (defmethod frame-set-visited-file-name (application-frame filepath buffer)
   (declare (ignore application-frame))
@@ -290,7 +290,7 @@ file, replacing its contents. If not, prompt for a filename."
             (mini:display-message "No changes need to be saved from ~a"
                              (utils:name buffer))))))
 
-(esclados:set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
+(tbl:set-key 'com-save-buffer 'io-table '((#\x :control) (#\s :control)))
 
 (defmethod frame-write-buffer (application-frame filepath buffer)
   (check-buffer-writability application-frame filepath buffer)
@@ -314,8 +314,8 @@ Changes the file visted by the buffer to the given file."
           (let ((*print-escape* nil))
             (print-object e minibuffer)))))))
 
-(esclados:set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
-         'io-table '((#\x :control) (#\w :control)))
+(tbl:set-key `(com-write-buffer ,clim:*unsupplied-argument-marker*)
+             'io-table '((#\x :control) (#\w :control)))
 
 (utils:define-menu-table io-menu-table
     (io-table esclados:global-table)
