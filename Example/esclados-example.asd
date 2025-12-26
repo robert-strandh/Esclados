@@ -7,4 +7,6 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "example-application")))
+   (:file "buffer")
+   (:file "example-application")
+   (:file "commands-and-key-bindings")))
