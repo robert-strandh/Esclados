@@ -13,9 +13,6 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "query")
-   (:file "pane-mixin")
-   (:file "frame-mixin")
    (:file "top-level")
    (:file "standard-key-bindings")
    (:file "command-parser")
