@@ -34,7 +34,7 @@ used.")
                  (,partial-command-parser 'partial-command-parser)
                  (,prompt "Extended Command: "))
      ,(let ((frame (utils:unlisted frame)))
-        `(with-accessors ((windows windows)) ,frame
+        `(with-accessors ((windows frame:windows)) ,frame
            (let ((*standard-output* (car windows))
                  (*standard-input* (clim:frame-standard-input ,frame))
                  (mini:*minibuffer* (minibuffer ,frame))
