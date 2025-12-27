@@ -9,7 +9,9 @@
                "esclados-minibuffer"
                "esclados-command-processing"
                "esclados-buffer"
-               "esclados-command-table-manipulation")
+               "esclados-command-table-manipulation"
+               "esclados-pane"
+               "esclados-frame"))
   :serial t
   :components
   ((:file "packages")
