@@ -6,6 +6,7 @@
                "esclados-buffer"
                "esclados-minibuffer"
                "esclados-command-table-manipulation"
+               "esclados-frame"
                "esclados")
   :serial t
   :components
