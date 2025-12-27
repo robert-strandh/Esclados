@@ -5,14 +5,10 @@
   (:local-nicknames (#:utils #:esclados-utils)
                     (#:mini #:esclados-minibuffer)
                     (#:cmd #:esclados-command-processor)
-                    (#:tbl #:esclados-command-table-manipulation))
-  (:export #:*esclados-instance*
-           #:buffers #:present-buffer #:current-buffer
-           #:windows #:present-window #:current-window
-           #:*previous-command*
-           #:*minibuffer* #:minibuffer #:minibuffer-pane #:display-message
+                    (#:tbl #:esclados-command-table-manipulation)
+                    (#:frame #:esclados-frame))
+  (:export #:*minibuffer* #:minibuffer #:minibuffer-pane #:display-message
            #:with-minibuffer-stream
-           #:pane-mixin #:previous-command
            #:info-pane #:master-pane
            #:frame-mixin #:recordingp #:executingp
            #:*abort-gestures* #:*current-gesture* #:*command-processor*
