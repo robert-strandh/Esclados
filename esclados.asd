@@ -18,7 +18,5 @@
    (:file "frame-mixin")
    (:file "top-level")
    (:file "standard-key-bindings")
-   (:file "help")
-   (:file "help-commands")
    (:file "command-parser")
    (:file "keyboard-macros")))
