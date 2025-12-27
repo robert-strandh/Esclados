@@ -2,6 +2,8 @@
 
 (defpackage #:esclados-frame
   (:use #:common-lisp)
+  (:local-nicknames (#:cmd #:esclados-command-processor)
+                    (#:pane #:esclados-pane))
   (:export
    #:*esclados-instance*
    #:buffers
