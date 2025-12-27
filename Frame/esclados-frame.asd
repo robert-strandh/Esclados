@@ -1,7 +1,9 @@
 (cl:in-package #:asdf-user)
 
 (defsystem "esclados-frame"
-  :depends-on ("mcclim")
+  :depends-on ("mcclim"
+               "esclados-command-processing"
+               "esclados-pane")
   :serial t
   :components
   ((:file "packages")
