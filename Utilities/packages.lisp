@@ -6,4 +6,5 @@
            #:listed
            #:list-aref
            #:build-menu #:define-menu-table
-           #:name-mixin #:name))
+           #:name-mixin #:name
+           #:gesture-name))
