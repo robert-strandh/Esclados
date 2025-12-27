@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-frame)
 
 (defvar *esclados-instance* nil)
 
@@ -19,14 +19,14 @@
 (defgeneric present-buffer (esclados))
 
 (setf (documentation 'present-buffer 'function)
-      (formmat nil "Return the current buffer of the ESCLADOS~@
-                    instance ESCLADOS."))
+      (format nil "Return the current buffer of the ESCLADOS~@
+                   instance ESCLADOS."))
 
 (defgeneric (setf present-buffer) (new-buffer esclados))
 
 (setf (documentation '(setf present-buffer) 'function)
       (format nil "Replace the current buffer of the ESCLADOS instance~@
-                   ESCLADOS with NEW-BUFFER.") 
+                   ESCLADOS with NEW-BUFFER."))
 
 (defun current-buffer ()
   "Return the currently active buffer of the running ESCLADOS."
