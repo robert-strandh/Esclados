@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-help)
 
 (defgeneric invoke-with-help-stream (esclados title continuation))
 
@@ -19,7 +19,7 @@
 
 (defmacro with-help-stream ((stream title) &body body)
   `(invoke-with-help-stream
-    *esclados-instance* ,title #'(lambda (,stream) ,@body)))
+    clim:*application-frame* ,title #'(lambda (,stream) ,@body)))
 
 (setf (documentation 'with-help-stream 'function)
       (format nil "Evaluate `body' with `stream' bound to a stream~@
@@ -45,54 +45,18 @@
           when (eq (item-type item) :command)
             do (return (values (item-value item) gestures)))))
 
-(defun describe-key-briefly (frame)
-  (let ((command-table (find-applicable-command-table frame)))
+(defun describe-key-briefly ()
+  (let ((command-table applicable-command-table))
     (multiple-value-bind (command gestures)
         (read-gestures-for-help command-table)
       (when (consp command)
         (setf command (car command)))
       (mini:display-message
        "~{~A ~}~:[is not bound~;runs the command ~:*~A~]"
-       (mapcar #'gesture-name gestures)
+       (mapcar #'utils:gesture-name gestures)
        (or (clim:command-line-name-for-command
             command command-table :errorp nil)
            command)))))
-
-(defgeneric gesture-name (gesture))
-
-(defmethod gesture-name ((char character))
-  (if (and (graphic-char-p char)
-           (not (char= char #\Space)))
-      (string char)
-      (or (char-name char)
-          char)))
-
-(defun translate-name-and-modifiers (key-name modifiers)
-  (with-output-to-string (s)
-    (loop for (modifier name) on (list
-                                  ;;(+alt-key+ "A-")
-                                  clim:+hyper-key+ "H-"
-                                  clim:+super-key+ "s-"
-                                  clim:+meta-key+ "M-"
-                                  clim:+control-key+ "C-")
-          by #'cddr
-          when (plusp (logand modifier modifiers))
-            do (princ name s))
-    (princ (if (typep key-name 'character)
-               (gesture-name key-name)
-               key-name) s)))
-
-(defmethod gesture-name ((ev clim:keyboard-event))
-  (let ((key-name (clim:keyboard-event-key-name ev))
-        (modifiers (clim:event-modifier-state ev)))
-    (translate-name-and-modifiers key-name modifiers)))
-
-(defmethod gesture-name ((gesture list))
-  (cond ((eq (car gesture) :keyboard)
-         (translate-name-and-modifiers (second gesture) (third gesture)))
-        ;; Assume `gesture' is a list of gestures.
-        (t (format nil "~{~A~#[~; ~; ~]~}"
-                   (mapcar #'gesture-name gesture)))))
 
 (defun find-keystrokes-for-command (command command-table)
   (let ((keystrokes '()))
@@ -206,7 +170,7 @@
                        (stream :ink clim:+dark-blue+
                                :text-style '(:fix nil nil))
                      (format stream "~&~{~A~^ ~}"
-                             (mapcar #'gesture-name (reverse keys))))))
+                             (mapcar #'utils:gesture-name (reverse keys))))))
           count command into length
           finally (clim:change-space-requirements
                    stream
@@ -347,7 +311,7 @@
               do (clim:with-drawing-options (stream :ink clim:+dark-blue+
                                                :text-style '(:fix nil nil))
                    (format stream "~{~A~^ ~}"
-                           (mapcar #'gesture-name
+                           (mapcar #'utils:gesture-name
                                    (reverse (first gestures-list)))))
               when (not (null (rest gestures-list)))
                 do (princ ", " stream))

@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-help)
 
 (clim:define-command-table help-table)
 
@@ -9,7 +9,7 @@
     ()
   (mini:display-message "Describe key briefly:")
   (clim:redisplay-frame-panes clim:*application-frame*)
-  (describe-key-briefly clim:*application-frame*))
+  (describe-key-briefly))
 
 (setf (documentation 'com-describe-key-briefly 'function)
       (format nil "Prompt for a key and show the command it invokes."))
@@ -35,7 +35,7 @@
      (clim:command-line-name-for-command command command-table)
      (mapcar (lambda (keys)
                (format nil "~{~A~^ ~}"
-                       (mapcar #'gesture-name (reverse keys))))
+                       (mapcar #'utils:gesture-name (reverse keys))))
              (car keystrokes)))))
 
 (setf (documentation 'com-where-is 'function)
@@ -75,7 +75,7 @@
     (multiple-value-bind (command gestures)
         (read-gestures-for-help command-table)
       (let* ((gesture-name (format nil "~{~A~#[~; ~; ~]~}"
-                                   (mapcar #'gesture-name gestures)))
+                                   (mapcar #'utils:gesture-name gestures)))
              (prompt (format nil "~10THelp: Describe Key for ~A" gesture-name)))
         (if command
             (with-help-stream (out-stream prompt)
@@ -161,7 +161,7 @@
              (format stream "~30T~:[M-x ... RETURN~;~:*~{~A~^, ~}~]"
                      (mapcar (lambda (keystrokes)
                                (format nil "~{~A~^ ~}"
-                                       (mapcar #'gesture-name (reverse keystrokes))))
+                                       (mapcar #'utils:gesture-name (reverse keystrokes))))
                              (car keys))))
            (clim:with-text-style (stream '(:sans-serif nil nil))
              (format stream "~&~2T~A~%"
