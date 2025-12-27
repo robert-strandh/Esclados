@@ -54,7 +54,7 @@ used.")
                do (restart-case
                       (handler-case
                           (let* ((cmd:*command-processor* ,frame)
-                                 (command-table (find-applicable-command-table ,frame))
+                                 (command-table applicable-command-table)
                                  ,@bindings)
                             ;; for presentation-to-command-translators,
                             ;; which are searched for in
@@ -63,7 +63,9 @@ used.")
                             (setf (clim:frame-command-table ,frame) command-table)
                             (cmd:process-gestures-or-command ,frame))
                         (cmd:unbound-gesture-sequence (c)
-                          (mini:display-message "~A is not bound" (gesture-name (cmd:gestures c)))
+                          (mini:display-message
+                           "~A is not bound"
+                           (utils:gesture-name (cmd:gestures c)))
                           (clim:redisplay-frame-panes ,frame))
                         (clim:abort-gesture (c)
                           (if (cmd:overriding-handler ,frame)
