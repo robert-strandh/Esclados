@@ -11,16 +11,22 @@
                    `*esclados-instance*' will probably have the same value~@
                    as `clim:*application-frame*'."))
 
-(defgeneric buffers (esclados)
-  (:documentation "Return a list of all the buffers of the application."))
+(defgeneric buffers (esclados))
 
-(defgeneric present-buffer (esclados)
-  (:documentation "Return the current buffer of the ESCLADOS instance ESCLADOS."))
+(setf (documentation 'buffers 'function)
+      (format nil "Return a list of all the buffers of the application."))
 
-(defgeneric (setf present-buffer) (new-buffer esclados)
-  (:documentation
-   #.(format nil "Replace the current buffer of the ESCLADOS instance~@
-                  ESCLADOS with NEW-BUFFER.")))
+(defgeneric present-buffer (esclados))
+
+(setf (documentation 'present-buffer 'function)
+      (formmat nil "Return the current buffer of the ESCLADOS~@
+                    instance ESCLADOS."))
+
+(defgeneric (setf present-buffer) (new-buffer esclados))
+
+(setf (documentation '(setf present-buffer) 'function)
+      (format nil "Replace the current buffer of the ESCLADOS instance~@
+                   ESCLADOS with NEW-BUFFER.") 
 
 (defun current-buffer ()
   "Return the currently active buffer of the running ESCLADOS."
