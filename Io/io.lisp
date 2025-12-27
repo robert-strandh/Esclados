@@ -103,7 +103,7 @@
          (mini:display-message "~A is a directory name." filepath)
          (clim:beep))
         (t
-         (or (find filepath (esclados:buffers clim:*application-frame*)
+         (or (find filepath (frame:buffers clim:*application-frame*)
                    :key #'filepath :test #'equal)
              (let ((buffer (if (probe-file filepath)
                                (with-open-file (stream filepath :direction :input)
@@ -121,8 +121,8 @@
   (make-pathname
    :directory
    (pathname-directory
-    (or (and (esclados:current-buffer)
-             (buf:filepath (esclados:current-buffer)))
+    (or (and (frame:current-buffer)
+             (buf:filepath (frame:current-buffer)))
         (user-homedir-pathname)))))
 
 (clim:define-command (com-find-file :name t :command-table io-table) 
@@ -152,7 +152,7 @@ name an existing file."
          (mini:display-message "~A is a directory name." filepath)
          (clim:beep))
         (t
-         (or (find filepath (esclados:buffers clim:*application-frame*)
+         (or (find filepath (frame:buffers clim:*application-frame*)
                    :key #'filepath :test #'equal)
              (if (probe-file filepath)
                  (with-open-file (stream filepath :direction :input)
@@ -187,7 +187,7 @@ signal an error."
   "Toggle the readonly status of the current buffer.
 When a buffer is readonly, attempts to change the contents of the
 buffer signal an error."
-  (let ((buffer (esclados:current-buffer)))
+  (let ((buffer (frame:current-buffer)))
     (setf (buf:read-only-p buffer) (not (buf:read-only-p buffer)))))
 
 (tbl:set-key 'com-read-only 'io-table '((#\x :control) (#\q :control)))
@@ -208,7 +208,7 @@ buffer signal an error."
     "Prompt for a new filename for the current buffer.
 The next time the buffer is saved it will be saved to a file with
 that filename."
-  (set-visited-file-name filename (esclados:current-buffer)))
+  (set-visited-file-name filename (frame:current-buffer)))
 
 (defmethod check-buffer-writability (application-frame (filepath pathname)
                                      (buffer buf:buffer-mixin))
@@ -277,7 +277,7 @@ to overwrite."
   "Write the contents of the buffer to a file.
 If there is filename associated with the buffer, write to that
 file, replacing its contents. If not, prompt for a filename."
-  (let ((buffer (esclados:current-buffer)))
+  (let ((buffer (frame:current-buffer)))
     (if (null (buf:filepath buffer))
         (com-write-buffer (clim:accept 'pathname :prompt "Write Buffer to File: "
                                             :prompt-mode :raw
@@ -307,7 +307,7 @@ file, replacing its contents. If not, prompt for a filename."
                :default-type 'pathname))
     "Prompt for a filename and write the current buffer to it.
 Changes the file visted by the buffer to the given file."
-  (let ((buffer (esclados:current-buffer)))
+  (let ((buffer (frame:current-buffer)))
     (handler-case (write-buffer filepath buffer)
       (buffer-writing-error (e)
         (mini:with-minibuffer-stream (minibuffer)
