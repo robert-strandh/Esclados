@@ -37,7 +37,7 @@ used.")
         `(with-accessors ((windows frame:windows)) ,frame
            (let ((*standard-output* (car windows))
                  (*standard-input* (clim:frame-standard-input ,frame))
-                 (mini:*minibuffer* (minibuffer ,frame))
+                 (mini:*minibuffer* (frame:minibuffer ,frame))
                  (*print-pretty* nil)
                  (clim:*abort-gestures* cmd:*abort-gestures*)
                  (clim:*command-parser* ,command-parser)
@@ -46,7 +46,7 @@ used.")
                  (*extended-command-prompt* ,prompt)
                  (clim:*pointer-documentation-output*
                    (clim:frame-pointer-documentation-output ,frame))
-                 (*esclados-instance* ,frame))
+                 (frame:*esclados-instance* ,frame))
              (unless (eq (clim:frame-state ,frame) :enabled)
                (clim:enable-frame ,frame))
              (clim:redisplay-frame-panes ,frame :force-p t)
@@ -54,7 +54,7 @@ used.")
                do (restart-case
                       (handler-case
                           (let* ((cmd:*command-processor* ,frame)
-                                 (command-table applicable-command-table)
+                                 (command-table frame:applicable-command-table)
                                  ,@bindings)
                             ;; for presentation-to-command-translators,
                             ;; which are searched for in
