@@ -14,5 +14,6 @@
    #:current-window
    #:*previous-command*
    #:frame-mixin
+   #:minibuffer
    #:find-applicable-command-table
    #:applicable-command-table))
