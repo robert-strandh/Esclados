@@ -15,11 +15,11 @@
 (defclass example-minibuffer-pane (mini:minibuffer-pane)
   ())
 
-(defclass example-pane (pane-mixin clim:application-pane)
+(defclass example-pane (pane:pane-mixin clim:application-pane)
   ())
 
 (clim:define-application-frame example
-    (frame-mixin clim:standard-application-frame)
+    (frame:frame-mixin clim:standard-application-frame)
   ((%buffer
     :initform (make-instance 'buffer)
     :reader buffer))
@@ -37,7 +37,7 @@
                   (minibuffer (clim:make-pane
                                'example-minibuffer-pane
                                :width 900)))
-             (setf (windows clim:*application-frame*) (list my-pane))
+             (setf (frame:windows clim:*application-frame*) (list my-pane))
              (clim:vertically ()
                (clim:scrolling ()
                  my-pane)
