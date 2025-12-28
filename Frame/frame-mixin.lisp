@@ -52,7 +52,7 @@
 on `frame' should be found in."))
 
 (defmethod find-applicable-command-table ((frame frame-mixin))
-  (command-table (car (windows frame))))
+  (pane:command-table (car (windows frame))))
 
 ;;; For convenience.
 
