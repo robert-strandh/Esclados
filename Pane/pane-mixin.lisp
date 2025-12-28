@@ -4,6 +4,10 @@
 
 (defgeneric (setf previous-command) (command pane-mixin))
 
+(defgeneric command-table (pane-mixin))
+
+(defgeneric (setf command-table) (command-table pane-mixin))
+
 (defclass pane-mixin ()
   (;; allows a certain number of commands to have some minimal memory
    (%previous-command
