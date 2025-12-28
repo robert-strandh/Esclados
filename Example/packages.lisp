@@ -5,5 +5,7 @@
   (:local-nicknames (#:mini #:esclados-minibuffer)
                     (#:info #:esclados-info-pane)
                     (#:cmd #:esclados-command-processor)
-                    (#:tbl #:esclados-command-table-manipulation))
+                    (#:tbl #:esclados-command-table-manipulation)
+                    (#:frame #:esclados-frame)
+                    (#:pane #:esclados-pane))
   (:export #:example))
