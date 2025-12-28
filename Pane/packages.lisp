@@ -4,4 +4,5 @@
   (:use #:common-lisp)
   (:export
    #:pane-mixin
-   #:previous-command))
+   #:previous-command
+   #:command-table))
