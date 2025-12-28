@@ -11,7 +11,7 @@
                "esclados-buffer"
                "esclados-command-table-manipulation"
                "esclados-pane"
-               "esclados-frame"))
+               "esclados-frame")
   :serial t
   :components
   ((:file "packages")
