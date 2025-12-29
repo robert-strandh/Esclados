@@ -81,8 +81,13 @@ used.")
 (define-top-level
     (frame command-parser command-unparser partial-command-parser prompt))
 
-(defmacro simple-command-loop (command-table loop-condition
-                               &optional end-clauses (abort-clauses '((signal 'clim:abort-gesture :event *current-gesture*))))
+(defmacro simple-command-loop
+    (command-table
+     loop-condition
+     &optional
+       end-clauses
+       (abort-clauses
+        '((signal 'clim:abort-gesture :event *current-gesture*))))
   `(progn (setf (cmd:overriding-handler cmd:*command-processor*)
                 (make-instance 'cmd:command-loop-command-processor
                   :command-table ,command-table
