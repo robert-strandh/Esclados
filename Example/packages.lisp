@@ -7,5 +7,6 @@
                     (#:cmd #:esclados-command-processor)
                     (#:tbl #:esclados-command-table-manipulation)
                     (#:frame #:esclados-frame)
-                    (#:pane #:esclados-pane))
+                    (#:pane #:esclados-pane)
+                    (#:top #:esclados-top-level))
   (:export #:example))
