@@ -45,7 +45,7 @@
                (20 minibuffer)))))
   (:layouts
    (default window))
-  (:top-level (esclados:top-level)))
+  (:top-level (top:top-level)))
 
 (defun display-my-pane (frame pane)
   (let* ((buffer (buffer frame))
