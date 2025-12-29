@@ -15,7 +15,6 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "top-level")
    (:file "standard-key-bindings")
    (:file "command-parser")
    (:file "keyboard-macros")))
