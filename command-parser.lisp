@@ -56,7 +56,7 @@
             (clim:accept
              `(clim:command-name :command-table ,clim:command-table)
              :stream (clim:encapsulating-stream-stream stream)
-             :prompt *extended-command-prompt*
+             :prompt top:*extended-command-prompt*
              :prompt-mode :raw :history nil))
       (maybe-clear-input stream))
     (clim:with-delimiter-gestures
