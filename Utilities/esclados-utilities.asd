@@ -6,5 +6,6 @@
   :components
   ((:file "packages")
    (:file "utils")
+   (:file "define-menu-table")
    (:file "name-mixin")
    (:file "gesture-name")))
