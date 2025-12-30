@@ -17,5 +17,4 @@
   :components
   ((:file "packages")
    (:file "standard-key-bindings")
-   (:file "command-parser")
    (:file "keyboard-macros")))
