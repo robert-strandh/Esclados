@@ -1,10 +1,5 @@
 (cl:in-package #:esclados-top-level)
 
-(defvar *extended-command-prompt*
-  "The prompt used when querying the user for an extended
-command. This only applies when the ESCLADOS command parser is being
-used.")
-
 (defgeneric top-level
     (frame
      &key
@@ -26,12 +21,12 @@ used.")
      &key bindings)
   `(defmethod top-level
        (,frame &key
-                 (,command-parser 'esclados:command-parser)
+                 (,command-parser 'cmp:command-parser)
                  ;; FIXME: maybe customize this?  Under what
                  ;; circumstances would it be used?  Maybe try
                  ;; turning the clim listener into an ESCLADOS?
                  (,command-unparser  'clim:command-line-command-unparser)
-                 (,partial-command-parser 'esclados:partial-command-parser)
+                 (,partial-command-parser 'cmp:partial-command-parser)
                  (,prompt "Extended Command: "))
      ,(let ((frame (utils:unlisted frame)))
         `(with-accessors ((windows frame:windows)) ,frame
@@ -43,7 +38,7 @@ used.")
                  (clim:*command-parser* ,command-parser)
                  (clim:*command-unparser* ,command-unparser)
                  (clim:*partial-command-parser* ,partial-command-parser)
-                 (*extended-command-prompt* ,prompt)
+                 (cmp:*extended-command-prompt* ,prompt)
                  (clim:*pointer-documentation-output*
                    (clim:frame-pointer-documentation-output ,frame))
                  (frame:*esclados-instance* ,frame))
