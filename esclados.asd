@@ -12,7 +12,8 @@
                "esclados-command-table-manipulation"
                "esclados-pane"
                "esclados-frame"
-               "esclados-top-level")
+               "esclados-top-level"
+               "esclados-command-parser")
   :serial t
   :components
   ((:file "packages")
