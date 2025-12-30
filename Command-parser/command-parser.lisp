@@ -1,4 +1,9 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-command-parser)
+
+(defvar *extended-command-prompt*
+  "The prompt used when querying the user for an extended
+command. This only applies when the ESCLADOS command parser is being
+used.")
 
 ;;; There is an ambiguity over what to do for parsing partial commands
 ;;; with certain values filled in, as might occur for keyboard
@@ -56,7 +61,7 @@
             (clim:accept
              `(clim:command-name :command-table ,clim:command-table)
              :stream (clim:encapsulating-stream-stream stream)
-             :prompt top:*extended-command-prompt*
+             :prompt *extended-command-prompt*
              :prompt-mode :raw :history nil))
       (maybe-clear-input stream))
     (clim:with-delimiter-gestures
