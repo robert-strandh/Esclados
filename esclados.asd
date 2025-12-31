@@ -10,7 +10,8 @@
                "esclados-pane"
                "esclados-frame"
                "esclados-top-level"
-               "esclados-command-parser")
+               "esclados-command-parser"
+               "esclados-standard-key-bindings")
   :license "BSD 2-clause, see file LICENSE.text"
   :serial t
   :components
