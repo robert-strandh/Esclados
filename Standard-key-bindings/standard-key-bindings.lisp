@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-standard-key-bindings)
 
 (clim:define-command-table global-table)
 
