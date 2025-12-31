@@ -318,11 +318,11 @@ Changes the file visted by the buffer to the given file."
              'io-table '((#\x :control) (#\w :control)))
 
 (utils:define-menu-table io-menu-table
-    (io-table esclados:global-table)
+    (io-table key:global-table)
   `(com-find-file ,clim:*unsupplied-argument-marker*)
   `(com-find-file-read-only ,clim:*unsupplied-argument-marker*)
   'com-save-buffer
   `(com-write-buffer ,clim:*unsupplied-argument-marker*)
   `(com-set-visited-file-name ,clim:*unsupplied-argument-marker*)
   :divider
-  'esclados:com-quit)
+  'key:com-quit)
