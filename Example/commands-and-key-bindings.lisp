@@ -1,7 +1,7 @@
 (cl:in-package #:esclados-example)
 
 (clim:define-command-table global-example-table
-  :inherit-from (esclados:global-table esclados:keyboard-macro-table))
+  :inherit-from (key:global-table esclados:keyboard-macro-table))
 
 (clim:define-command
     (com-insert-character
