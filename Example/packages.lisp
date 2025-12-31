@@ -8,5 +8,6 @@
                     (#:tbl #:esclados-command-table-manipulation)
                     (#:frame #:esclados-frame)
                     (#:pane #:esclados-pane)
-                    (#:top #:esclados-top-level))
+                    (#:top #:esclados-top-level)
+                    (#:key #:esclados-standard-key-bindings))
   (:export #:example))
