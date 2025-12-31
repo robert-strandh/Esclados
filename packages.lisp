@@ -7,7 +7,8 @@
                     (#:cmd #:esclados-command-processor)
                     (#:tbl #:esclados-command-table-manipulation)
                     (#:frame #:esclados-frame)
-                    (#:top #:esclados-top-level))
+                    (#:top #:esclados-top-level)
+                    (#:key #:esclados-standard-key-bindings))
   (:export #:command-processor #:instant-macro-execution-mixin
            #:asynchronous-command-processor #:command-loop-command-processor
            #:dead-key-merging-command-processor
