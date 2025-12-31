@@ -15,5 +15,4 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "standard-key-bindings")
    (:file "keyboard-macros")))
