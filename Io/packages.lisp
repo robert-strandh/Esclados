@@ -6,7 +6,8 @@
                     (#:buf #:esclados-buffer)
                     (#:mini #:esclados-minibuffer)
                     (#:tbl #:esclados-command-table-manipulation)
-                    (#:frame #:esclados-frame))
+                    (#:frame #:esclados-frame)
+                    (#:key #:esclados-standard-key-bindings))
   (:export #:frame-find-file #:find-file
            #:frame-find-file-read-only #:find-file-read-only
            #:frame-set-visited-file-name #:set-visited-filename
