@@ -5,7 +5,8 @@
                "esclados-info-pane"
                "esclados-command-processing"
                "esclados-pane"
-               "esclados-frame")
+               "esclados-frame"
+               "esclados-standard-key-bindings")
   :serial t
   :components
   ((:file "packages")
