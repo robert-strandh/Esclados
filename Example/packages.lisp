@@ -9,5 +9,6 @@
                     (#:frame #:esclados-frame)
                     (#:pane #:esclados-pane)
                     (#:top #:esclados-top-level)
-                    (#:key #:esclados-standard-key-bindings))
+                    (#:key #:esclados-standard-key-bindings)
+                    (#:kbm #:esclados-keyboard-macros))
   (:export #:example))
