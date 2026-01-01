@@ -15,5 +15,4 @@
   :license "BSD 2-clause, see file LICENSE.text"
   :serial t
   :components
-  ((:file "packages")
-   (:file "keyboard-macros")))
+  ((:file "packages")))
