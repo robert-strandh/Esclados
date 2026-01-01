@@ -1,4 +1,4 @@
-(cl:in-package #:esclados)
+(cl:in-package #:esclados-keyboard-macros)
 
 (clim:define-command-table keyboard-macro-table)
 
