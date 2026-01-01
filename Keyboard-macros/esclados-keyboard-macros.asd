@@ -2,6 +2,7 @@
 
 (defsystem "esclados-keyboard-macros"
   :depends-on ("mcclim"
+               "esclados-utilities"
                "esclados-command-table-manipulation"
                "esclados-command-processing")
   :serial t
