@@ -14,6 +14,4 @@
                "esclados-standard-key-bindings"
                "esclados-keyboard-macros")
   :license "BSD 2-clause, see file LICENSE.text"
-  :serial t
-  :components
-  ((:file "packages")))
+  :serial t)
