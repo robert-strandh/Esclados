@@ -327,16 +327,19 @@ to do stuff such as incremental search)."))
                    M-2 = -12. As a special case, C-u - and M-- = -1.  In~@
                    the absence of a prefix arg returns 1 (and nil)."))
 
-(defgeneric process-gestures (command-processor)
-  (:documentation "Process the gestures accumulated in
-`command-processor', returning T if there are no gestures
-accumulated or the accumulated gestures correspond to a
-command. In this case, the command will also be executed and the
-list of accumulated gestures set to NIL. Will return NIL if the
-accumulated gestures do not yet correspond to a command, but
-eventually could, if more gestures are provided. Signals
-`unbound-gesture-sequence' if the accumulated gestures could
-never refer to a command."))
+(defgeneric process-gestures (command-processor))
+
+(setf (documentation 'process-gestures 'function)
+      (format nil "Process the gestures accumulated in~@
+                   `command-processor', returning T if there are no~@
+                   gestures accumulated or the accumulated gestures~@
+                   correspond to a command. In this case, the command~@
+                   will also be executed and the list of accumulated~@
+                   gestures set to NIL. Will return NIL if the accumulated~@
+                   gestures do not yet correspond to a command, but~@
+                   eventually could, if more gestures are provided.~@
+                   Signals `unbound-gesture-sequence' if the accumulated~@
+                   gestures could never refer to a command."))
 
 (defmethod process-gestures ((command-processor command-processor))
   (multiple-value-bind (prefix-arg prefix-p gestures)
