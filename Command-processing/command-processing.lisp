@@ -286,6 +286,21 @@ to do stuff such as incremental search)."))
                          nil
                          (cons gesture gestures))))))))
 
+(defun process-gestures-for-meta-digit-argument (first-gesture gestures)
+  (let ((numarg 0)
+        (sign +1))
+    (cond ((meta-digit first-gesture)
+           (setf numarg (meta-digit first-gesture)))
+          (t (setf sign -1)))
+    (loop for gesture = (first gestures)
+          while (meta-digit gesture)
+          do (setf numarg (+ (* 10 numarg) (meta-digit gesture)))
+             (pop gestures)
+          finally (return (values (if (and (= sign -1) (= numarg 0))
+                                      -1
+                                      (* sign numarg))
+                                  t gestures)))))
+
 (defun process-gestures-for-numeric-argument (gestures)
   (let ((first-gesture (pop gestures)))
     (cond ((gesture-matches-gesture-name-p
@@ -294,19 +309,7 @@ to do stuff such as incremental search)."))
           ((or (meta-digit first-gesture)
                (gesture-matches-gesture-name-p
                 first-gesture 'meta-minus))
-           (let ((numarg 0)
-                 (sign +1))
-             (cond ((meta-digit first-gesture)
-                    (setf numarg (meta-digit first-gesture)))
-                   (t (setf sign -1)))
-             (loop for gesture = (first gestures)
-                   while (meta-digit gesture)
-                   do (setf numarg (+ (* 10 numarg) (meta-digit gesture)))
-                      (pop gestures)
-                   finally (return (values (if (and (= sign -1) (= numarg 0))
-                                               -1
-                                               (* sign numarg))
-                                           t gestures)))))
+           (process-gestures-for-meta-digit-argument first-gesture gestures))
           (t (values 1
                      nil
                      (if (null first-gesture)
