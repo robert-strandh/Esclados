@@ -283,9 +283,11 @@ to do stuff such as incremental search)."))
                                (pop gestures)
                             finally (return (values (* numarg sign) t gestures))))
                      (t
-                      (values (if (minusp sign) -1 numarg) t
-                              (when gesture
-                                (cons gesture gestures))))))))
+                      (values (if (minusp sign) -1 numarg)
+                              t
+                              (if (null gesture)
+                                  nil
+                                  (cons gesture gestures))))))))
           ((or (meta-digit first-gesture)
                (gesture-matches-gesture-name-p
                 first-gesture 'meta-minus))
@@ -302,8 +304,11 @@ to do stuff such as incremental search)."))
                                                -1
                                                (* sign numarg))
                                            t gestures)))))
-          (t (values 1 nil (when first-gesture
-                             (cons first-gesture gestures)))))))
+          (t (values 1
+                     nil
+                     (if (null first-gesture)
+                         nil
+                         (cons first-gesture gestures)))))))
 
 (setf (documentation 'process-gestures-for-numeric-argument 'function)
       (format nil "Processes a list of gestures for numeric argument~@
@@ -407,9 +412,11 @@ never refer to a command."))
        (command-processor *command-processor*)
        (stream *standard-input*))
   (cond ((recordingp command-processor)
-         (cond ((equal (first (recorded-keys command-processor)) gesture)
+         (cond ((equal (first (recorded-keys command-processor))
+                       gesture)
                 (pop (recorded-keys command-processor)))
-               ((equal (first (accumulated-gestures command-processor)) gesture)
+               ((equal (first (accumulated-gestures command-processor))
+                       gesture)
                 (pop (accumulated-gestures command-processor))))
          (clim:unread-gesture gesture :stream stream))
         ((executingp command-processor)
