@@ -5,9 +5,11 @@
 
 (defparameter *current-gesture* nil)
 
-(defparameter *command-processor* nil
-  "While a command is being run, this symbol will be dynamically
-bound to the current command processor.")
+(defparameter *command-processor* nil)
+
+(setf (documentation '*command-processor* 'variable)
+      (format nil "While a command is being run, this variable will~@
+                   be dynamically bound to the current command processor."))
 
 (defun find-gestures (gestures start-table)
   (loop with table = (clim:find-command-table start-table)
