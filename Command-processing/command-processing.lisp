@@ -395,10 +395,10 @@ to do stuff such as incremental search)."))
 (defmethod process-gesture :around
     ((command-processor command-processor) gesture)
   (with-accessors ((overriding-handler overriding-handler)) command-processor
-    (if overriding-handler
+    (if (null overriding-handler)
+        (call-next-method)
         (let ((*command-processor* overriding-handler))
-          (process-gesture overriding-handler gesture))
-        (call-next-method))))
+          (process-gesture overriding-handler gesture)))))
 
 (defmethod process-gesture ((command-processor command-processor) gesture)
   (setf (accumulated-gestures command-processor)
