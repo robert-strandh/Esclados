@@ -361,7 +361,7 @@ to do stuff such as incremental search)."))
                  (item (or (find-gestures-with-inheritance gestures command-table)
                            (command-for-unbound-gestures command-processor gestures))))
             (cond
-              ((not item)
+              ((null item)
                (setf (accumulated-gestures command-processor) nil)
                (error 'unbound-gesture-sequence :gestures gestures))
               ((or (commandp item) ; c-f-u-g does not return a menu-item.
