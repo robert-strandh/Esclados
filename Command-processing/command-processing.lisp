@@ -355,42 +355,41 @@ to do stuff such as incremental search)."))
        (accumulated-gestures command-processor))
     (flet ((commandp (object)
              (or (listp object) (symbolp object))))
-      (cond ((null gestures)
-             t)
-            (t
-             (let* ((command-table (command-table command-processor))
-                    (item (or (find-gestures-with-inheritance gestures command-table)
-                              (command-for-unbound-gestures command-processor gestures))))
-               (cond
-                 ((not item)
-                  (setf (accumulated-gestures command-processor) nil)
-                  (error 'unbound-gesture-sequence :gestures gestures))
-                 ((or (commandp item) ; c-f-u-g does not return a menu-item.
-                      (eq (clim:command-menu-item-type item) :command))
-                  (let ((command (if (commandp item) item
-                                     (clim:command-menu-item-value item)))
-                        (*current-gesture* (first (last gestures)))
-                        (*standard-input* (or mini:*minibuffer* *standard-input*)))
-                    (unless (consp command)
-                      (setf command (list command)))
-                    ;; Call `*partial-command-parser*' to handle numeric
-                    ;; argument.
-                    (unwind-protect
-                         (setq command
-                               (funcall clim:*partial-command-parser*
-                                        (command-table command-processor)
-                                        *standard-input*
-                                        command 0 (when prefix-p prefix-arg)))
-                      ;; If we are macrorecording, store whatever the user
-                      ;; did to invoke this command.
-                      (when (recordingp command-processor)
-                        (setf (recorded-keys command-processor)
-                              (append (accumulated-gestures command-processor)
-                                      (recorded-keys command-processor))))
-                      (setf (accumulated-gestures command-processor) nil))
-                    (funcall (command-executor command-processor) command-processor command)
-                    nil))
-                 (t t))))))))
+      (if (null gestures)
+          t
+          (let* ((command-table (command-table command-processor))
+                 (item (or (find-gestures-with-inheritance gestures command-table)
+                           (command-for-unbound-gestures command-processor gestures))))
+            (cond
+              ((not item)
+               (setf (accumulated-gestures command-processor) nil)
+               (error 'unbound-gesture-sequence :gestures gestures))
+              ((or (commandp item) ; c-f-u-g does not return a menu-item.
+                   (eq (clim:command-menu-item-type item) :command))
+               (let ((command (if (commandp item) item
+                                  (clim:command-menu-item-value item)))
+                     (*current-gesture* (first (last gestures)))
+                     (*standard-input* (or mini:*minibuffer* *standard-input*)))
+                 (unless (consp command)
+                   (setf command (list command)))
+                 ;; Call `*partial-command-parser*' to handle numeric
+                 ;; argument.
+                 (unwind-protect
+                      (setq command
+                            (funcall clim:*partial-command-parser*
+                                     (command-table command-processor)
+                                     *standard-input*
+                                     command 0 (when prefix-p prefix-arg)))
+                   ;; If we are macrorecording, store whatever the user
+                   ;; did to invoke this command.
+                   (when (recordingp command-processor)
+                     (setf (recorded-keys command-processor)
+                           (append (accumulated-gestures command-processor)
+                                   (recorded-keys command-processor))))
+                   (setf (accumulated-gestures command-processor) nil))
+                 (funcall (command-executor command-processor) command-processor command)
+                 nil))
+              (t t)))))))
 
 (defmethod process-gesture :around
     ((command-processor command-processor) gesture)
