@@ -12,6 +12,7 @@
                "esclados-top-level"
                "esclados-command-parser"
                "esclados-standard-key-bindings"
-               "esclados-keyboard-macros")
+               "esclados-keyboard-macros"
+               "esclados-info-pane")
   :license "BSD 2-clause, see file LICENSE.text"
   :serial t)
