@@ -4,8 +4,10 @@
 ;;;
 ;;; Minibuffer pane
 
-(defgeneric minibuffer (clim:application-frame)
-  (:documentation "Return the minibuffer of APPLICATION-FRAME."))
+(defgeneric minibuffer (clim:application-frame))
+
+(setf (documentation 'minibuffer 'function)
+      (format nil "Return the minibuffer of APPLICATION-FRAME."))
 
 (defvar *minibuffer* nil
   "The minibuffer pane of the running application.")
