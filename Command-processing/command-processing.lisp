@@ -61,11 +61,11 @@
                    of a modifier key."))
 
 (define-condition unbound-gesture-sequence (simple-condition)
-  ((%gestures :initarg :gestures
+  (;; This slot contains a list of the provided gestures that resulted
+   ;; in the signaling of this condition.
+   (%gestures :initarg :gestures
               :reader gestures
-              :initform '()
-              :documentation "A list of the provided gestures
-that resulted in the signaling of this condition."))
+              :initform '()))
   (:report "Gesture sequence that cannot possibly result in command invocation encountered."))
 
 (setf (documentation 'unbound-gesture-sequence 'type)
