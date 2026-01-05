@@ -66,7 +66,11 @@
    (%gestures :initarg :gestures
               :reader gestures
               :initform '()))
-  (:report "Gesture sequence that cannot possibly result in command invocation encountered."))
+  (:report (lambda (condition stream)
+             (format stream
+                     "The gesture sequence ~s was encountered, but~@
+                      it cannot possibly result in command invocation."
+                     (gestures condition)))))
 
 (setf (documentation 'unbound-gesture-sequence 'type)
       (format nil "This condition is signaled during gesture processing,~@
