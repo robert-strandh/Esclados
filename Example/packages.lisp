@@ -10,5 +10,6 @@
                     (#:pane #:esclados-pane)
                     (#:top #:esclados-top-level)
                     (#:key #:esclados-standard-key-bindings)
-                    (#:kbm #:esclados-keyboard-macros))
+                    (#:kbm #:esclados-keyboard-macros)
+                    (#:help #:esclados-help))
   (:export #:example))
