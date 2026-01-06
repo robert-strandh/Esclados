@@ -7,7 +7,8 @@
                "esclados-pane"
                "esclados-frame"
                "esclados-standard-key-bindings"
-               "esclados-keyboard-macros")
+               "esclados-keyboard-macros"
+               "esclados-help")
   :serial t
   :components
   ((:file "packages")
