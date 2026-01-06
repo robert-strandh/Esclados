@@ -5,7 +5,8 @@
                "esclados-utilities"
                "esclados-minibuffer"
                "esclados-command-processing"
-               "esclados-command-table-manipulation")
+               "esclados-command-table-manipulation"
+               "esclados-frame")
   :serial t
   :components
   ((:file "packages")
