@@ -19,7 +19,7 @@
 ;;; where-is
 
 (clim:define-command (com-where-is :name t :command-table help-table) ()
-  (let* ((command-table applicable-command-table)
+  (let* ((command-table frame:applicable-command-table)
          (command
            (handler-case
                (clim:accept
@@ -49,7 +49,7 @@
 (clim:define-command
     (com-describe-bindings :name t :command-table help-table)
     ((sort-by-keystrokes 'boolean :prompt "Sort by keystrokes?"))
-  (let ((command-table applicable-command-table))
+  (let ((command-table frame:applicable-command-table))
     (with-help-stream (stream (format nil "Help: Describe Bindings"))
       (describe-bindings stream command-table
                          (if sort-by-keystrokes
@@ -69,7 +69,7 @@
 
 (clim:define-command (com-describe-key :name t :command-table help-table)
     ()
-  (let ((command-table applicable-command-table))
+  (let ((command-table frame:applicable-command-table))
     (mini:display-message "Describe Key:")
     (clim:redisplay-frame-panes clim:*application-frame*)
     (multiple-value-bind (command gestures)
@@ -100,7 +100,7 @@
 (clim:define-command (com-describe-command :name t :command-table help-table)
     ((command 'clim:command-name :prompt "Describe command"))
   "Display documentation for the given command."
-  (let* ((command-table applicable-command-table)
+  (let* ((command-table frame:applicable-command-table)
          (prompt "~10THelp: Describe Command for ~A")
          (name (clim:command-line-name-for-command
                 command command-table :errorp nil)))
@@ -179,7 +179,7 @@ Words are comma delimited. When more than two words are given, the documentation
   ;; 23.8.6 "It is unspecified whether accept returns a list or a vector."
   (setf words (coerce words 'list))
   (when words
-    (let* ((command-table applicable-command-table)
+    (let* ((command-table frame:applicable-command-table)
            (results (find-command-key-pairs words command-table)))
       (if (null results)
           (mini:display-message "No results for ~{~A~^, ~}" words)

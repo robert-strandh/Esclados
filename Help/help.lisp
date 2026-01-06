@@ -46,7 +46,7 @@
             do (return (values (item-value item) gestures)))))
 
 (defun describe-key-briefly ()
-  (let ((command-table applicable-command-table))
+  (let ((command-table frame:applicable-command-table))
     (multiple-value-bind (command gestures)
         (read-gestures-for-help command-table)
       (when (consp command)
@@ -244,7 +244,7 @@
     (gesture
      command
      &key
-       (command-table applicable-command-table)
+       (command-table frame:applicable-command-table)
        (stream *standard-output*))
   "Describe `command' as invoked by `gesture' to `stream'."
   (let* ((command-name (if (listp command) (first command) command))
@@ -285,7 +285,7 @@
 (defun describe-command-to-stream
     (command-name
      &key
-       (command-table applicable-command-table)
+       (command-table frame:applicable-command-table)
        (stream *standard-output*))
   "Describe `command' to `stream'."
   (let ((keystrokes (find-keystrokes-for-command-with-inheritance
