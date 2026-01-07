@@ -1,5 +1,8 @@
 (cl:in-package #:esclados-utils)
 
+;;; This definition of gesture-name is not great.  It gives a strange
+;;; result for gestures like (<char> :control).
+
 (defgeneric gesture-name (gesture))
 
 (defmethod gesture-name ((char character))
