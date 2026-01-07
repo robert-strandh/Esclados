@@ -26,11 +26,20 @@
 
 (defun delete-character (buffer)
   (with-accessors ((contents contents) (cursor cursor)) buffer
-    (replace contents contents :start1 cursor :start2 (1+ cursor))
-    (decf (fill-pointer contents))))
+    (if (= cursor (fill-pointer contents))
+        (error 'end-of-buffer)
+        (progn 
+          (replace contents contents :start1 cursor :start2 (1+ cursor))
+          (decf (fill-pointer contents))))))
 
 (defun forward-character (buffer)
-  (incf (cursor buffer)))
+  (with-accessors ((contents contents) (cursor cursor)) buffer
+    (if (= cursor (fill-pointer contents))
+        (error 'end-of-buffer)
+        (incf cursor))))
 
 (defun backward-character (buffer)
-  (decf (cursor buffer)))
+  (with-accessors ((cursor cursor)) buffer
+    (if (zerop cursor)
+        (error 'beginning-of-buffer)
+        (decf cursor))))
