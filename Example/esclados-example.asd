@@ -14,4 +14,5 @@
   ((:file "packages")
    (:file "buffer")
    (:file "example-application")
-   (:file "commands-and-key-bindings")))
+   (:file "commands-and-key-bindings")
+   (:file "condition-types")))
