@@ -28,7 +28,7 @@
   (with-accessors ((contents contents) (cursor cursor)) buffer
     (if (= cursor (fill-pointer contents))
         (error 'end-of-buffer)
-        (progn 
+        (progn
           (replace contents contents :start1 cursor :start2 (1+ cursor))
           (decf (fill-pointer contents))))))
 
