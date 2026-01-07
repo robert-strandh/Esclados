@@ -35,3 +35,7 @@
         ;; Assume `gesture' is a list of gestures.
         (t (format nil "~{~A~#[~; ~; ~]~}"
                    (mapcar #'gesture-name gesture)))))
+
+;;; GESTURE might be something like :CONTROL or :META.
+(defmethod gesture-name ((gesture symbol))
+  gesture)
