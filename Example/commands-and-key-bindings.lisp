@@ -76,3 +76,11 @@
 (tbl:set-key 'com-backward-character
              'global-example-table
              `((#\b :control)))
+
+(defmethod clim:execute-frame-command :around ((frame example) command)
+  (declare (ignore command))
+  (handler-case (call-next-method)
+    (beginning-of-buffer ()
+      (mini:display-message "Beginning of buffer"))
+    (end-of-buffer ()
+      (mini:display-message "End of buffer"))))
