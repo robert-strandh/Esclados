@@ -266,7 +266,7 @@
                           :stream stream))
           (clim:present command-name 'symbol :stream stream))
       (princ " in " stream)
-      (clim:present real-command-table 'command-table :stream stream)
+      (clim:present real-command-table 'clim:command-table :stream stream)
       (format stream ".~%")
       (when command-args
         (apply #'format stream
