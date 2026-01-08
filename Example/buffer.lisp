@@ -43,3 +43,11 @@
     (if (zerop cursor)
         (error 'beginning-of-buffer)
         (decf cursor))))
+
+(defun beginning-of-line (buffer)
+  (with-accessors ((contents contents) (cursor cursor)) buffer
+    (let ((position (position #\Newline contents :end cursor :from-end t)))
+      (setf cursor
+            (if (null position)
+                0
+                (1+ position))))))
