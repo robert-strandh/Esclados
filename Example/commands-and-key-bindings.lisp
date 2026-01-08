@@ -31,6 +31,13 @@
     ()
   (backward-character (buffer clim:*application-frame*)))
 
+(clim:define-command
+    (com-beginning-of-line
+     :name t
+     :command-table global-example-table)
+    ()
+  (beginning-of-line (buffer clim:*application-frame*)))
+
 (loop for character across " !\"#$%&'()*+,-./"
       do (tbl:set-key `(com-insert-character ,character)
                       'global-example-table
@@ -76,6 +83,10 @@
 (tbl:set-key 'com-backward-character
              'global-example-table
              `((#\b :control)))
+
+(tbl:set-key 'com-beginning-of-line
+             'global-example-table
+             `((#\a :control)))
 
 (defmethod clim:execute-frame-command :around ((frame example) command)
   (declare (ignore command))
