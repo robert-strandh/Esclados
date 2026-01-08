@@ -51,3 +51,11 @@
             (if (null position)
                 0
                 (1+ position))))))
+
+(defun end-of-line (buffer)
+  (with-accessors ((contents contents) (cursor cursor)) buffer
+    (let ((position (position #\Newline contents :start cursor)))
+      (setf cursor
+            (if (null position)
+                (length contents)
+                position)))))
