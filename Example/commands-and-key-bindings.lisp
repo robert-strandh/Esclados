@@ -38,6 +38,13 @@
     ()
   (beginning-of-line (buffer clim:*application-frame*)))
 
+(clim:define-command
+    (com-end-of-line
+     :name t
+     :command-table global-example-table)
+    ()
+  (end-of-line (buffer clim:*application-frame*)))
+
 (loop for character across " !\"#$%&'()*+,-./"
       do (tbl:set-key `(com-insert-character ,character)
                       'global-example-table
@@ -87,6 +94,10 @@
 (tbl:set-key 'com-beginning-of-line
              'global-example-table
              `((#\a :control)))
+
+(tbl:set-key 'com-end-of-line
+             'global-example-table
+             `((#\e :control)))
 
 (defmethod clim:execute-frame-command :around ((frame example) command)
   (declare (ignore command))
