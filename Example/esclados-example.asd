@@ -16,4 +16,5 @@
    (:file "example-application")
    (:file "commands-and-key-bindings")
    (:file "com-insert-character")
+   (:file "com-delete-character")
    (:file "condition-types")))

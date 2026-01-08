@@ -4,13 +4,6 @@
   :inherit-from (key:global-table kbm:keyboard-macro-table help:help-table))
 
 (clim:define-command
-    (com-delete-character
-     :name t
-     :command-table global-example-table)
-    ()
-  (delete-character (buffer clim:*application-frame*)))
-
-(clim:define-command
     (com-forward-character
      :name t
      :command-table global-example-table)
@@ -37,10 +30,6 @@
      :command-table global-example-table)
     ()
   (end-of-line (buffer clim:*application-frame*)))
-
-(tbl:set-key 'com-delete-character
-             'global-example-table
-             `((#\d :control)))
 
 (tbl:set-key 'com-forward-character
              'global-example-table
