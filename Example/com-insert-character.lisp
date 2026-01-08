@@ -7,6 +7,10 @@
     ((character 'character))
   (insert-character character (buffer clim:*application-frame*)))
 
+(setf (documentation 'com-insert-character 'function)
+      (format nil "Insert a character at the position of the cursor~@
+                   and then move the cursor one position to the right."))
+
 (loop for character across " !\"#$%&'()*+,-./"
       do (tbl:set-key `(com-insert-character ,character)
                       'global-example-table
