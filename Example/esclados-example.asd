@@ -15,4 +15,5 @@
    (:file "buffer")
    (:file "example-application")
    (:file "commands-and-key-bindings")
+   (:file "com-insert-character")
    (:file "condition-types")))

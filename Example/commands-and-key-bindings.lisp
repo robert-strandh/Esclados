@@ -4,13 +4,6 @@
   :inherit-from (key:global-table kbm:keyboard-macro-table help:help-table))
 
 (clim:define-command
-    (com-insert-character
-     :name t
-     :command-table global-example-table)
-    ((character 'character))
-  (insert-character character (buffer clim:*application-frame*)))
-
-(clim:define-command
     (com-delete-character
      :name t
      :command-table global-example-table)
@@ -44,40 +37,6 @@
      :command-table global-example-table)
     ()
   (end-of-line (buffer clim:*application-frame*)))
-
-(loop for character across " !\"#$%&'()*+,-./"
-      do (tbl:set-key `(com-insert-character ,character)
-                      'global-example-table
-                      `(,character)))
-
-(loop for character across "0123456789:;<=>?"
-      do (tbl:set-key `(com-insert-character ,character)
-                      'global-example-table
-                      `(,character)))
-
-(loop for character across "@ABCDEFGHIJKLMNO"
-      do (tbl:set-key `(com-insert-character ,character)
-                      'global-example-table
-                      `(,character)))
-
-(loop for character across "PQRSTUVWXYZ[\\]^_"
-      do (tbl:set-key `(com-insert-character ,character)
-                      'global-example-table
-                      `(,character)))
-
-(loop for character across "`abcdefghijklmno"
-      do (tbl:set-key `(com-insert-character ,character)
-                      'global-example-table
-                      `(,character)))
-
-(loop for character across "pqrstuvwxyz{|}~"
-      do (tbl:set-key `(com-insert-character ,character)
-                      'global-example-table
-                      `(,character)))
-
-(tbl:set-key `(com-insert-character #\Newline)
-             'global-example-table
-             `(#\Return))
 
 (tbl:set-key 'com-delete-character
              'global-example-table
