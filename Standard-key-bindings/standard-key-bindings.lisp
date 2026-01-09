@@ -7,6 +7,7 @@
 
 (setf (documentation 'com-quit 'function)
       (format nil "Exit.~@
+                   ~@
                    First ask if modified buffers should be saved.~@
                    If you decide not to save a modified buffer, you~@
                    will be asked to confirm your decision to exit."))
