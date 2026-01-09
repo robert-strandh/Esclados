@@ -58,6 +58,7 @@
 
 (setf (documentation 'com-describe-bindings 'function)
       (format nil "Show which keys invoke which commands.~@
+                   ~@
                    Without a numeric prefix, sorts the list by~@
                    command name. With a numeric prefix, sorts by key."))
 
