@@ -87,11 +87,13 @@
 
 (setf (documentation 'com-describe-key 'function)
       (format nil "Display documentation for the command invoked by~@
-                   a given gesture sequence.  When invoked, this command~@
-                   will wait for user input. If the user inputs a gesture~@
-                   sequence bound to a command available in the syntax~@
-                   of the current buffer,  Documentation and other details~@
-                   will be displayed in a typeout pane."))
+                   a given gesture sequence.~@
+                   ~@
+                   When invoked, this command will wait for user input.~@
+                   If the user inputs a gesture sequence bound to a~@
+                   command available in the syntax of the current buffer,~@
+                   Documentation and other details will be displayed in~@
+                   a typeout pane."))
 
 (tbl:set-key 'com-describe-key
              'help-table
