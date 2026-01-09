@@ -203,7 +203,8 @@
 (defun print-paragraph (paragraph stream)
   (terpri stream)
   (let ((words (find-words paragraph)))
-    (loop with margin = (clim:stream-text-margin stream)
+    (loop ;; decrease the margin a bit
+          with margin = (- (clim:stream-text-margin stream) 10)
           with space-width = (clim:stream-character-width stream #\Space)
           with current-width = 0
           for word in words
@@ -219,24 +220,17 @@
 (defun print-docstring-for-command
     (command-name command-table &optional (stream *standard-output*))
   (declare (ignore command-table))
-  ;; This needs more regex magic. Also, it is only an interim
-  ;; solution.
   (clim:with-text-style (stream '(:sans-serif nil nil))
     (let* ((documentation (documentation command-name 'function))
            (command-documentation
              (if (stringp documentation)
                  documentation
-                 "This command is not documented."))
-           (first-newline (position #\Newline command-documentation))
-           (first-line (subseq command-documentation 0 first-newline)))
-      ;; First line is special
-      (format stream "~A~%" first-line)
-      (unless (null first-newline)
-        (let* ((rest (subseq command-documentation first-newline))
-               (paras (delete "" (find-paragraphs rest) :test #'string=)))
-          (dolist (para paras)
-            (print-paragraph para stream)
-            (terpri stream)))))))
+                 "This command is not documented.")))
+      (let ((paras (delete "" (find-paragraphs command-documentation)
+                           :test #'string=)))
+        (dolist (para paras)
+          (print-paragraph para stream)
+          (terpri stream))))))
 
 (setf (documentation 'print-docstring-for-command 'function)
       (format nil "Print documentation for `command-name', which should~@
