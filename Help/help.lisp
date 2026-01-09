@@ -200,7 +200,24 @@
         collecting (string-trim '(#\Space #\Tab #\Newline)
                                 (subseq paragraph start index))))
 
-(defun print-docstring-for-command (command-name command-table &optional (stream *standard-output*))
+(defun print-paragraph (paragraph stream)
+  (terpri stream)
+  (let ((words (find-words paragraph)))
+    (loop with margin = (clim:stream-text-margin stream)
+          with space-width = (clim:stream-character-width stream #\Space)
+          with current-width = 0
+          for word in words
+          for word-width = (clim:stream-string-width stream word)
+          when (> (+ word-width current-width)
+                  margin)
+            do (terpri stream)
+               (setf current-width 0)
+          do (princ word stream)
+             (princ #\Space stream)
+             (incf current-width (+ word-width space-width)))))
+
+(defun print-docstring-for-command
+    (command-name command-table &optional (stream *standard-output*))
   (declare (ignore command-table))
   ;; This needs more regex magic. Also, it is only an interim
   ;; solution.
@@ -218,20 +235,7 @@
         (let* ((rest (subseq command-documentation first-newline))
                (paras (delete "" (find-paragraphs rest) :test #'string=)))
           (dolist (para paras)
-            (terpri stream)
-            (let ((words (find-words para)))
-              (loop with margin = (clim:stream-text-margin stream)
-                    with space-width = (clim:stream-character-width stream #\Space)
-                    with current-width = 0
-                    for word in words
-                    for word-width = (clim:stream-string-width stream word)
-                    when (> (+ word-width current-width)
-                            margin)
-                      do (terpri stream)
-                         (setf current-width 0)
-                    do (princ word stream)
-                       (princ #\Space stream)
-                       (incf current-width (+ word-width space-width))))
+            (print-paragraph para stream)
             (terpri stream)))))))
 
 (setf (documentation 'print-docstring-for-command 'function)
