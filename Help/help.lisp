@@ -15,7 +15,7 @@
            (clim:open-window-stream
             :label title
             :input-buffer (climi::frame-event-queue clim:*application-frame*)
-            :width 400)))
+            :width 600)))
 
 (defmacro with-help-stream ((stream title) &body body)
   `(invoke-with-help-stream
