@@ -1,9 +1,5 @@
 (cl:in-package #:esclados-minibuffer)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Minibuffer pane
-
 (defgeneric minibuffer (clim:application-frame))
 
 (setf (documentation 'minibuffer 'function)
