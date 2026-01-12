@@ -277,9 +277,11 @@ current message was set."))
 
 (setf (documentation 'with-minibuffer-stream 'function)
       (format nil "Bind `stream-symbol' to the minibuffer stream and~@
-                   evaluate `body'. This macro makes sure to setup the~@
-                   initial blanking of the minibuffer as well as taking~@
-                   care of for how long the message should be displayed."))
+                   evaluate `body'.~@
+                   ~@
+                   This macro makes sure to setup the initial blanking~@
+                   of the minibuffer as well as taking care of for how~@
+                   long the message should be displayed."))
 
 (defun display-message (format-string &rest format-args)
   (with-minibuffer-stream (minibuffer)
