@@ -286,6 +286,7 @@ current message was set."))
     (apply #'format minibuffer format-string format-args)))
 
 (setf (documentation 'display-message 'function)
-      (format nil "Display a message in the minibuffer.  Composes~@
-                   the string based on the `format-string' and the~@
-                   `format-args'."))
+      (format nil "Display a message in the minibuffer.~@
+                   ~@
+                   Composes the string based on the `format-string' and~@
+                   the `format-args'."))
