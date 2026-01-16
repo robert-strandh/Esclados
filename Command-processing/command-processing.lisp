@@ -236,10 +236,12 @@ within the primary command loop of an application (for example,
 to do stuff such as incremental search)."))
 
 (defgeneric end-command-loop (command-processor)
-  (:documentation "End the simulated command loop controlled by
-`command-processor'.")
   (:method ((command-processor command-processor))
     nil))
+
+(setf (documentation 'end-command-loop 'function)
+      (format nil "End the simulated command loop controlled by~@
+                   `command-processor'."
 
 (defmethod end-command-loop
     ((command-processor command-loop-command-processor))
