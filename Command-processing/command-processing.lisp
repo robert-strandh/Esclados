@@ -180,9 +180,12 @@
   ((%dead-key-state :accessor dead-key-state
                     :initform nil
                     :documentation "The state of dead key
-handling as per `merging-dead-keys'."))
-  (:documentation "Helper class useful for asynchronous command
-processors, merges incoming dead keys with the following key."))
+handling as per `merging-dead-keys'.")))
+
+(setf (documentation 'dead-key-merging-command-processor 'type)
+      (format nil "Helper class useful for asynchronous command~@
+                   processors, merges incoming dead keys with the~@
+                   following key."))
 
 (defmethod process-gesture :around ((command-processor dead-key-merging-command-processor) gesture)
   (clime:merging-dead-keys (gesture (dead-key-state command-processor))
