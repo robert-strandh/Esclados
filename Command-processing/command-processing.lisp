@@ -230,10 +230,12 @@ handles gestures for."))
        (funcall
         (command-executor (super-command-processor processor))
         (super-command-processor processor)
-        command)))
-  (:documentation "This class is used to run sub-command-loops
-within the primary command loop of an application (for example,
-to do stuff such as incremental search)."))
+        command))))
+
+(setf (documentation 'command-loop-command-processor 'type)
+      (format nil "This class is used to run sub-command-loops within~@
+                   the primary command loop of an application (for~@
+                   example, to do stuff such as incremental search)."))
 
 (defgeneric end-command-loop (command-processor)
   (:method ((command-processor command-processor))
