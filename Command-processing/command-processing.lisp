@@ -191,6 +191,13 @@ handling as per `merging-dead-keys'.")))
   (clime:merging-dead-keys (gesture (dead-key-state command-processor))
     (call-next-method command-processor gesture)))
 
+#.(defparameter *end-condition-documentation*
+    (format nil "When this function of zero arguments returns true,~@
+                 the `command-loop-command-processor' will disable~@
+                 itself in its associated super command processor and~@
+                 call its `end-function', effectively dropping out of~@
+                 the sub-command-loop."))
+
 (defclass command-loop-command-processor (command-processor)
   ((%command-table
     :reader command-table
@@ -200,11 +207,7 @@ handling as per `merging-dead-keys'.")))
     :reader end-condition
     :initarg :end-condition
     :initform (constantly nil)
-    :documentation "When this function of zero
-arguments returns true, the `command-loop-command-processor' will
-disable itself in its associated super command processor and call
-its `end-function', effectively dropping out of the
-sub-command-loop.")
+    :documentation #.*end-condition-documentation*)
    (%end-function
     :reader end-function
     :initarg :end-function
@@ -243,7 +246,7 @@ handles gestures for."))
 
 (setf (documentation 'end-command-loop 'function)
       (format nil "End the simulated command loop controlled by~@
-                   `command-processor'."
+                   `command-processor'."))
 
 (defmethod end-command-loop
     ((command-processor command-loop-command-processor))
