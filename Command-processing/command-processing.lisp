@@ -202,6 +202,10 @@ handling as per `merging-dead-keys'.")))
     (format nil "This function of zero arguments will be called when~@
                  the command processor disables itself."))
 
+#.(defparameter *abort-function-documentation*
+    (format nil "This function is called if the command processor~@
+                 encounters an abort gesture."))
+
 (defclass command-loop-command-processor (command-processor)
   ((%command-table
     :reader command-table
@@ -221,8 +225,7 @@ handling as per `merging-dead-keys'.")))
     :reader abort-function
     :initarg :abort-function
     :initform (constantly nil)
-    :documentation "This function is called if
-the command processor encounters an abort gesture.")
+    :documentation #.*abort-function-documentation*)
    (%super-command-processor
     :reader super-command-processor
     :initarg :super-command-processor
