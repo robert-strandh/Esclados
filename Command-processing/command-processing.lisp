@@ -198,6 +198,10 @@ handling as per `merging-dead-keys'.")))
                  call its `end-function', effectively dropping out of~@
                  the sub-command-loop."))
 
+#.(defparameter *end-function-documentation*
+    (format nil "This function of zero arguments will be called when~@
+                 the command processor disables itself."))
+
 (defclass command-loop-command-processor (command-processor)
   ((%command-table
     :reader command-table
@@ -212,8 +216,7 @@ handling as per `merging-dead-keys'.")))
     :reader end-function
     :initarg :end-function
     :initform (constantly nil)
-    :documentation "This function of zero arguments
-will be called when the command processor disables itself.")
+    :documentation #.*end-function-documentation*)
    (%abort-function
     :reader abort-function
     :initarg :abort-function
