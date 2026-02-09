@@ -206,6 +206,11 @@ handling as per `merging-dead-keys'.")))
     (format nil "This function is called if the command processor~@
                  encounters an abort gesture."))
 
+#.(defparameter *super-command-processor-documentation*
+    (format nil "The command processor that the~@
+                 `command-loop-command-processor' object handles~@
+                  gestures for."))
+
 (defclass command-loop-command-processor (command-processor)
   ((%command-table
     :reader command-table
@@ -230,9 +235,7 @@ handling as per `merging-dead-keys'.")))
     :reader super-command-processor
     :initarg :super-command-processor
     :initform (error "Must provide a super command processor.")
-    :documentation "The command
-processor that the `command-loop-command-processor' object
-handles gestures for."))
+    :documentation #.*super-command-processor-documentation*))
   (:default-initargs
    :command-executor
    #'(lambda (processor command)
