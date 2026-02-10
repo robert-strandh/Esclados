@@ -176,11 +176,14 @@
     (setf (accumulated-gestures command-processor) nil)
     (signal 'clim:abort-gesture :event gesture)))
 
+#.(defparameter *dead-key-state-documentation*
+    (format nil "The state of dead key handling as per~@
+                 `merging-dead-keys'."))
+
 (defclass dead-key-merging-command-processor (command-processor)
   ((%dead-key-state :accessor dead-key-state
                     :initform nil
-                    :documentation "The state of dead key
-handling as per `merging-dead-keys'.")))
+                    :documentation #.*dead-key-state-documentation*)))
 
 (setf (documentation 'dead-key-merging-command-processor 'type)
       (format nil "Helper class useful for asynchronous command~@
