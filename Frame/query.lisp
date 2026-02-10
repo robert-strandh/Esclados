@@ -38,9 +38,11 @@
   (setf (present-buffer *esclados-instance*) new-buffer))
 
 (defgeneric windows (esclados)
-  (:documentation "Return a list of all the windows of the ESCLADOS.")
   (:method ((esclados clim:application-frame))
     '()))
+
+(setf (documentation 'windows 'function)
+      (format nil "Return a list of all the windows of the ESCLADOS."))
 
 (defgeneric present-window (esclados)
   (:documentation "Return the currently active window of ESCLADOS."))
