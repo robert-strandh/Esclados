@@ -50,8 +50,11 @@
       (format nil "Return the currently active window of ESCLADOS."))
 
 (defun current-window ()
-  "Return the currently active window of the running ESCLADOS instance."
   (present-window *esclados-instance*))
+
+(setf (documentation 'current-window 'function)
+      (format nil "Return the currently active window of the~@
+                   running ESCLADOS instance."))
 
 (defgeneric command-table (esclados)
   (:documentation "Return command table of ESCLADOS."))
