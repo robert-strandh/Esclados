@@ -44,8 +44,10 @@
 (setf (documentation 'windows 'function)
       (format nil "Return a list of all the windows of the ESCLADOS."))
 
-(defgeneric present-window (esclados)
-  (:documentation "Return the currently active window of ESCLADOS."))
+(defgeneric present-window (esclados))
+
+(setf (documentation 'present-window 'function)
+      (format nil "Return the currently active window of ESCLADOS."))
 
 (defun current-window ()
   "Return the currently active window of the running ESCLADOS instance."
